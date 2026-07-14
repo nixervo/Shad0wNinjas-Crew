@@ -421,6 +421,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   }
   window.__resetSort = function() { sortCol = -1; sortDir = 0; applySort(); };
   for (var i = 0; i < ths.length; i++) (function(col) {
+    if (ths[col].hasAttribute("colspan")) return;
     ths[col].addEventListener("click", function() {
       if (sortCol !== col) { sortCol = col; sortDir = 1; }
       else { sortDir = (sortDir + 1) % 3; }
