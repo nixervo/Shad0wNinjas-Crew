@@ -514,8 +514,6 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       if (row && !lm[names[i]]) row.className = "left-row";
     }
     if (clan) {
-      var te = document.getElementById("today-gain");
-      if (te && clan.crew_damage !== undefined) te.textContent = "+"+Number(clan.crew_damage).toLocaleString();
       var sv = document.querySelectorAll(".stats-col .stat-val");
       if (sv.length >= 2 && clan.crew_damage !== undefined) sv[1].textContent = Number(clan.crew_damage).toLocaleString();
     }
@@ -576,7 +574,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   });
   // CSV export
   function csvDownload() {
-    var rows = tb.querySelectorAll("tr"), csv = "Rank,Name,B.Kills,1/2H[K],Dmg,1/2H[D],Dmg(P2),1/2H[D](P2),ΔDmg,ΔKills\\n";
+    var rows = tb.querySelectorAll("tr"), csv = "Rank,Name,B.Kills,1/2H[K],Dmg,1/2H[D],Dmg(P2),1/2H[D](P2),Dmg,Kills\\n";
     for (var i = 0; i < rows.length; i++) {
       var cells = rows[i].cells, vals = [];
       for (var j = 0; j < cells.length; j++) {
@@ -917,8 +915,8 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   .goal-info .goal-next {{ color: #c9a84c; font-weight: 600; }}
   .goal-info .goal-num {{ color: #ccc; font-variant-numeric: tabular-nums; }}
   td:first-child {{ width: 28px; min-width: 28px; text-align: center; color: #666; font-size: 12px; }}
-  .meg.divider {{ border-left: 2px solid #c9a84c55; padding-left: 12px; }}
-  .divider {{ border-left: 2px solid #c9a84c55; }}
+  .meg.divider {{ border-left: 2px solid #c9a84c33; padding-left: 12px; }}
+  .divider {{ border-left: 2px solid #c9a84c33; }}
   .action-btn {{ cursor: pointer; font-size: 12px; color: #888; padding: 4px 10px; border-radius: 4px; border: 1px solid #1a1a2e; background: #0f0f1e; user-select: none; white-space: nowrap; }}
   .action-btn:hover {{ border-color: #c9a84c; color: #c9a84c; }}
   .footer-updated {{ color: #555; font-size: 11px; margin: 2px 0; }}
@@ -968,8 +966,8 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
         <th>1/2H[D] <span class="sort-arrow"></span></th>
         <th>Dmg <span class="sort-arrow"></span></th>
         <th>1/2H[D] <span class="sort-arrow"></span></th>
-        <th>ΔDmg <span class="sort-arrow"></span></th>
-        <th>ΔKills <span class="sort-arrow"></span></th>
+        <th>Dmg <span class="sort-arrow"></span></th>
+        <th>Kills <span class="sort-arrow"></span></th>
       </tr>
     </thead>
     <tbody>{table_rows}</tbody>
