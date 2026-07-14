@@ -37,7 +37,7 @@ def fetch_crew_ranking():
     with urllib.request.urlopen(req, timeout=10) as resp:
         data = json.loads(resp.read().decode())
     for entry in data:
-        if entry["CREW_ID"] == CREW_ID:
+        if entry["crew_id"] == CREW_ID:
             return entry
     return {}
 
