@@ -37,7 +37,7 @@
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, #e94560, #ff6b8a, #e94560);
+    background: linear-gradient(90deg, #c9a84c, #e8c877, #c9a84c);
     background-size: 200% 100%;
     animation: shimmer 3s ease-in-out infinite;
   }
@@ -82,8 +82,8 @@
     border: 1px solid #1a1a2e;
     transition: 0.25s;
   }
-  .archive a:hover { border-color: #e94560; color: #fff; background: rgba(233, 69, 96, 0.08); }
-  .archive a.active { border-color: #e94560; color: #fff; background: #e94560; font-weight: 600; }
+  .archive a:hover { border-color: #c9a84c; color: #fff; background: rgba(233, 69, 96, 0.08); }
+  .archive a.active { border-color: #c9a84c; color: #fff; background: #c9a84c; font-weight: 600; }
   .table-wrap { overflow-x: auto; }
   table {
     width: 100%;
@@ -99,7 +99,7 @@
     font-size: 15px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #e94560;
+    color: #c9a84c;
     font-weight: 600;
   }
   td {
@@ -122,7 +122,7 @@
   }
   .changes-title {
     font-size: 13px;
-    color: #e94560;
+    color: #c9a84c;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -170,7 +170,7 @@
     border-top: 1px solid #12121e;
   }
   .footer .ref { color: #555; font-size: 11px; margin-top: 2px; }
-  .footer a { color: #e94560; text-decoration: none; }
+  .footer a { color: #c9a84c; text-decoration: none; }
   .timer-bar {
     display: flex;
     align-items: center;
@@ -193,7 +193,7 @@
   .timer-digits span:first-child { color: #2dd4bf; font-weight: 600; min-width: 28px; display: inline-block; text-align: center; }
   .timer-unit { color: #888; font-size: 12px; margin-left: 1px; }
   .timer-right { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 12px; color: #888; user-select: none; white-space: nowrap; }
-  .timer-right:hover { color: #e94560; }
+  .timer-right:hover { color: #c9a84c; }
   .stats-bar {
     display: flex;
     flex-direction: column;
@@ -263,7 +263,7 @@
     font-size: 13px;
     outline: none;
   }
-  #search-input:focus { border-color: #e94560; }
+  #search-input:focus { border-color: #c9a84c; }
   #search-input::placeholder { color: #555; }
   .live-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; white-space: nowrap; }
   .status-dot { width: 8px; height: 8px; border-radius: 50%; }
@@ -291,7 +291,7 @@
   }
   .goal-fill {
     height: 100%;
-    background: linear-gradient(90deg, #e94560, #ff6b8a);
+    background: linear-gradient(90deg, #c9a84c, #e8c877);
     border-radius: 8px;
     transition: width 0.5s ease;
   }
@@ -301,16 +301,16 @@
     font-size: 12px;
     color: #888;
   }
-  .goal-info .goal-next { color: #e94560; font-weight: 600; }
+  .goal-info .goal-next { color: #c9a84c; font-weight: 600; }
   .goal-info .goal-num { color: #ccc; font-variant-numeric: tabular-nums; }
   td:first-child, th:first-child { width: 28px; min-width: 28px; text-align: center; color: #666; font-size: 12px; }
   .action-btn { cursor: pointer; font-size: 12px; color: #888; padding: 4px 10px; border-radius: 4px; border: 1px solid #1a1a2e; background: #0f0f1e; user-select: none; white-space: nowrap; }
-  .action-btn:hover { border-color: #e94560; color: #e94560; }
+  .action-btn:hover { border-color: #c9a84c; color: #c9a84c; }
   .footer-updated { color: #555; font-size: 11px; margin: 2px 0; }
   .footer-csv { margin-top: 8px; }
-  .footer-csv a { color: #e94560; text-decoration: none; font-size: 12px; cursor: pointer; }
+  .footer-csv a { color: #c9a84c; text-decoration: none; font-size: 12px; cursor: pointer; }
   .footer-csv a:hover { text-decoration: underline; }
-  .copied-toast { position: absolute; background: #e94560; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 4px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 10; }
+  .copied-toast { position: absolute; background: #c9a84c; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 4px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 10; }
 </style>
 </head>
 <body>
@@ -347,7 +347,7 @@
       </div>
       <div class="stats-col">
         <span class="stat-label">Total Damage</span>
-        <span class="stat-val" id="season-total">8,798,586</span>
+        <span class="stat-val" id="season-total">8,843,376</span>
       </div>
     </div>
   </div>
@@ -363,14 +363,29 @@
   </div>
   <div class="table-wrap">
   <table>
-    <thead><tr><th># <span class="sort-arrow"></span></th><th>Name <span class="sort-arrow"></span></th><th>Damage <span class="sort-arrow"></span></th><th>1/2H <span class="sort-arrow"></span></th><th>1h Dmg <span class="sort-arrow"></span></th><th>Boss Kills <span class="sort-arrow"></span></th><th>Daily Dmg <span class="sort-arrow"></span></th></tr></thead>
-    <tbody><tr><td class="num">1</td><td>dogan</td><td class="num">224,647</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,068</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">2</td><td>I Am Dead  @_@</td><td class="num">198,839</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">949</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">3</td><td>Yata</td><td class="num">191,519</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">912</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">4</td><td>AangEX</td><td class="num">239,543</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,139</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">5</td><td>Feirisu</td><td class="num">215,997</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,029</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">6</td><td>[R23] Wolf †</td><td class="num">122,123</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">582</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">7</td><td>MATHEMATRICK</td><td class="num">135,659</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">646</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">8</td><td>BlacKAkiresu O</td><td class="num">141,826</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">675</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">9</td><td>Tuyu|Fortuners</td><td class="num">8,005</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">38</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">10</td><td>Khakashi Hatake</td><td class="num">206,964</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">986</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">11</td><td>Ikhram </td><td class="num">261,446</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,245</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">12</td><td>Prince G™</td><td class="num">184,332</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">878</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">13</td><td>Yhwach Genryusai</td><td class="num">206,413</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">911</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">14</td><td>NicolasRicko</td><td class="num">358,495</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,706</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">15</td><td>Izx Hatake Jr</td><td class="num">202,787</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">894</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">16</td><td>ASHBORN™</td><td class="num">141,258</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">674</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">17</td><td>Heisenberg </td><td class="num">180,415</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">786</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">18</td><td>Tobirama Senju™</td><td class="num">379,643</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,807</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">19</td><td>ZenithEX</td><td class="num">325,334</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,549</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">20</td><td>§åñÐåïmårµ | Frtners</td><td class="num">194,468</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">853</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">21</td><td>Meru™</td><td class="num">294,280</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,403</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">22</td><td>SNC | Vnzla Anbu |SN</td><td class="num">168,692</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">803</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">23</td><td>SNC | Signature</td><td class="num">137,910</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">657</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">24</td><td>Fusion</td><td class="num">283,940</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,355</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">25</td><td>Sesshomaru</td><td class="num">297,004</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,413</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">26</td><td>KYO</td><td class="num">160,644</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">765</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">27</td><td>SL41F3RT</td><td class="num">219,092</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,044</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">28</td><td>Lovebird | Gorelax</td><td class="num">187,727</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">819</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">29</td><td>ShadowRavenX</td><td class="num">226,180</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,077</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">30</td><td>SNC | TemperiTa</td><td class="num">206,519</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">985</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">31</td><td>SmallDino</td><td class="num">256,125</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,220</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">32</td><td>Breaker LITE</td><td class="num">203,039</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">968</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">33</td><td>Snoopy | Kokyotosu</td><td class="num">353,612</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,678</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">34</td><td>Arya</td><td class="num">230,191</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,096</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">35</td><td>Morrissey</td><td class="num">274,265</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,297</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">36</td><td>Jonny Brown</td><td class="num">267,241</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,273</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">37</td><td>Knightwalker</td><td class="num">123,127</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">585</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">38</td><td>a fucking ninja </td><td class="num">284,753</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,357</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">39</td><td>Izx Infernity </td><td class="num">177,840</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">775</td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">40</td><td>Erza Scarlet</td><td class="num">326,692</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">1,550</td><td class="num"><span class="na">N/A</span></td></tr></tbody>
+    <thead>
+      <tr>
+        <th rowspan="2"># <span class="sort-arrow"></span></th>
+        <th rowspan="2">Name <span class="sort-arrow"></span></th>
+        <th colspan="3">Phase 1</th>
+        <th colspan="2">Phase 2</th>
+        <th rowspan="2">Daily Dmg <span class="sort-arrow"></span></th>
+      </tr>
+      <tr>
+        <th>B.Kills <span class="sort-arrow"></span></th>
+        <th>Dmg <span class="sort-arrow"></span></th>
+        <th>1hDmg <span class="sort-arrow"></span></th>
+        <th>Dmg <span class="sort-arrow"></span></th>
+        <th>1hDmg <span class="sort-arrow"></span></th>
+      </tr>
+    </thead>
+    <tbody><tr><td class="num">1</td><td>dogan</td><td class="num">1,076</td><td class="num">226,333</td><td class="num"><span class="na">N/A</span></td><td class="num">226,333</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">2</td><td>I Am Dead  @_@</td><td class="num">954</td><td class="num">199,878</td><td class="num"><span class="na">N/A</span></td><td class="num">199,878</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">3</td><td>Yata</td><td class="num">912</td><td class="num">191,519</td><td class="num"><span class="na">N/A</span></td><td class="num">191,519</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">4</td><td>AangEX</td><td class="num">1,153</td><td class="num">242,442</td><td class="num"><span class="na">N/A</span></td><td class="num">242,442</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">5</td><td>Feirisu</td><td class="num">1,035</td><td class="num">217,240</td><td class="num"><span class="na">N/A</span></td><td class="num">217,240</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">6</td><td>[R23] Wolf †</td><td class="num">582</td><td class="num">122,123</td><td class="num"><span class="na">N/A</span></td><td class="num">122,123</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">7</td><td>MATHEMATRICK</td><td class="num">646</td><td class="num">135,659</td><td class="num"><span class="na">N/A</span></td><td class="num">135,659</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">8</td><td>BlacKAkiresu O</td><td class="num">678</td><td class="num">142,445</td><td class="num"><span class="na">N/A</span></td><td class="num">142,445</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">9</td><td>Tuyu|Fortuners</td><td class="num">39</td><td class="num">8,207</td><td class="num"><span class="na">N/A</span></td><td class="num">8,207</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">10</td><td>Khakashi Hatake</td><td class="num">994</td><td class="num">208,662</td><td class="num"><span class="na">N/A</span></td><td class="num">208,662</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">11</td><td>Ikhram </td><td class="num">1,246</td><td class="num">261,653</td><td class="num"><span class="na">N/A</span></td><td class="num">261,653</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">12</td><td>Prince G™</td><td class="num">878</td><td class="num">184,332</td><td class="num"><span class="na">N/A</span></td><td class="num">184,332</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">13</td><td>Yhwach Genryusai</td><td class="num">915</td><td class="num">207,260</td><td class="num"><span class="na">N/A</span></td><td class="num">207,260</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">14</td><td>NicolasRicko</td><td class="num">1,722</td><td class="num">361,831</td><td class="num"><span class="na">N/A</span></td><td class="num">361,831</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">15</td><td>Izx Hatake Jr</td><td class="num">894</td><td class="num">202,787</td><td class="num"><span class="na">N/A</span></td><td class="num">202,787</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">16</td><td>ASHBORN™</td><td class="num">682</td><td class="num">142,943</td><td class="num"><span class="na">N/A</span></td><td class="num">142,943</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">17</td><td>Heisenberg </td><td class="num">790</td><td class="num">181,269</td><td class="num"><span class="na">N/A</span></td><td class="num">181,269</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">18</td><td>Tobirama Senju™</td><td class="num">1,807</td><td class="num">379,643</td><td class="num"><span class="na">N/A</span></td><td class="num">379,643</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">19</td><td>ZenithEX</td><td class="num">1,549</td><td class="num">325,334</td><td class="num"><span class="na">N/A</span></td><td class="num">325,334</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">20</td><td>§åñÐåïmårµ | Frtners</td><td class="num">853</td><td class="num">194,468</td><td class="num"><span class="na">N/A</span></td><td class="num">194,468</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">21</td><td>Meru™</td><td class="num">1,422</td><td class="num">298,226</td><td class="num"><span class="na">N/A</span></td><td class="num">298,226</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">22</td><td>SNC | Vnzla Anbu |SN</td><td class="num">803</td><td class="num">168,692</td><td class="num"><span class="na">N/A</span></td><td class="num">168,692</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">23</td><td>SNC | Signature</td><td class="num">665</td><td class="num">139,609</td><td class="num"><span class="na">N/A</span></td><td class="num">139,609</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">24</td><td>Fusion</td><td class="num">1,359</td><td class="num">284,765</td><td class="num"><span class="na">N/A</span></td><td class="num">284,765</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">25</td><td>Sesshomaru</td><td class="num">1,430</td><td class="num">300,599</td><td class="num"><span class="na">N/A</span></td><td class="num">300,599</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">26</td><td>KYO</td><td class="num">773</td><td class="num">162,329</td><td class="num"><span class="na">N/A</span></td><td class="num">162,329</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">27</td><td>SL41F3RT</td><td class="num">1,049</td><td class="num">220,116</td><td class="num"><span class="na">N/A</span></td><td class="num">220,116</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">28</td><td>Lovebird | Gorelax</td><td class="num">823</td><td class="num">188,560</td><td class="num"><span class="na">N/A</span></td><td class="num">188,560</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">29</td><td>ShadowRavenX</td><td class="num">1,086</td><td class="num">228,069</td><td class="num"><span class="na">N/A</span></td><td class="num">228,069</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">30</td><td>SNC | TemperiTa</td><td class="num">995</td><td class="num">208,608</td><td class="num"><span class="na">N/A</span></td><td class="num">208,608</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">31</td><td>SmallDino</td><td class="num">1,227</td><td class="num">257,579</td><td class="num"><span class="na">N/A</span></td><td class="num">257,579</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">32</td><td>Breaker LITE</td><td class="num">976</td><td class="num">204,706</td><td class="num"><span class="na">N/A</span></td><td class="num">204,706</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">33</td><td>Snoopy | Kokyotosu</td><td class="num">1,678</td><td class="num">353,612</td><td class="num"><span class="na">N/A</span></td><td class="num">353,612</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">34</td><td>Arya</td><td class="num">1,096</td><td class="num">230,191</td><td class="num"><span class="na">N/A</span></td><td class="num">230,191</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">35</td><td>Morrissey</td><td class="num">1,300</td><td class="num">274,908</td><td class="num"><span class="na">N/A</span></td><td class="num">274,908</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">36</td><td>Jonny Brown</td><td class="num">1,273</td><td class="num">267,241</td><td class="num"><span class="na">N/A</span></td><td class="num">267,241</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">37</td><td>Knightwalker</td><td class="num">585</td><td class="num">123,127</td><td class="num"><span class="na">N/A</span></td><td class="num">123,127</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">38</td><td>a fucking ninja </td><td class="num">1,357</td><td class="num">284,753</td><td class="num"><span class="na">N/A</span></td><td class="num">284,753</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">39</td><td>Izx Infernity </td><td class="num">783</td><td class="num">179,512</td><td class="num"><span class="na">N/A</span></td><td class="num">179,512</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">40</td><td>Erza Scarlet</td><td class="num">1,576</td><td class="num">332,146</td><td class="num"><span class="na">N/A</span></td><td class="num">332,146</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr></tbody>
   </table>
   </div>
   
   <div class="footer">
     <div class="footer-updated" id="updated-ago"></div>
-    Snapshot: <span id="snapshot-ts">2026-07-14 23:08:08</span>
+    Snapshot: <span id="snapshot-ts">2026-07-14 23:18:35</span>
     <div class="ref"></div>
     <div class="footer-csv"><a id="csv-link">Download CSV</a></div>
   </div>
@@ -456,17 +471,17 @@ window.__30mCache = {};
       var name = names[i], md = lm[name]; if (!md) continue;
       var row = n2r[name]; if (!row) continue;
       var cel = row.cells;
-      cel[2].textContent = md.damage;
-      cel[5].textContent = md.kills;
-      if (c30 && c30.rs && c30.rs[name] !== undefined) cel[3].innerHTML = dh(md.damage - c30.rs[name]);
-      if (c1h && c1h.rs && c1h.rs[name] !== undefined) cel[4].innerHTML = dh(md.damage - c1h.rs[name]);
+      cel[2].textContent = md.kills;
+      cel[3].textContent = md.damage;
+      cel[5].textContent = md.damage;
+      if (c1h && c1h.rs && c1h.rs[name] !== undefined) { var _dh = dh(md.damage - c1h.rs[name]); cel[4].innerHTML = _dh; cel[6].innerHTML = _dh; }
     }
     for (var _n in lm) {
       if (names.indexOf(_n) === -1) {
         names.push(_n);
         var tr = document.createElement("tr");
         tr.className = "new-row";
-        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num">' + lm[_n].damage + '</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">' + (lm[_n].kills||0) + '</td><td class="num"><span class="na">N/A</span></td>';
+        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num">' + (lm[_n].kills||0) + '</td><td class="num">' + lm[_n].damage + '</td><td class="num"><span class="na">N/A</span></td><td class="num">' + lm[_n].damage + '</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td>';
         tb.appendChild(tr);
         if (searchEl && searchEl.value && _n.toLowerCase().indexOf(searchEl.value.toLowerCase()) === -1) tr.style.display = "none";
       }
@@ -540,7 +555,7 @@ window.__30mCache = {};
   });
   // CSV export
   function csvDownload() {
-    var rows = tb.querySelectorAll("tr"), csv = "Rank,Name,Total Reps,1/2 Hour,Hourly,Daily\n";
+    var rows = tb.querySelectorAll("tr"), csv = "Rank,Name,B.Kills,Dmg(P1),1hDmg(P1),Dmg(P2),1hDmg(P2),Daily Dmg\n";
     for (var i = 0; i < rows.length; i++) {
       var cells = rows[i].cells, vals = [];
       for (var j = 0; j < cells.length; j++) {

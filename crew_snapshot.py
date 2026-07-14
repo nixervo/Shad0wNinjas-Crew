@@ -307,7 +307,7 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     daily_lookup = {name: diff for name, _, diff in daily_rows}
     uniq_names = get_unique_names(data["members"])
     table_rows = "".join(
-        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{diff_html(hourly_diffs.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{m.get('boss_kills', 0):,}</td><td class=\"num\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td></tr>"
+        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num\">{m.get('boss_kills', 0):,}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num\">{diff_html(hourly_diffs.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num\">{diff_html(hourly_diffs.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td></tr>"
         for i, m in enumerate(data["members"])
     )
 
@@ -462,17 +462,17 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       var name = names[i], md = lm[name]; if (!md) continue;
       var row = n2r[name]; if (!row) continue;
       var cel = row.cells;
-      cel[2].textContent = md.damage;
-      cel[5].textContent = md.kills;
-      if (c30 && c30.rs && c30.rs[name] !== undefined) cel[3].innerHTML = dh(md.damage - c30.rs[name]);
-      if (c1h && c1h.rs && c1h.rs[name] !== undefined) cel[4].innerHTML = dh(md.damage - c1h.rs[name]);
+      cel[2].textContent = md.kills;
+      cel[3].textContent = md.damage;
+      cel[5].textContent = md.damage;
+      if (c1h && c1h.rs && c1h.rs[name] !== undefined) { var _dh = dh(md.damage - c1h.rs[name]); cel[4].innerHTML = _dh; cel[6].innerHTML = _dh; }
     }
     for (var _n in lm) {
       if (names.indexOf(_n) === -1) {
         names.push(_n);
         var tr = document.createElement("tr");
         tr.className = "new-row";
-        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num">' + lm[_n].damage + '</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">' + (lm[_n].kills||0) + '</td><td class="num"><span class="na">N/A</span></td>';
+        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num">' + (lm[_n].kills||0) + '</td><td class="num">' + lm[_n].damage + '</td><td class="num"><span class="na">N/A</span></td><td class="num">' + lm[_n].damage + '</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td>';
         tb.appendChild(tr);
         if (searchEl && searchEl.value && _n.toLowerCase().indexOf(searchEl.value.toLowerCase()) === -1) tr.style.display = "none";
       }
@@ -546,7 +546,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   });
   // CSV export
   function csvDownload() {
-    var rows = tb.querySelectorAll("tr"), csv = "Rank,Name,Total Reps,1/2 Hour,Hourly,Daily\\n";
+    var rows = tb.querySelectorAll("tr"), csv = "Rank,Name,B.Kills,Dmg(P1),1hDmg(P1),Dmg(P2),1hDmg(P2),Daily Dmg\\n";
     for (var i = 0; i < rows.length; i++) {
       var cells = rows[i].cells, vals = [];
       for (var j = 0; j < cells.length; j++) {
@@ -620,7 +620,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, #e94560, #ff6b8a, #e94560);
+    background: linear-gradient(90deg, #c9a84c, #e8c877, #c9a84c);
     background-size: 200% 100%;
     animation: shimmer 3s ease-in-out infinite;
   }}
@@ -665,8 +665,8 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     border: 1px solid #1a1a2e;
     transition: 0.25s;
   }}
-  .archive a:hover {{ border-color: #e94560; color: #fff; background: rgba(233, 69, 96, 0.08); }}
-  .archive a.active {{ border-color: #e94560; color: #fff; background: #e94560; font-weight: 600; }}
+  .archive a:hover {{ border-color: #c9a84c; color: #fff; background: rgba(233, 69, 96, 0.08); }}
+  .archive a.active {{ border-color: #c9a84c; color: #fff; background: #c9a84c; font-weight: 600; }}
   .table-wrap {{ overflow-x: auto; }}
   table {{
     width: 100%;
@@ -682,7 +682,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     font-size: 15px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #e94560;
+    color: #c9a84c;
     font-weight: 600;
   }}
   td {{
@@ -705,7 +705,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   }}
   .changes-title {{
     font-size: 13px;
-    color: #e94560;
+    color: #c9a84c;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -753,7 +753,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     border-top: 1px solid #12121e;
   }}
   .footer .ref {{ color: #555; font-size: 11px; margin-top: 2px; }}
-  .footer a {{ color: #e94560; text-decoration: none; }}
+  .footer a {{ color: #c9a84c; text-decoration: none; }}
   .timer-bar {{
     display: flex;
     align-items: center;
@@ -776,7 +776,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   .timer-digits span:first-child {{ color: #2dd4bf; font-weight: 600; min-width: 28px; display: inline-block; text-align: center; }}
   .timer-unit {{ color: #888; font-size: 12px; margin-left: 1px; }}
   .timer-right {{ position: absolute; right: 20px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 12px; color: #888; user-select: none; white-space: nowrap; }}
-  .timer-right:hover {{ color: #e94560; }}
+  .timer-right:hover {{ color: #c9a84c; }}
   .stats-bar {{
     display: flex;
     flex-direction: column;
@@ -846,7 +846,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     font-size: 13px;
     outline: none;
   }}
-  #search-input:focus {{ border-color: #e94560; }}
+  #search-input:focus {{ border-color: #c9a84c; }}
   #search-input::placeholder {{ color: #555; }}
   .live-status {{ display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; white-space: nowrap; }}
   .status-dot {{ width: 8px; height: 8px; border-radius: 50%; }}
@@ -874,7 +874,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   }}
   .goal-fill {{
     height: 100%;
-    background: linear-gradient(90deg, #e94560, #ff6b8a);
+    background: linear-gradient(90deg, #c9a84c, #e8c877);
     border-radius: 8px;
     transition: width 0.5s ease;
   }}
@@ -884,16 +884,16 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     font-size: 12px;
     color: #888;
   }}
-  .goal-info .goal-next {{ color: #e94560; font-weight: 600; }}
+  .goal-info .goal-next {{ color: #c9a84c; font-weight: 600; }}
   .goal-info .goal-num {{ color: #ccc; font-variant-numeric: tabular-nums; }}
   td:first-child, th:first-child {{ width: 28px; min-width: 28px; text-align: center; color: #666; font-size: 12px; }}
   .action-btn {{ cursor: pointer; font-size: 12px; color: #888; padding: 4px 10px; border-radius: 4px; border: 1px solid #1a1a2e; background: #0f0f1e; user-select: none; white-space: nowrap; }}
-  .action-btn:hover {{ border-color: #e94560; color: #e94560; }}
+  .action-btn:hover {{ border-color: #c9a84c; color: #c9a84c; }}
   .footer-updated {{ color: #555; font-size: 11px; margin: 2px 0; }}
   .footer-csv {{ margin-top: 8px; }}
-  .footer-csv a {{ color: #e94560; text-decoration: none; font-size: 12px; cursor: pointer; }}
+  .footer-csv a {{ color: #c9a84c; text-decoration: none; font-size: 12px; cursor: pointer; }}
   .footer-csv a:hover {{ text-decoration: underline; }}
-  .copied-toast {{ position: absolute; background: #e94560; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 4px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 10; }}
+  .copied-toast {{ position: absolute; background: #c9a84c; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 4px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 10; }}
 </style>
 </head>
 <body>
@@ -921,7 +921,22 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   </div>
   <div class="table-wrap">
   <table>
-    <thead><tr><th># <span class="sort-arrow"></span></th><th>Name <span class="sort-arrow"></span></th><th>Damage <span class="sort-arrow"></span></th><th>1/2H <span class="sort-arrow"></span></th><th>1h Dmg <span class="sort-arrow"></span></th><th>Boss Kills <span class="sort-arrow"></span></th><th>Daily Dmg <span class="sort-arrow"></span></th></tr></thead>
+    <thead>
+      <tr>
+        <th rowspan="2"># <span class="sort-arrow"></span></th>
+        <th rowspan="2">Name <span class="sort-arrow"></span></th>
+        <th colspan="3">Phase 1</th>
+        <th colspan="2">Phase 2</th>
+        <th rowspan="2">Daily Dmg <span class="sort-arrow"></span></th>
+      </tr>
+      <tr>
+        <th>B.Kills <span class="sort-arrow"></span></th>
+        <th>Dmg <span class="sort-arrow"></span></th>
+        <th>1hDmg <span class="sort-arrow"></span></th>
+        <th>Dmg <span class="sort-arrow"></span></th>
+        <th>1hDmg <span class="sort-arrow"></span></th>
+      </tr>
+    </thead>
     <tbody>{table_rows}</tbody>
   </table>
   </div>
@@ -1071,19 +1086,19 @@ def save_daily_history():
   .header h1 { font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 4px; }
   .header .sub { font-size: 14px; color: #888; }
   .nav { display: flex; justify-content: space-between; padding: 12px 20px; background: #0c0c18; border-top: 1px solid #1a1a2e; border-bottom: 1px solid #1a1a2e; }
-  .nav a { color: #e94560; text-decoration: none; font-size: 13px; }
+  .nav a { color: #c9a84c; text-decoration: none; font-size: 13px; }
   .nav a:hover { text-decoration: underline; }
   .nav .inactive { color: #444; pointer-events: none; }
   .summary { text-align: center; padding: 10px 20px; background: #0a0a14; color: #888; font-size: 13px; border-bottom: 1px solid #14141f; }
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; background: #0c0c14; }
-  th { background: #0f0f1e; padding: 12px 16px; text-align: center; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #e94560; font-weight: 600; }
+  th { background: #0f0f1e; padding: 12px 16px; text-align: center; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #c9a84c; font-weight: 600; }
   td { padding: 10px 16px; border-bottom: 1px solid #14141f; font-size: 13px; color: #ccc; text-align: center; }
   tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
   .green td { color: #4caf50; }
   .red td { color: #f44336; }
   .footer { text-align: center; padding: 16px 20px; background: #08080f; color: #444; font-size: 12px; border-top: 1px solid #12121e; }
-  .footer a { color: #e94560; text-decoration: none; }
+  .footer a { color: #c9a84c; text-decoration: none; }
   .footer a:hover { text-decoration: underline; }
   .index-list { padding: 20px; background: #0c0c14; }
   .index-list a { display: block; padding: 8px 14px; color: #ccc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #14141f; }
