@@ -375,8 +375,8 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     if season_info:
         season_num = season_info["season"]
         phase_num = season_info.get("phase", 1)
-        end_dt = datetime.strptime(season_info["season_end"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
-        season_end_iso = end_dt.strftime("%Y-%m-%dT%H:%M:%S") + "Z"
+        end_dt = datetime(2026, 7, 19, 5, 0, 0, tzinfo=timezone.utc)
+        season_end_iso = "2026-07-19T05:00:00Z"
         timer_html = f"""
   <div class="timer-bar">
     <span class="timer-left">
@@ -922,9 +922,9 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   .goal-info .goal-next {{ color: #c9a84c; font-weight: 600; }}
   .goal-info .goal-num {{ color: #ccc; font-variant-numeric: tabular-nums; }}
   td:first-child {{ width: 28px; min-width: 28px; text-align: center; color: #666; font-size: 12px; }}
-  .meg.divider {{ border-left: 2px solid #c9a84c44; padding-left: 12px; }}
-  .divider {{ border-left: 2px solid #c9a84c44; }}
-  td:nth-child(7), td:nth-child(9) {{ border-left: 2px solid #c9a84c44; }}
+  .meg.divider {{ border-left: 2px solid #c9a84c88; padding-left: 12px; }}
+  .divider {{ border-left: 2px solid #c9a84c88; }}
+  td:nth-child(7), td:nth-child(9) {{ border-left: 2px solid #c9a84c88; }}
   .action-btn {{ cursor: pointer; font-size: 12px; color: #888; padding: 4px 10px; border-radius: 4px; border: 1px solid #1a1a2e; background: #0f0f1e; user-select: none; white-space: nowrap; }}
   .action-btn:hover {{ border-color: #c9a84c; color: #c9a84c; }}
   .footer-updated {{ color: #555; font-size: 11px; margin: 2px 0; }}
@@ -1115,7 +1115,7 @@ def save_snapshot(data):
         save_hourly_cache(data["members"], uniq, now)
 
     if season_info:
-        end_dt = datetime.strptime(season_info["season_end"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+        end_dt = datetime(2026, 7, 19, 5, 0, 0, tzinfo=timezone.utc)
         if now >= end_dt:
             save_seasonal_xlsx(data["members"], season_info["season"])
 
