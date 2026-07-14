@@ -435,9 +435,14 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   var sortCol = -1, sortDir = 0;
   var ths = document.querySelectorAll("th");
   function applySort() {
-    if (sortDir === 0) { tbody.innerHTML = window.__originalRows; for (var a = 0; a < ths.length; a++) ths[a].querySelector(".sort-arrow").textContent = ""; if (window.__refreshData) window.__refreshData(); var se = document.getElementById("search-input"); if(se&&se.value){var q=se.value.toLowerCase(),rr=tbody.querySelectorAll("tr");for(var ri=0;ri<rr.length;ri++)rr[ri].style.display=rr[ri].cells[1].textContent.trim().toLowerCase().indexOf(q)>=0?"":"none";} return; }
-    for (var a = 0; a < ths.length; a++) ths[a].querySelector(".sort-arrow").textContent = "";
-    ths[sortCol].querySelector(".sort-arrow").textContent = sortDir === 1 ? "\\u25B2" : "\\u25BC";
+    if (sortDir === 0) { tbody.innerHTML = window.__originalRows; for (var a = 0; a < ths.length; a++) { var ar = ths[a].querySelector(".sort-arrow"); if (ar) ar.textContent = ""; } if (window.__refreshData) window.__refreshData(); var se = document.getElementById("search-input"); if(se&&se.value){var q=se.value.toLowerCase(),rr=tbody.querySelectorAll("tr");for(var ri=0;ri<rr.length;ri++)rr[ri].style.display=rr[ri].cells[1].textContent.trim().toLowerCase().indexOf(q)>=0?"":"none";} return; }
+    for (var a = 0; a < ths.length; a++) { var ar = ths[a].querySelector(".sort-arrow"); if (ar) ar.textContent = ""; }
+    for (var a = 0; a < ths.length; a++) {
+      if (parseInt(ths[a].getAttribute("data-col")) === sortCol) {
+        ths[a].querySelector(".sort-arrow").textContent = sortDir === 1 ? "\\u25B2" : "\\u25BC";
+        break;
+      }
+    }
     var rows = Array.prototype.slice.call(tbody.querySelectorAll("tr"));
     rows.sort(function(a, b) {
       var va = a.cells[sortCol].textContent.trim(), vb = b.cells[sortCol].textContent.trim();
@@ -452,8 +457,10 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   window.__resetSort = function() { sortCol = -1; sortDir = 0; applySort(); };
   for (var i = 0; i < ths.length; i++) (function(col) {
     if (ths[col].hasAttribute("colspan")) return;
+    var dcol = parseInt(ths[col].getAttribute("data-col"));
+    if (dcol === undefined || isNaN(dcol)) return;
     ths[col].addEventListener("click", function() {
-      if (sortCol !== col) { sortCol = col; sortDir = 1; }
+      if (sortCol !== dcol) { sortCol = dcol; sortDir = 1; }
       else { sortDir = (sortDir + 1) % 3; }
       applySort();
       localStorage.setItem("nr_sort", JSON.stringify({col: sortCol, dir: sortDir}));
@@ -915,8 +922,9 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   .goal-info .goal-next {{ color: #c9a84c; font-weight: 600; }}
   .goal-info .goal-num {{ color: #ccc; font-variant-numeric: tabular-nums; }}
   td:first-child {{ width: 28px; min-width: 28px; text-align: center; color: #666; font-size: 12px; }}
-  .meg.divider {{ border-left: 2px solid #c9a84c33; padding-left: 12px; }}
-  .divider {{ border-left: 2px solid #c9a84c33; }}
+  .meg.divider {{ border-left: 2px solid #c9a84c44; padding-left: 12px; }}
+  .divider {{ border-left: 2px solid #c9a84c44; }}
+  td:nth-child(7), td:nth-child(9) {{ border-left: 2px solid #c9a84c44; }}
   .action-btn {{ cursor: pointer; font-size: 12px; color: #888; padding: 4px 10px; border-radius: 4px; border: 1px solid #1a1a2e; background: #0f0f1e; user-select: none; white-space: nowrap; }}
   .action-btn:hover {{ border-color: #c9a84c; color: #c9a84c; }}
   .footer-updated {{ color: #555; font-size: 11px; margin: 2px 0; }}
@@ -953,21 +961,21 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   <table>
     <thead>
       <tr>
-        <th rowspan="2"># <span class="sort-arrow"></span></th>
-        <th rowspan="2">Name <span class="sort-arrow"></span></th>
+        <th rowspan="2" data-col="0"># <span class="sort-arrow"></span></th>
+        <th rowspan="2" data-col="1">Name <span class="sort-arrow"></span></th>
         <th colspan="4">Phase 1</th>
         <th colspan="2" class="meg divider">Phase 2</th>
         <th colspan="2" class="meg divider">DAILY</th>
       </tr>
       <tr>
-        <th>B.Kills <span class="sort-arrow"></span></th>
-        <th>1/2H[K] <span class="sort-arrow"></span></th>
-        <th>Dmg <span class="sort-arrow"></span></th>
-        <th>1/2H[D] <span class="sort-arrow"></span></th>
-        <th>Dmg <span class="sort-arrow"></span></th>
-        <th>1/2H[D] <span class="sort-arrow"></span></th>
-        <th>Dmg <span class="sort-arrow"></span></th>
-        <th>Kills <span class="sort-arrow"></span></th>
+        <th data-col="2">B.Kills <span class="sort-arrow"></span></th>
+        <th data-col="3">1/2H[K] <span class="sort-arrow"></span></th>
+        <th data-col="4">Dmg <span class="sort-arrow"></span></th>
+        <th data-col="5">1/2H[D] <span class="sort-arrow"></span></th>
+        <th data-col="6">Dmg <span class="sort-arrow"></span></th>
+        <th data-col="7">1/2H[D] <span class="sort-arrow"></span></th>
+        <th data-col="8">Dmg <span class="sort-arrow"></span></th>
+        <th data-col="9">Kills <span class="sort-arrow"></span></th>
       </tr>
     </thead>
     <tbody>{table_rows}</tbody>
