@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Shad0w Ninjas [Reps]</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #080810;
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+  .container {
+    max-width: 960px;
+    width: 100%;
+    box-shadow: 0 0 40px rgba(233, 69, 96, 0.06), 0 8px 32px rgba(0,0,0,0.5);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .header {
+    text-align: center;
+    padding: 32px 24px 24px;
+    background: linear-gradient(135deg, #0f0f1e 0%, #1a1a30 50%, #0d1b2a 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #e94560, #ff6b8a, #e94560);
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  @keyframes shimmer { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .logo {
+    width: 132px; height: 132px;
+    object-fit: contain;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 0 16px rgba(233, 69, 96, 0.3));
+  }
+  .header h1 {
+    font-size: 30px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .header .sub {
+    font-size: 17px;
+    color: #888;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .header .sub span { color: #aaa; }
+  .archive {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    padding: 14px 20px;
+    background: #0c0c18;
+    border-bottom: 1px solid #1a1a2e;
+    border-top: 1px solid #1a1a2e;
+  }
+  .archive a {
+    color: #777;
+    text-decoration: none;
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid #1a1a2e;
+    transition: 0.25s;
+  }
+  .archive a:hover { border-color: #e94560; color: #fff; background: rgba(233, 69, 96, 0.08); }
+  .archive a.active { border-color: #e94560; color: #fff; background: #e94560; font-weight: 600; }
+  .table-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    min-width: 0;
+    border-collapse: collapse;
+    background: #0c0c14;
+  }
+  thead { position: sticky; top: 0; z-index: 1; }
+  th {
+    background: #0f0f1e;
+    padding: 14px 18px;
+    text-align: center;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #e94560;
+    font-weight: 600;
+  }
+  td {
+    padding: 11px 18px;
+    border-bottom: 1px solid #14141f;
+    font-size: 14px;
+    color: #ccc;
+    text-align: center;
+  }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+  tr:hover td { background: rgba(233, 69, 96, 0.04); }
+  td.num { font-variant-numeric: tabular-nums; }
+  .up { color: #4caf50; }
+  .down { color: #f44336; }
+  .na { color: #555; }
+  .changes {
+    background: #0c0c14;
+    padding: 20px 24px;
+    border-top: 1px solid #14141f;
+  }
+  .changes-title {
+    font-size: 13px;
+    color: #e94560;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .changes-cols {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+  }
+  .changes-col {
+    flex: 1;
+    max-width: 320px;
+  }
+  .changes-head {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .changes-head.left { color: #f44336; }
+  .changes-head.joined { color: #4caf50; }
+  .changes-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+  }
+  .changes-col li {
+    padding: 4px 0;
+    font-size: 14px;
+    color: #ccc;
+    border-bottom: 1px solid #14141f;
+  }
+  .changes-col li:last-child { border-bottom: none; }
+  .footer {
+    text-align: center;
+    padding: 18px 20px;
+    background: #08080f;
+    color: #444;
+    font-size: 12px;
+    border-top: 1px solid #12121e;
+  }
+  .footer .ref { color: #555; font-size: 11px; margin-top: 2px; }
+  .footer a { color: #e94560; text-decoration: none; }
+  .timer-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: #0f142373;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid #1a1a2e;
+    font-size: 15px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .timer-left { display: flex; align-items: center; gap: 10px; }
+  .timer-season { color: #eab308; font-weight: 700; letter-spacing: 0.5px; }
+  .timer-sep { color: #444; }
+  .timer-clock { display: flex; align-items: center; gap: 6px; }
+  .timer-digits { font-variant-numeric: tabular-nums; }
+  .timer-digits span:first-child { color: #2dd4bf; font-weight: 600; min-width: 28px; display: inline-block; text-align: center; }
+  .timer-unit { color: #888; font-size: 12px; margin-left: 1px; }
+  .timer-right { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 12px; color: #888; user-select: none; white-space: nowrap; }
+  .timer-right:hover { color: #e94560; }
+  .stats-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 20px;
+    background: #0f142373;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid #1a1a2e;
+  }
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    width: 100%;
+  }
+  .stats-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .stat-label { color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .stat-val { color: #e0e0e0; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  #today-gain { color: #4caf50; }
+  th { cursor: pointer; user-select: none; }
+  th .sort-arrow { font-size: 11px; margin-left: 3px; }
+  @media (max-width: 600px) {
+    body { padding: 16px 8px; }
+    .header { padding: 24px 16px 20px; }
+    .header h1 { font-size: 22px; }
+    .header .sub { font-size: 14px; }
+    .logo { width: 96px; height: 96px; }
+    table { min-width: 520px; }
+    th, td { padding: 10px 10px; font-size: 12px; }
+    .changes { padding: 16px; }
+    .changes-cols { flex-direction: column; gap: 14px; }
+    .changes-col { max-width: 100%; }
+    .archive { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .archive::-webkit-scrollbar { display: none; }
+    .archive a { flex-shrink: 0; }
+    .stats-bar { gap: 10px; padding: 12px 16px; }
+    .stat-val { font-size: 15px; }
+    .stats-row { flex-direction: column; gap: 6px; align-items: center; }
+    .stats-row + .stats-row { border-top: 1px solid #1a1a2e; padding-top: 10px; }
+  }
+  .live-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px;
+    background: #0a0a14;
+    border-top: 1px solid #14141f;
+    border-bottom: 1px solid #14141f;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  #search-input {
+    flex: 1;
+    min-width: 160px;
+    padding: 7px 12px;
+    border-radius: 6px;
+    border: 1px solid #1a1a2e;
+    background: #0f0f1e;
+    color: #e0e0e0;
+    font-size: 13px;
+    outline: none;
+  }
+  #search-input:focus { border-color: #e94560; }
+  #search-input::placeholder { color: #555; }
+  .live-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; white-space: nowrap; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .status-dot.ok { background: #4caf50; }
+  .status-dot.err { background: #f44336; }
+  .status-dot.wait { background: #888; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  tr.new-row td { animation: fadeIn 0.5s ease; }
+  @keyframes fadeIn { from { opacity: 0; background: rgba(233,69,96,0.1); } to { opacity: 1; background: transparent; } }
+  tr.left-row td { opacity: 0.35; }
+  .goal-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 20px;
+    background: #0c0c18;
+    border-top: 1px solid #1a1a2e;
+  }
+  .goal-track {
+    width: 100%;
+    height: 16px;
+    background: #14141f;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .goal-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #e94560, #ff6b8a);
+    border-radius: 8px;
+    transition: width 0.5s ease;
+  }
+  .goal-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #888;
+  }
+  .goal-info .goal-next { color: #e94560; font-weight: 600; }
+  .goal-info .goal-num { color: #ccc; font-variant-numeric: tabular-nums; }
+  td:first-child, th:first-child { width: 28px; min-width: 28px; text-align: center; color: #666; font-size: 12px; }
+  .action-btn { cursor: pointer; font-size: 12px; color: #888; padding: 4px 10px; border-radius: 4px; border: 1px solid #1a1a2e; background: #0f0f1e; user-select: none; white-space: nowrap; }
+  .action-btn:hover { border-color: #e94560; color: #e94560; }
+  .footer-updated { color: #555; font-size: 11px; margin: 2px 0; }
+  .footer-csv { margin-top: 8px; }
+  .footer-csv a { color: #e94560; text-decoration: none; font-size: 12px; cursor: pointer; }
+  .footer-csv a:hover { text-decoration: underline; }
+  .copied-toast { position: absolute; background: #e94560; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 4px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 10; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    
+    <h1>Shad0w Ninjas</h1>
+    <div class="sub">
+      <span>Crew ID: 101</span>
+      <span>&middot;</span>
+      <span>40 members</span>
+    </div>
+  </div>
+  
+  <div class="timer-bar">
+    <span class="timer-left">
+      <span class="timer-season">Season <span id="season-num">61</span></span>
+      <span class="timer-sep">&middot;</span>
+      <span class="timer-clock">
+        <span class="timer-digits"><span id="timer-d">--</span><span class="timer-unit">d</span></span>
+        <span class="timer-digits"><span id="timer-h">--</span><span class="timer-unit">h</span></span>
+        <span class="timer-digits"><span id="timer-m">--</span><span class="timer-unit">m</span></span>
+        <span class="timer-digits"><span id="timer-s">--</span><span class="timer-unit">s</span></span>
+      </span>
+    </span>
+    <span class="timer-right" id="auto-refresh">&#x21BB; Auto Refresh in <span id="auto-seconds">60</span>s</span>
+  </div>
+  
+  <div class="stats-bar">
+    <div class="stats-row">
+      <div class="stats-col">
+        <span class="stat-label">Today</span>
+        <span class="stat-val" id="today-gain">+0</span>
+      </div>
+      <div class="stats-col">
+        <span class="stat-label">Season Total</span>
+        <span class="stat-val" id="season-total">0</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="goal-bar">
+    <div class="goal-track"><div class="goal-fill" style="width:0.0%"></div></div>
+    <div class="goal-info">
+      <span>Next: <span class="goal-next">5 Stamina Rolls</span> &middot; 0.0%</span>
+      <span class="goal-num">0 / 100,000</span>
+    </div>
+  </div>
+  
+  <div class="live-bar">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap">
+      <input type="text" id="search-input" placeholder="Search member...">
+      <span class="action-btn" id="reset-btn">Reset</span>
+    </div>
+    <div class="live-status">
+      <span class="status-dot wait" id="status-dot"></span>
+      <span id="status-text">Idle</span>
+    </div>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th># <span class="sort-arrow"></span></th><th>Name <span class="sort-arrow"></span></th><th>Total Reps <span class="sort-arrow"></span></th><th>1/2 Hour <span class="sort-arrow"></span></th><th>Hourly <span class="sort-arrow"></span></th><th>Daily <span class="sort-arrow"></span></th></tr></thead>
+    <tbody><tr><td class="num">1</td><td>dogan</td><td class="num">222969</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">2</td><td>I Am Dead  @_@</td><td class="num">197147</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">3</td><td>Yata</td><td class="num">186492</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">4</td><td>AangEX</td><td class="num">233853</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">5</td><td>Feirisu</td><td class="num">214311</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">6</td><td>[R23] Wolf †</td><td class="num">122123</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">7</td><td>MATHEMATRICK</td><td class="num">133979</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">8</td><td>BlacKAkiresu O</td><td class="num">140141</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">9</td><td>Tuyu|Fortuners</td><td class="num">6308</td><td class="num"><span class="up">+203</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">10</td><td>Khakashi Hatake</td><td class="num">205274</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">11</td><td>Ikhram </td><td class="num">259575</td><td class="num"><span class="up">+210</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">12</td><td>Prince G™</td><td class="num">184332</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">13</td><td>Yhwach Genryusai</td><td class="num">204741</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">14</td><td>NicolasRicko</td><td class="num">344867</td><td class="num"><span class="up">+407</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">15</td><td>Izx Hatake Jr</td><td class="num">199422</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">16</td><td>ASHBORN™</td><td class="num">139559</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">17</td><td>Heisenberg </td><td class="num">178749</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">18</td><td>Tobirama Senju™</td><td class="num">377986</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">19</td><td>ZenithEX</td><td class="num">323663</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">20</td><td>§åñÐåïmårµ | Frtners</td><td class="num">192767</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">21</td><td>Meru™</td><td class="num">277033</td><td class="num"><span class="up">+627</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">22</td><td>SNC | Vnzla Anbu |SN</td><td class="num">165357</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">23</td><td>SNC | Signature</td><td class="num">136236</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">24</td><td>Fusion</td><td class="num">279739</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">25</td><td>Sesshomaru</td><td class="num">279377</td><td class="num"><span class="up">+214</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">26</td><td>KYO</td><td class="num">159000</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">27</td><td>SL41F3RT</td><td class="num">216780</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">28</td><td>Lovebird | Gorelax</td><td class="num">185217</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">29</td><td>ShadowRavenX</td><td class="num">218199</td><td class="num"><span class="up">+214</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">30</td><td>SNC | TemperiTa</td><td class="num">199599</td><td class="num"><span class="up">+220</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">31</td><td>SmallDino</td><td class="num">254250</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">32</td><td>Breaker LITE</td><td class="num">201349</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">33</td><td>Snoopy | Kokyotosu</td><td class="num">351951</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">34</td><td>Arya</td><td class="num">223296</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">35</td><td>Morrissey</td><td class="num">272571</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">36</td><td>Jonny Brown</td><td class="num">255933</td><td class="num"><span class="up">+434</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">37</td><td>Knightwalker</td><td class="num">123127</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">38</td><td>a fucking ninja </td><td class="num">275955</td><td class="num"><span class="up">+203</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">39</td><td>Izx Infernity </td><td class="num">176157</td><td class="num"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">40</td><td>Erza Scarlet</td><td class="num">305376</td><td class="num"><span class="up">+621</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr></tbody>
+  </table>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-updated" id="updated-ago"></div>
+    Snapshot: <span id="snapshot-ts">2026-07-14 22:26:40</span>
+    <div class="ref">Ref (30m): 2026-07-14 22:25:42</div>
+    <div class="footer-csv"><a id="csv-link">Download CSV</a></div>
+  </div>
+</div>
+<script>
+(function() {
+  var end = new Date("2026-07-19T05:00:00Z").getTime();
+  function tick() {
+    var diff = end - new Date().getTime();
+    if (diff <= 0) { document.getElementById("timer-d").textContent = "0"; document.getElementById("timer-h").textContent = "00"; document.getElementById("timer-m").textContent = "00"; document.getElementById("timer-s").textContent = "00"; return; }
+    document.getElementById("timer-d").textContent = Math.floor(diff / 86400000);
+    document.getElementById("timer-h").textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2,"0");
+    document.getElementById("timer-m").textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2,"0");
+    document.getElementById("timer-s").textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2,"0");
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+window.__goalTiers = [[100000,"5 Stamina Rolls"],[500000,"20 Stamina Rolls"],[750000,"Back Item"],[1000000,"Weapon"],[1600000,"Jutsu"]];
+window.__crewId = 101;
+window.__avgDaily = 0;
+window.__seasonEnd = "2026-07-19T05:00:00Z";
+window.__hourlyCache = {};
+window.__30mCache = {"dogan": 222969, "I Am Dead  @_@": 197147, "Yata": 186492, "AangEX": 233853, "Feirisu": 214311, "[R23] Wolf \u2020": 122123, "MATHEMATRICK": 133979, "BlacKAkiresu O": 140141, "Tuyu|Fortuners": 6105, "Khakashi Hatake": 205274, "Ikhram ": 259365, "Prince G\u2122": 184332, "Yhwach Genryusai": 204741, "NicolasRicko": 344460, "Izx Hatake Jr": 199422, "ASHBORN\u2122": 139559, "Heisenberg ": 178749, "Tobirama Senju\u2122": 377986, "ZenithEX": 323663, "\u00a7\u00e5\u00f1\u00d0\u00e5\u00efm\u00e5r\u00b5 | Frtners": 192767, "Meru\u2122": 276406, "SNC | Vnzla Anbu |SN": 165357, "SNC | Signature": 136236, "Fusion": 279739, "Sesshomaru": 279163, "KYO": 159000, "SL41F3RT": 216780, "Lovebird | Gorelax": 185217, "ShadowRavenX": 217985, "SNC | TemperiTa": 199379, "SmallDino": 254250, "Breaker LITE": 201349, "Snoopy | Kokyotosu": 351951, "Arya": 223296, "Morrissey": 272571, "Jonny Brown": 255499, "Knightwalker": 123127, "a fucking ninja ": 275752, "Izx Infernity ": 176157, "Erza Scarlet": 304755};
+(function() {
+  var tbody = document.querySelector("tbody");
+  window.__originalRows = tbody.innerHTML;
+  window.__defaultRows = tbody.innerHTML;
+  var sortCol = -1, sortDir = 0;
+  var ths = document.querySelectorAll("th");
+  function applySort() {
+    if (sortDir === 0) { tbody.innerHTML = window.__originalRows; for (var a = 0; a < ths.length; a++) ths[a].querySelector(".sort-arrow").textContent = ""; if (window.__refreshData) window.__refreshData(); var se = document.getElementById("search-input"); if(se&&se.value){var q=se.value.toLowerCase(),rr=tbody.querySelectorAll("tr");for(var ri=0;ri<rr.length;ri++)rr[ri].style.display=rr[ri].cells[1].textContent.trim().toLowerCase().indexOf(q)>=0?"":"none";} return; }
+    for (var a = 0; a < ths.length; a++) ths[a].querySelector(".sort-arrow").textContent = "";
+    ths[sortCol].querySelector(".sort-arrow").textContent = sortDir === 1 ? "\u25B2" : "\u25BC";
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll("tr"));
+    rows.sort(function(a, b) {
+      var va = a.cells[sortCol].textContent.trim(), vb = b.cells[sortCol].textContent.trim();
+      if (sortCol === 1) return sortDir === 1 ? va.localeCompare(vb) : vb.localeCompare(va);
+      var na = parseFloat(va) || -1/0, nb = parseFloat(vb) || -1/0;
+      return sortDir === 1 ? na - nb : nb - na;
+    });
+    for (var r = 0; r < rows.length; r++) tbody.appendChild(rows[r]);
+    var sr = tbody.querySelectorAll("tr");
+    for (var ri = 0; ri < sr.length; ri++) sr[ri].cells[0].textContent = ri + 1;
+  }
+  window.__resetSort = function() { sortCol = -1; sortDir = 0; applySort(); };
+  for (var i = 0; i < ths.length; i++) (function(col) {
+    ths[col].addEventListener("click", function() {
+      if (sortCol !== col) { sortCol = col; sortDir = 1; }
+      else { sortDir = (sortDir + 1) % 3; }
+      applySort();
+      localStorage.setItem("nr_sort", JSON.stringify({col: sortCol, dir: sortDir}));
+    });
+  })(i);
+  try { var _s = JSON.parse(localStorage.getItem("nr_sort")); if (_s && _s.dir > 0) { sortCol = _s.col; sortDir = _s.dir; applySort(); } } catch(e) {}
+})();
+(function() {
+  var API = "https://playninjarift.com/api/detail_crew_website.php?crew_id=" + window.__crewId, RK = "https://playninjarift.com/api/crew_ranking_website.php";
+  var tb = document.querySelector("tbody"), names = [], rws = tb.querySelectorAll("tr");
+  for (var i = 0; i < rws.length; i++) names.push(rws[i].cells[1].textContent.trim());
+  var autoSeconds = 60, autoEl = document.getElementById("auto-seconds"), searchEl = document.getElementById("search-input"), dotEl = document.getElementById("status-dot"), statusEl = document.getElementById("status-text");
+  if (window.__hourlyCache && Object.keys(window.__hourlyCache).length > 0) { var _ts = ts(), _m = String(new Date().getMinutes()), _b = _m <= "1" ? "01" : (_m >= "31" && _m <= "32" ? "31" : _m); localStorage.setItem("nr_1h", JSON.stringify({b: _b, ts: _ts, rs: window.__hourlyCache})); }
+  if (window.__30mCache && Object.keys(window.__30mCache).length > 0) { var _b30 = (new Date().getMinutes() <= 1 ? "01" : "31"); localStorage.setItem("nr_30m", JSON.stringify({b: _b30, ts: _ts, rs: window.__30mCache})); }
+  function pad(n) { return n < 10 ? "0"+n : ""+n; }
+  function ts() { var d = new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "+pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds()); }
+  function fj(u) { return fetch(u,{headers:{"Accept":"application/json"}}).then(function(r){return r.json();}).catch(function(){return null;}); }
+  function dh(v) { return v > 0 ? '<span class="up">+'+v+"</span>" : v <= 0 ? '<span class="down">'+v+"</span>" : '<span class="na">N/A</span>'; }
+  function blk30(m) { return m <= 1 ? "01" : (m >= 31 && m <= 32 ? "31" : null); }
+  function blk1h(m) { return m <= 1 ? "01" : null; }
+  function upd(d, rk) {
+    autoSeconds = 60;
+    var Crew = null;
+    if (rk) {
+      if (Array.isArray(rk)) {
+        for (var ci = 0; ci < rk.length; ci++) {
+          if (rk[ci].crew_id === window.__crewId) { clan = rk[ci]; break; }
+        }
+      } else { Crew = rk; }
+    }
+    var n = new Date(), nm = n.getMinutes(), ns = ts();
+    var lm = {}; for (var i = 0; i < d.length; i++) lm[i < names.length ? names[i] : d[i].character_name] = d[i].member_damage;
+    var n2r = {}, a = tb.querySelectorAll("tr"); for (var i = 0; i < a.length; i++) n2r[a[i].cells[1].textContent.trim()] = a[i];
+    var c30 = null, c1h = null; try { c30 = JSON.parse(localStorage.getItem("nr_30m")); c1h = JSON.parse(localStorage.getItem("nr_1h")); } catch(e) {}
+    if (!c1h && window.__hourlyCache) c1h = {rs: window.__hourlyCache, ts: ""};
+    for (var i = 0; i < names.length; i++) {
+      var name = names[i], rep = lm[name]; if (rep === undefined) continue;
+      var row = n2r[name]; if (!row) continue;
+      var cel = row.cells;
+      cel[2].textContent = rep;
+      if (c30 && c30.rs && c30.rs[name] !== undefined) cel[3].innerHTML = dh(rep - c30.rs[name]);
+      if (c1h && c1h.rs && c1h.rs[name] !== undefined) cel[4].innerHTML = dh(rep - c1h.rs[name]);
+    }
+    for (var _n in lm) {
+      if (names.indexOf(_n) === -1) {
+        names.push(_n);
+        var tr = document.createElement("tr");
+        tr.className = "new-row";
+        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num">' + lm[_n] + '</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td>';
+        tb.appendChild(tr);
+        if (searchEl && searchEl.value && _n.toLowerCase().indexOf(searchEl.value.toLowerCase()) === -1) tr.style.display = "none";
+      }
+    }
+    a = tb.querySelectorAll("tr"); n2r = {};
+    for (var i = 0; i < a.length; i++) n2r[a[i].cells[1].textContent.trim()] = a[i];
+    for (var i = 0; i < names.length; i++) {
+      var row = n2r[names[i]];
+      if (row && lm[names[i]] === undefined) row.className = "left-row";
+    }
+    if (Crew) {
+      var te = document.getElementById("today-gain");
+      if (te && clan.crew_damage !== undefined) te.textContent = "+"+Number(clan.crew_damage).toLocaleString();
+      var sv = document.querySelectorAll(".stats-col .stat-val");
+      if (sv.length >= 2 && clan.crew_damage !== undefined) sv[1].textContent = Number(clan.crew_damage).toLocaleString();
+    }
+    var ft = document.querySelector(".footer");
+    var st = document.getElementById("snapshot-ts"); if (st) st.textContent = ns;
+    var rs = {}; for (var i = 0; i < d.length; i++) rs[d[i].character_name] = d[i].member_damage;
+    var b30 = blk30(nm), b1h = blk1h(nm);
+    if (b30 && (!c30 || c30.b !== b30)) localStorage.setItem("nr_30m", JSON.stringify({b: b30, ts: ns, rs: rs}));
+    if (b1h && (!c1h || c1h.b !== b1h)) localStorage.setItem("nr_1h", JSON.stringify({b: b1h, ts: ns, rs: rs}));
+    window.__defaultRows = tb.innerHTML;
+    var sr = tb.querySelectorAll("tr");
+    for (var ri = 0; ri < sr.length; ri++) sr[ri].cells[0].textContent = ri + 1;
+    if (Crew && clan.crew_damage !== undefined) {
+      var rep = Number(clan.crew_damage), prev = 0, tiers = window.__goalTiers;
+      for (var ti = 0; ti < tiers.length; ti++) {
+        if (rep < tiers[ti][0]) {
+          var pct = ((rep - prev) / (tiers[ti][0] - prev)) * 100;
+          var fel = document.querySelector(".goal-fill");
+          var nel = document.querySelector(".goal-info .goal-num");
+          var nel2 = document.querySelector(".goal-info .goal-next");
+          if (fel) fel.style.width = pct.toFixed(1) + "%";
+          if (nel) nel.textContent = rep.toLocaleString() + " / " + tiers[ti][0].toLocaleString();
+          if (nel2) nel2.textContent = tiers[ti][1];
+          break;
+        }
+        prev = tiers[ti][0];
+      }
+    }
+    if (Crew && window.__avgDaily > 0 && window.__seasonEnd) {
+      var seEnd = new Date(window.__seasonEnd).getTime(), nowMs = new Date().getTime();
+      var daysLeft = Math.ceil((seEnd - nowMs) / 86400000);
+      if (daysLeft < 0) daysLeft = 0;
+      var proj = Number(clan.crew_damage);
+      var cur = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 0, 0, 0, 0);
+      while (cur.getTime() <= seEnd) {
+        proj += cur.getDay() % 6 === 0 ? window.__avgDaily * 2 : window.__avgDaily;
+        cur = new Date(cur.getTime() + 86400000);
+      }
+      var estEl = document.getElementById("est-season");
+      var avgLabel = document.getElementById("avg-label");
+      if (estEl) estEl.textContent = Math.round(proj).toLocaleString();
+      if (avgLabel) avgLabel.textContent = "Avg/Day · " + daysLeft + "d left";
+    }
+  }
+  function refreshData() {
+    if (dotEl) dotEl.className = "status-dot wait";
+    if (statusEl) statusEl.textContent = "Loading...";
+    Promise.all([fj(API), fj(RK)]).then(function(r) {
+      if (r[0] && r[0].members) {
+        upd(r[0].members, r[1]);
+        if (dotEl) dotEl.className = "status-dot ok";
+        if (statusEl) statusEl.textContent = "Live";
+      } else {
+        if (dotEl) dotEl.className = "status-dot err";
+        if (statusEl) statusEl.textContent = "Offline";
+      }
+    });
+  }
+  window.__refreshData = refreshData;
+  refreshData();
+  setInterval(refreshData, 60000);
+  setInterval(function(){if(autoSeconds>0)autoSeconds--;if(autoEl)autoEl.textContent=autoSeconds;},1000);
+  if(autoEl)autoEl.parentElement.addEventListener("click",function(){autoSeconds=60;refreshData();});
+  if(searchEl)searchEl.addEventListener("input",function(){
+    var q = this.value.toLowerCase(), r = tb.querySelectorAll("tr");
+    for(var i=0;i<r.length;i++)r[i].style.display=r[i].cells[1].textContent.trim().toLowerCase().indexOf(q)>=0?"":"none";
+  });
+  // Click-to-copy (event delegation on tbody)
+  tb.addEventListener("click", function(e) {
+    var cell = e.target;
+    while (cell && cell.tagName !== "TD") cell = cell.parentNode;
+    if (!cell || cell.cellIndex !== 1) return;
+    var name = cell.textContent.trim();
+    navigator.clipboard.writeText(name).then(function() {
+      var toast = document.createElement("span");
+      toast.className = "copied-toast";
+      toast.textContent = "Copied!";
+      toast.style.opacity = "1";
+      cell.style.position = "relative";
+      cell.appendChild(toast);
+      setTimeout(function() { toast.style.opacity = "0"; setTimeout(function() { toast.remove(); }, 300); }, 1500);
+    }).catch(function() {});
+  });
+  // Reset sort
+  var resetBtn = document.getElementById("reset-btn");
+  if (resetBtn) resetBtn.addEventListener("click", function() {
+    localStorage.removeItem("nr_sort");
+    if (window.__resetSort) window.__resetSort();
+  });
+  // CSV export
+  function csvDownload() {
+    var rows = tb.querySelectorAll("tr"), csv = "Rank,Name,Total Reps,1/2 Hour,Hourly,Daily\n";
+    for (var i = 0; i < rows.length; i++) {
+      var cells = rows[i].cells, vals = [];
+      for (var j = 0; j < cells.length; j++) {
+        var v = cells[j].textContent.trim().replace(/"/g, '""');
+        vals.push('"' + v + '"');
+      }
+      csv += vals.join(",") + "\n";
+    }
+    var blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = "SHAD0W NINJAS_reps.csv"; a.click();
+    URL.revokeObjectURL(url);
+  }
+  var csvLink = document.getElementById("csv-link");
+  if (csvLink) csvLink.addEventListener("click", csvDownload);
+  // Updated ago
+  function updateAgo() {
+    var st = document.getElementById("snapshot-ts");
+    var ua = document.getElementById("updated-ago");
+    if (!st || !ua) return;
+    var txt = st.textContent;
+    var m = txt.match(/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/);
+    if (!m) return;
+    var snap = new Date(m[1].replace(" ", "T") + "+08:00").getTime();
+    var now = new Date().getTime();
+    var diff = Math.floor((now - snap) / 60000);
+    ua.textContent = "Updated " + (diff < 1 ? "just now" : diff + "m ago");
+  }
+  updateAgo();
+  setInterval(updateAgo, 30000);
+})();
+</script>
+</body>
+</html>
