@@ -18,16 +18,8 @@ HOURLY_CACHE = "_hourly_cache.json"
 CACHE_30M = "_30m_cache.json"
 CACHE_1H = "_1h_cache.json"
 CHANGES_JSON = "_changes.json"
-GOAL_TIERS = [
-    (100000, "5 Stamina Rolls"),
-    (500000, "20 Stamina Rolls"),
-    (750000, "Back Item"),
-    (1000000, "Weapon"),
-    (1600000, "Jutsu"),
-]
-CHANGES_JSON = "_changes.json"
 
-def fetch_Crew():
+def fetch_crew():
     req = urllib.request.Request(API_URL, headers={"User-Agent": "Crew-snapshot/1.0"})
     with urllib.request.urlopen(req, timeout=30) as resp:
         return json.loads(resp.read().decode())
@@ -40,7 +32,7 @@ def fetch_season_info():
     with urllib.request.urlopen(req, timeout=10) as resp:
         return json.loads(resp.read().decode())
 
-def fetch_Crew_ranking():
+def fetch_crew_ranking():
     req = urllib.request.Request(RANKING_API, headers={"User-Agent": "Crew-snapshot/1.0"})
     with urllib.request.urlopen(req, timeout=10) as resp:
         data = json.loads(resp.read().decode())
@@ -264,36 +256,6 @@ def save_seasonal_xlsx(members, season_num):
     wb.save(filename)
     print(f"Saved seasonal snapshot: {filename}")
 
-def compute_season_projection(crew_damage, avg_daily_gain, season_end_dt, now):
-    if avg_daily_gain is None or avg_daily_gain <= 0:
-        return None
-    projection = crew_damage
-    total_days = 0
-    current = now + timedelta(days=1)
-    current = current.replace(hour=0, minute=0, second=0, microsecond=0)
-    while current <= season_end_dt:
-        if current.weekday() in (6, 0):
-            projection += avg_daily_gain * 2
-        else:
-            projection += avg_daily_gain
-        total_days += 1
-        current += timedelta(days=1)
-    days_left = (season_end_dt - now).days
-    return {"projection": int(round(projection)), "avg_daily": int(round(avg_daily_gain)), "days_left": days_left}
-
-def compute_goal_info(crew_damage):
-    prev = 0
-    prev_name = ""
-    for threshold, name in GOAL_TIERS:
-        if crew_damage < threshold:
-            progress = crew_damage - prev
-            total = threshold - prev
-            pct = (progress / total) * 100 if total > 0 else 0
-            return {"next_name": name, "next_threshold": threshold, "next_remaining": threshold - crew_damage, "pct": pct, "prev_threshold": prev, "crew_damage": crew_damage, "prev_name": prev_name}
-        prev = threshold
-        prev_name = name
-    return None
-
 def load_changes():
     try:
         with open(CHANGES_JSON) as f:
@@ -318,7 +280,7 @@ def diff_html(diff_str):
     else:
         return f'<span class="na">{diff_str}</span>'
 
-def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all_dates, show_changes, season_info=None, stats=None, diff_30m=None, goal_info=None, changes=None, hourly_cache=None, cache_30m=None):
+def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all_dates, show_changes, season_info=None, stats=None, diff_30m=None, changes=None, hourly_cache=None, cache_30m=None):
     daily_rows = compute_diff(data["members"], prev_data)
     crew_name = data.get("crew_name", "Unknown")
     date_str = now.strftime("%Y-%m-%d")
@@ -345,7 +307,7 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     daily_lookup = {name: diff for name, _, diff in daily_rows}
     uniq_names = get_unique_names(data["members"])
     table_rows = "".join(
-        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num\">{m['member_damage']}</td><td class=\"num\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{diff_html(hourly_diffs.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td></tr>"
+        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{diff_html(hourly_diffs.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{m.get('boss_kills', 0):,}</td><td class=\"num\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td></tr>"
         for i, m in enumerate(data["members"])
     )
 
@@ -388,7 +350,7 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
         timer_html = f"""
   <div class="timer-bar">
     <span class="timer-left">
-      <span class="timer-season">Season <span id="season-num">{season_num}</span></span>
+      <span class="timer-season">Phase <span id="season-num">{season_num}</span></span>
       <span class="timer-sep">&middot;</span>
       <span class="timer-clock">
         <span class="timer-digits"><span id="timer-d">--</span><span class="timer-unit">d</span></span>
@@ -402,17 +364,6 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
 
     stats_html = ""
     if stats:
-        proj_cols = ""
-        if "projection" in stats:
-            proj_cols = f"""
-      <div class="stats-col">
-        <span class="stat-label">Est. Season Total</span>
-        <span class="stat-val" id="est-season">{stats['projection']:,}</span>
-      </div>
-      <div class="stats-col">
-        <span class="stat-label" id="avg-label">Avg/Day &middot; {stats['days_left']}d left</span>
-        <span class="stat-val" id="avg-daily">{stats['avg_daily']:,}</span>
-      </div>"""
         stats_html = f"""
   <div class="stats-bar">
     <div class="stats-row">
@@ -421,21 +372,9 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
         <span class="stat-val" id="today-gain">+{stats['today_gain']:,}</span>
       </div>
       <div class="stats-col">
-        <span class="stat-label">Season Total</span>
+        <span class="stat-label">Total Damage</span>
         <span class="stat-val" id="season-total">{stats['season_total']:,}</span>
-      </div>{proj_cols}
-    </div>
-  </div>"""
-
-    goal_html = ""
-    if goal_info:
-        pct = goal_info["pct"]
-        goal_html = f"""
-  <div class="goal-bar">
-    <div class="goal-track"><div class="goal-fill" style="width:{pct:.1f}%"></div></div>
-    <div class="goal-info">
-      <span>Next: <span class="goal-next">{goal_info['next_name']}</span> &middot; {pct:.1f}%</span>
-      <span class="goal-num">{goal_info['crew_damage']:,} / {goal_info['next_threshold']:,}</span>
+      </div>
     </div>
   </div>"""
 
@@ -455,10 +394,7 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
   tick();
   setInterval(tick, 1000);
 })();
-window.__goalTiers = [[100000,"5 Stamina Rolls"],[500000,"20 Stamina Rolls"],[750000,"Back Item"],[1000000,"Weapon"],[1600000,"Jutsu"]];
 window.__crewId = """ + str(CREW_ID) + """;
-window.__avgDaily = """ + (str(stats['avg_daily']) if stats and 'avg_daily' in stats else '0') + """;
-window.__seasonEnd = \"""" + season_end_iso + """\";
 window.__hourlyCache = """ + json.dumps(hourly_cache if hourly_cache else {}) + """;
 window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "members" in cache_30m else {}) + """;
 (function() {
@@ -514,27 +450,28 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
         for (var ci = 0; ci < rk.length; ci++) {
           if (rk[ci].crew_id === window.__crewId) { clan = rk[ci]; break; }
         }
-      } else { Crew = rk; }
+      } else { clan = rk; }
     }
     var n = new Date(), nm = n.getMinutes(), ns = ts();
-    var lm = {}; for (var i = 0; i < d.length; i++) lm[i < names.length ? names[i] : d[i].character_name] = d[i].member_damage;
+    var lm = {}; for (var i = 0; i < d.length; i++) { var _k = i < names.length ? names[i] : d[i].character_name; lm[_k] = {damage: d[i].member_damage, kills: d[i].boss_kills || 0}; }
     var n2r = {}, a = tb.querySelectorAll("tr"); for (var i = 0; i < a.length; i++) n2r[a[i].cells[1].textContent.trim()] = a[i];
     var c30 = null, c1h = null; try { c30 = JSON.parse(localStorage.getItem("nr_30m")); c1h = JSON.parse(localStorage.getItem("nr_1h")); } catch(e) {}
     if (!c1h && window.__hourlyCache) c1h = {rs: window.__hourlyCache, ts: ""};
     for (var i = 0; i < names.length; i++) {
-      var name = names[i], rep = lm[name]; if (rep === undefined) continue;
+      var name = names[i], md = lm[name]; if (!md) continue;
       var row = n2r[name]; if (!row) continue;
       var cel = row.cells;
-      cel[2].textContent = rep;
-      if (c30 && c30.rs && c30.rs[name] !== undefined) cel[3].innerHTML = dh(rep - c30.rs[name]);
-      if (c1h && c1h.rs && c1h.rs[name] !== undefined) cel[4].innerHTML = dh(rep - c1h.rs[name]);
+      cel[2].textContent = md.damage;
+      cel[5].textContent = md.kills;
+      if (c30 && c30.rs && c30.rs[name] !== undefined) cel[3].innerHTML = dh(md.damage - c30.rs[name]);
+      if (c1h && c1h.rs && c1h.rs[name] !== undefined) cel[4].innerHTML = dh(md.damage - c1h.rs[name]);
     }
     for (var _n in lm) {
       if (names.indexOf(_n) === -1) {
         names.push(_n);
         var tr = document.createElement("tr");
         tr.className = "new-row";
-        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num">' + lm[_n] + '</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td>';
+        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num">' + lm[_n].damage + '</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num">' + (lm[_n].kills||0) + '</td><td class="num"><span class="na">N/A</span></td>';
         tb.appendChild(tr);
         if (searchEl && searchEl.value && _n.toLowerCase().indexOf(searchEl.value.toLowerCase()) === -1) tr.style.display = "none";
       }
@@ -543,7 +480,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     for (var i = 0; i < a.length; i++) n2r[a[i].cells[1].textContent.trim()] = a[i];
     for (var i = 0; i < names.length; i++) {
       var row = n2r[names[i]];
-      if (row && lm[names[i]] === undefined) row.className = "left-row";
+      if (row && !lm[names[i]]) row.className = "left-row";
     }
     if (Crew) {
       var te = document.getElementById("today-gain");
@@ -560,37 +497,6 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     window.__defaultRows = tb.innerHTML;
     var sr = tb.querySelectorAll("tr");
     for (var ri = 0; ri < sr.length; ri++) sr[ri].cells[0].textContent = ri + 1;
-    if (Crew && clan.crew_damage !== undefined) {
-      var rep = Number(clan.crew_damage), prev = 0, tiers = window.__goalTiers;
-      for (var ti = 0; ti < tiers.length; ti++) {
-        if (rep < tiers[ti][0]) {
-          var pct = ((rep - prev) / (tiers[ti][0] - prev)) * 100;
-          var fel = document.querySelector(".goal-fill");
-          var nel = document.querySelector(".goal-info .goal-num");
-          var nel2 = document.querySelector(".goal-info .goal-next");
-          if (fel) fel.style.width = pct.toFixed(1) + "%";
-          if (nel) nel.textContent = rep.toLocaleString() + " / " + tiers[ti][0].toLocaleString();
-          if (nel2) nel2.textContent = tiers[ti][1];
-          break;
-        }
-        prev = tiers[ti][0];
-      }
-    }
-    if (Crew && window.__avgDaily > 0 && window.__seasonEnd) {
-      var seEnd = new Date(window.__seasonEnd).getTime(), nowMs = new Date().getTime();
-      var daysLeft = Math.ceil((seEnd - nowMs) / 86400000);
-      if (daysLeft < 0) daysLeft = 0;
-      var proj = Number(clan.crew_damage);
-      var cur = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 0, 0, 0, 0);
-      while (cur.getTime() <= seEnd) {
-        proj += cur.getDay() % 6 === 0 ? window.__avgDaily * 2 : window.__avgDaily;
-        cur = new Date(cur.getTime() + 86400000);
-      }
-      var estEl = document.getElementById("est-season");
-      var avgLabel = document.getElementById("avg-label");
-      if (estEl) estEl.textContent = Math.round(proj).toLocaleString();
-      if (avgLabel) avgLabel.textContent = "Avg/Day · " + daysLeft + "d left";
-    }
   }
   function refreshData() {
     if (dotEl) dotEl.className = "status-dot wait";
@@ -1002,8 +908,6 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   </div>
   {timer_html}
   {stats_html}
-  {goal_html}
-  {f'<div class="archive">{archive_links}</div>' if archive_links else ""}
   <div class="live-bar">
     <div style="display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap">
       <input type="text" id="search-input" placeholder="Search member...">
@@ -1016,7 +920,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   </div>
   <div class="table-wrap">
   <table>
-    <thead><tr><th># <span class="sort-arrow"></span></th><th>Name <span class="sort-arrow"></span></th><th>Total Reps <span class="sort-arrow"></span></th><th>1/2 Hour <span class="sort-arrow"></span></th><th>Hourly <span class="sort-arrow"></span></th><th>Daily <span class="sort-arrow"></span></th></tr></thead>
+    <thead><tr><th># <span class="sort-arrow"></span></th><th>Name <span class="sort-arrow"></span></th><th>Damage <span class="sort-arrow"></span></th><th>1/2H <span class="sort-arrow"></span></th><th>1h Dmg <span class="sort-arrow"></span></th><th>Boss Kills <span class="sort-arrow"></span></th><th>Daily Dmg <span class="sort-arrow"></span></th></tr></thead>
     <tbody>{table_rows}</tbody>
   </table>
   </div>
@@ -1088,7 +992,7 @@ def save_snapshot(data):
         season_info = None
 
     try:
-        ranking = fetch_Crew_ranking()
+        ranking = fetch_crew_ranking()
         crew_damage = ranking.get("crew_damage", 0)
         today_gain = ranking.get("crew_damage", 0)
     except Exception:
@@ -1114,19 +1018,11 @@ def save_snapshot(data):
                 if ("joined", name) not in existing_change_keys:
                     changes.append({"type": "joined", "name": name, "detected_at": now_ts})
         save_changes(changes)
- 
-    goal_info = compute_goal_info(crew_damage)
-    stats = None
+  
+    stats = {"today_gain": 0, "season_total": crew_damage}
     if season_info:
-        end_dt = datetime(2026, 7, 19, 5, 0, 0, tzinfo=timezone.utc)
-        avg_daily = compute_rolling_avg_daily_gain(EXCEL_FILE, sheet_name)
-        proj = compute_season_projection(crew_damage, avg_daily, end_dt, now)
-        stats = {"today_gain": today_gain, "season_total": crew_damage}
-        if proj:
-            stats["projection"] = proj["projection"]
-            stats["avg_daily"] = proj["avg_daily"]
-            stats["days_left"] = proj["days_left"]
- 
+        stats["today_gain"] = today_gain if today_gain else 0
+
     is_hourly_mark = (now.minute <= 1)
 
     if is_daily:
@@ -1134,9 +1030,9 @@ def save_snapshot(data):
         existing_html = [f.replace(".html", "") for f in os.listdir(".") if f.endswith(".html") and f[:4].isdigit() and f != "index.html"]
         all_dates = set(existing_html)
         all_dates.add(sheet_name)
-        save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, sorted(all_dates), show_changes=True, season_info=season_info, stats=stats, diff_30m=diff_30m_data, goal_info=goal_info, changes=changes, hourly_cache=cache_1h["members"] if cache_1h else {}, cache_30m=cache_30m)
+        save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, sorted(all_dates), show_changes=True, season_info=season_info, stats=stats, diff_30m=diff_30m_data, changes=changes, hourly_cache=cache_1h["members"] if cache_1h else {}, cache_30m=cache_30m)
     else:
-        save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, [], show_changes=False, season_info=season_info, stats=stats, diff_30m=diff_30m_data, goal_info=goal_info, changes=changes, hourly_cache=cache_1h["members"] if cache_1h else {}, cache_30m=cache_30m)
+        save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, [], show_changes=False, season_info=season_info, stats=stats, diff_30m=diff_30m_data, changes=changes, hourly_cache=cache_1h["members"] if cache_1h else {}, cache_30m=cache_30m)
 
     save_30m_cache(data["members"], uniq)
     if cache_30m:
@@ -1144,8 +1040,10 @@ def save_snapshot(data):
     if is_hourly_mark:
         save_hourly_cache(data["members"], uniq, now)
 
-    if season_info and now >= end_dt and avg_daily is not None:
-        save_seasonal_xlsx(data["members"], season_info["season"])
+    if season_info:
+        end_dt = datetime.strptime(season_info["season_end"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+        if now >= end_dt:
+            save_seasonal_xlsx(data["members"], season_info["season"])
 
     try:
         save_daily_history()
@@ -1300,7 +1198,7 @@ def run():
         sleep_sec = (target - now).total_seconds()
         time.sleep(sleep_sec)
         try:
-            data = fetch_Crew()
+            data = fetch_crew()
             save_snapshot(data)
             ts = datetime.now(TARGET_TZ).strftime("%Y-%m-%d %H:%M:%S")
             os.system("git add -A")
@@ -1310,7 +1208,7 @@ def run():
             print(f"[{datetime.now(TARGET_TZ).strftime('%Y-%m-%d %H:%M:%S')}] ERROR: {e}")
 
 def fetch_once():
-    data = fetch_Crew()
+    data = fetch_crew()
     save_snapshot(data)
 
 if __name__ == "__main__":
