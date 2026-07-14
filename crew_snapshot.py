@@ -513,7 +513,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       var row = n2r[names[i]];
       if (row && !lm[names[i]]) row.className = "left-row";
     }
-    if (Crew) {
+    if (clan) {
       var te = document.getElementById("today-gain");
       if (te && clan.crew_damage !== undefined) te.textContent = "+"+Number(clan.crew_damage).toLocaleString();
       var sv = document.querySelectorAll(".stats-col .stat-val");
