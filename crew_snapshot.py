@@ -18,6 +18,7 @@ HOURLY_CACHE = "_hourly_cache.json"
 CACHE_30M = "_30m_cache.json"
 CACHE_1H = "_1h_cache.json"
 CHANGES_JSON = "_changes.json"
+PHASE1_CACHE = "_phase1_cache.json"
 
 def fetch_crew():
     req = urllib.request.Request(API_URL, headers={"User-Agent": "Crew-snapshot/1.0"})
@@ -280,7 +281,7 @@ def diff_html(diff_str):
     else:
         return f'<span class="na">{diff_str}</span>'
 
-def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all_dates, show_changes, season_info=None, stats=None, diff_30m=None, changes=None, hourly_cache=None, cache_30m=None):
+def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all_dates, show_changes, season_info=None, stats=None, diff_30m=None, changes=None, hourly_cache=None, cache_30m=None, phase1=None):
     daily_rows = compute_diff(data["members"], prev_data)
     crew_name = data.get("crew_name", "Unknown")
     date_str = now.strftime("%Y-%m-%d")
@@ -306,8 +307,12 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     diffs_30m_map = diff_30m.get("diffs", {}) if isinstance(diff_30m, dict) else {}
     daily_lookup = {name: diff for name, _, diff in daily_rows}
     uniq_names = get_unique_names(data["members"])
+    phase_num = season_info.get("phase", 1) if season_info else 1
+    in_p1 = (phase_num == 1)
+    p2_dmg = lambda m: '<span class="na">N/A</span>' if in_p1 else f"{m['member_damage']:,}"
+    p2_1h = lambda ui: '<span class="na">N/A</span>' if in_p1 else diff_html(hourly_diffs.get(uniq_names[ui][1], 'N/A'))
     table_rows = "".join(
-        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num\">{m.get('boss_kills', 0):,}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num\">{diff_html(hourly_diffs.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num\">{diff_html(hourly_diffs.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td></tr>"
+        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num\">{m.get('boss_kills', 0):,}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num\">{diff_html(hourly_diffs.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{p2_dmg(m)}</td><td class=\"num\">{p2_1h(i)}</td><td class=\"num\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td></tr>"
         for i, m in enumerate(data["members"])
     )
 
@@ -396,6 +401,7 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
   setInterval(tick, 1000);
 })();
 window.__crewId = """ + str(CREW_ID) + """;
+window.__phase = """ + str(phase_num) + """;
 window.__hourlyCache = """ + json.dumps(hourly_cache if hourly_cache else {}) + """;
 window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "members" in cache_30m else {}) + """;
 (function() {
@@ -465,15 +471,15 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       var cel = row.cells;
       cel[2].textContent = md.kills;
       cel[3].textContent = md.damage;
-      cel[5].textContent = md.damage;
-      if (c1h && c1h.rs && c1h.rs[name] !== undefined) { var _dh = dh(md.damage - c1h.rs[name]); cel[4].innerHTML = _dh; cel[6].innerHTML = _dh; }
+      if (window.__phase !== 1) { cel[5].textContent = md.damage; if (c1h && c1h.rs && c1h.rs[name] !== undefined) cel[6].innerHTML = dh(md.damage - c1h.rs[name]); }
+      if (c1h && c1h.rs && c1h.rs[name] !== undefined) cel[4].innerHTML = dh(md.damage - c1h.rs[name]);
     }
     for (var _n in lm) {
       if (names.indexOf(_n) === -1) {
         names.push(_n);
         var tr = document.createElement("tr");
         tr.className = "new-row";
-        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num">' + (lm[_n].kills||0) + '</td><td class="num">' + lm[_n].damage + '</td><td class="num"><span class="na">N/A</span></td><td class="num">' + lm[_n].damage + '</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td>';
+        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num">' + (lm[_n].kills||0) + '</td><td class="num">' + lm[_n].damage + '</td><td class="num"><span class="na">N/A</span></td><td class="num">' + (window.__phase !== 1 ? lm[_n].damage : '<span class="na">N/A</span>') + '</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td>';
         tb.appendChild(tr);
         if (searchEl && searchEl.value && _n.toLowerCase().indexOf(searchEl.value.toLowerCase()) === -1) tr.style.display = "none";
       }
@@ -1035,6 +1041,14 @@ def save_snapshot(data):
         save_changes(changes)
   
     stats = {"today_gain": 0, "season_total": crew_damage}
+
+    if season_info and season_info.get("phase", 1) == 2 and not os.path.exists(PHASE1_CACHE):
+        phase1_data = {}
+        for m in data["members"]:
+            phase1_data[m["character_name"]] = {"damage": m["member_damage"], "kills": m.get("boss_kills", 0)}
+        with open(PHASE1_CACHE, "w", encoding="utf-8") as f:
+            json.dump(phase1_data, f)
+        print(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Phase 1 snapshot saved")
 
     is_hourly_mark = (now.minute <= 1)
 
