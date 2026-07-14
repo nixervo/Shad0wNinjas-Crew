@@ -995,10 +995,8 @@ def save_snapshot(data):
     try:
         ranking = fetch_crew_ranking()
         crew_damage = ranking.get("crew_damage", 0)
-        today_gain = ranking.get("crew_damage", 0)
     except Exception:
         crew_damage = 0
-        today_gain = 0
 
     changes = load_changes()
     if cache_30m and "order" in cache_30m:
@@ -1021,8 +1019,6 @@ def save_snapshot(data):
         save_changes(changes)
   
     stats = {"today_gain": 0, "season_total": crew_damage}
-    if season_info:
-        stats["today_gain"] = today_gain if today_gain else 0
 
     is_hourly_mark = (now.minute <= 1)
 
