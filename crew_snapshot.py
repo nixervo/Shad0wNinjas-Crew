@@ -24,7 +24,7 @@ def fetch_crew():
     with urllib.request.urlopen(req, timeout=30) as resp:
         return json.loads(resp.read().decode())
 
-SEASON_API = "https://playninjarift.com/api/refresh_time_website.php"
+SEASON_API = "https://playninjarift.com/api/refresh_time_crew_website.php"
 RANKING_API = "https://playninjarift.com/api/crew_ranking_website.php"
 
 def fetch_season_info():
@@ -345,12 +345,13 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     season_end_iso = ""
     if season_info:
         season_num = season_info["season"]
-        end_dt = datetime(2026, 7, 19, 5, 0, 0, tzinfo=timezone.utc)
-        season_end_iso = "2026-07-19T05:00:00Z"
+        phase_num = season_info.get("phase", 1)
+        end_dt = datetime.strptime(season_info["season_end"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+        season_end_iso = end_dt.strftime("%Y-%m-%dT%H:%M:%S") + "Z"
         timer_html = f"""
   <div class="timer-bar">
     <span class="timer-left">
-      <span class="timer-season">Phase <span id="season-num">{season_num}</span></span>
+      <span class="timer-season">Season <span id="season-num">{season_num}</span> &middot; Phase {phase_num}</span>
       <span class="timer-sep">&middot;</span>
       <span class="timer-clock">
         <span class="timer-digits"><span id="timer-d">--</span><span class="timer-unit">d</span></span>
