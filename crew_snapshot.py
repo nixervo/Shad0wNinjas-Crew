@@ -456,15 +456,9 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
         for cs in castle_stats:
             our_g_str = f"+{cs['our_gain']:,}" if cs['our_gain'] > 0 else str(cs['our_gain'])
             rival_g_str = f"+{cs['rival_gain']:,}" if cs['rival_gain'] > 0 else str(cs['rival_gain'])
-            cls = ""
-            if cs["rank"] == 1 and cs["rival_gain"] > cs["our_gain"]:
-                cls = " dangerous"
-            elif cs["rank"] > 1 and cs["our_gain"] > cs["rival_gain"]:
-                cls = " catching"
             is_lead = (cs["rank"] == 1)
             gap_label = "Lead" if is_lead else "Need"
             gap_disp = cs["gap"] if is_lead else cs["rival_kills"] - cs["our_kills"]
-            tag_cls = "castle-tag-danger" if cls.strip() == "dangerous" else ("castle-tag-catch" if cls.strip() == "catching" else "")
             if is_lead:
                 top_html = f"""          <div class="castle-emoji">&#127983;</div>
           <div class="castle-name">{cs['name']}</div>
@@ -487,9 +481,9 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
           <div class="castle-rank-pill">[#{cs['rank']}]</div>
           <div class="castle-kills ours">{cs['our_kills']:,}</div>
           <div class="castle-gain ours">({our_g_str}/½h)</div>"""
-            castle_cards += f"""        <div class="castle-card{cls}" data-castle="{cs['name']}">
+            castle_cards += f"""        <div class="castle-card" data-castle="{cs['name']}">
 {top_html}
-          <div class="castle-tag {tag_cls}">{gap_label} {gap_disp:,}</div>
+          <div class="castle-tag">{gap_label} {gap_disp:,}</div>
         </div>
 """
         castle_html = f"""
@@ -667,9 +661,9 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       var pillEl = card.querySelector(".castle-rank-pill");
       var rivalRankEl = card.querySelector(".castle-rival-rank");
       var rivalNameEl = card.querySelector(".castle-rival-name");
-      if (ourKEl) ourKEl.textContent = ourK;
+      if (ourKEl) ourKEl.textContent = ourK.toLocaleString();
       if (ourGEl) ourGEl.textContent = "(" + gStr + "/½h)";
-      if (rivalKEl) rivalKEl.textContent = rivalK;
+      if (rivalKEl) rivalKEl.textContent = rivalK.toLocaleString();
       if (rivalGEl) rivalGEl.textContent = "(" + rgStr + "/½h)";
       if (pillEl) pillEl.textContent = "[#" + our.rank + "]";
       if (rivalRankEl) rivalRankEl.textContent = "#" + rival.rank;
@@ -677,7 +671,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       var isLead = (our.rank === 1);
       var gapVal = isLead ? (ourK - rivalK) : (rivalK - ourK);
       var label = isLead ? "Lead " : "Need ";
-      if (tagEl) tagEl.textContent = label + gapVal;
+      if (tagEl) tagEl.textContent = label + gapVal.toLocaleString();
       card.classList.remove("dangerous", "catching");
       tagEl.classList.remove("castle-tag-danger", "castle-tag-catch");
       var curGap = isLead ? (ourK - rivalK) : (rivalK - ourK);
