@@ -22,6 +22,7 @@ CACHE_1H = "_1h_cache.json"
 CACHE_1H_KILLS = "_1h_kills_cache.json"
 CHANGES_JSON = "_changes.json"
 PHASE1_CACHE = "_phase1_cache.json"
+DAILY_BASELINE = "_daily_baseline.json"
 CASTLE_API = "https://playninjarift.com/api/crew_ranking_castles_website.php"
 CASTLE_CACHE_30M = "_30m_castle_cache.json"
 
@@ -684,7 +685,15 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     }
     if (clan) {
       var sv = document.querySelectorAll(".stats-col .stat-val");
-      if (sv.length >= 2 && clan.crew_damage !== undefined) sv[1].textContent = Number(clan.crew_damage).toLocaleString();
+      if (sv.length >= 2 && clan.crew_damage !== undefined) {
+        sv[1].textContent = Number(clan.crew_damage).toLocaleString();
+        if (window.__initDmg !== undefined) {
+          var tg = clan.crew_damage - window.__initDmg;
+          sv[0].textContent = (tg >= 0 ? "+" : "") + tg.toLocaleString();
+        } else {
+          window.__initDmg = clan.crew_damage;
+        }
+      }
     }
     var ft = document.querySelector(".footer");
     var st = document.getElementById("snapshot-ts"); if (st) st.textContent = ns;
@@ -1448,8 +1457,15 @@ def save_snapshot(data):
                 if ("joined", name) not in existing_change_keys:
                     changes.append({"type": "joined", "name": name, "detected_at": now_ts})
         save_changes(changes)
-  
-    stats = {"today_gain": 0, "season_total": crew_damage}
+   
+    today_gain = 0
+    if os.path.exists(DAILY_BASELINE):
+        with open(DAILY_BASELINE, encoding="utf-8") as f:
+            bl = json.load(f)
+            today_gain = crew_damage - bl.get("crew_damage", crew_damage)
+    if not is_daily:
+        today_gain = 0
+    stats = {"today_gain": today_gain, "season_total": crew_damage}
     is_hourly_mark = (now.minute <= 1)
     is_30m_mark = (now.minute <= 1 or (now.minute >= 31 and now.minute <= 32))
 
@@ -1507,6 +1523,8 @@ def save_snapshot(data):
 
     if is_daily:
         save_xlsx(data, prev_data, now, uniq)
+        with open(DAILY_BASELINE, "w", encoding="utf-8") as f:
+            json.dump({"crew_damage": crew_damage, "date": sheet_name}, f)
         existing_html = [f.replace(".html", "") for f in os.listdir(".") if f.endswith(".html") and f[:4].isdigit() and f != "index.html"]
         all_dates = set(existing_html)
         all_dates.add(sheet_name)
