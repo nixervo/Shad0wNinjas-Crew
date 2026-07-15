@@ -721,11 +721,12 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     var cb = document.getElementById("castle-bar");
     if (!cb || window.__phase !== 1) return;
     var cards = cb.querySelectorAll(".castle-card");
-    var cache = null, bCache = null, tCache = null, sCache = null;
-    try { cache = JSON.parse(localStorage.getItem("nr_castle_30m")); bCache = JSON.parse(localStorage.getItem("nr_castle_baseline")); tCache = JSON.parse(localStorage.getItem("nr_castle_trigger")); sCache = JSON.parse(localStorage.getItem("nr_castle_snapshot")); } catch(e) {}
+    var cache = null, bCache = null, tCache = null, sCache = null, pCache = null;
+    try { cache = JSON.parse(localStorage.getItem("nr_castle_30m")); bCache = JSON.parse(localStorage.getItem("nr_castle_baseline")); tCache = JSON.parse(localStorage.getItem("nr_castle_trigger")); sCache = JSON.parse(localStorage.getItem("nr_castle_snapshot")); pCache = JSON.parse(localStorage.getItem("nr_castle_prev_rank")); } catch(e) {}
     tCache = tCache || {};
     sCache = sCache || {};
-    var newCache = {}, newBCache = {}, newTCache = {}, newSCache = {};
+    pCache = pCache || {};
+    var newCache = {}, newBCache = {}, newTCache = {}, newSCache = {}, newPCache = {};
     for (var i = 0; i < cards.length; i++) {
       var card = cards[i];
       var csm = card.getAttribute("data-castle");
@@ -745,6 +746,28 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
         if (ri >= 0 && ri < entries.length) rival = {rank: ri + 1, kills: entries[ri].boss_kills, name: entries[ri].crew_name};
       }
       if (!our || !rival) continue;
+      var prevRank = pCache[csm];
+      var wasLead = prevRank ? (prevRank === 1) : (our.rank === 1);
+      var isLead = (our.rank === 1);
+      if (prevRank !== undefined && wasLead !== isLead) {
+        var emoji = card.querySelector(".castle-emoji");
+        var cname = card.querySelector(".castle-name");
+        var eStr = emoji ? emoji.textContent : "&#127983;";
+        var nStr = cname ? cname.textContent : csm;
+        if (isLead) {
+          card.innerHTML = '<div class="castle-emoji">' + eStr + '</div><div class="castle-name">' + nStr + '</div><div class="castle-rank-pill">[#1]</div><div class="castle-kills ours">0</div><div class="castle-gain ours">(0/½h)</div><div class="castle-div"></div><div class="castle-rival-rank">#2</div><div class="castle-rival-name"></div><div class="castle-kills rival">0</div><div class="castle-gain rival">(0/½h)</div><div class="castle-tag"></div>';
+        } else {
+          card.innerHTML = '<div class="castle-emoji">' + eStr + '</div><div class="castle-name">' + nStr + '</div><div class="castle-rival-rank">#N</div><div class="castle-rival-name"></div><div class="castle-kills rival">0</div><div class="castle-gain rival">(0/½h)</div><div class="castle-div"></div><div class="castle-rank-pill">[#N]</div><div class="castle-kills ours">0</div><div class="castle-gain ours">(0/½h)</div><div class="castle-tag"></div>';
+        }
+        ourKEl = card.querySelector(".castle-kills.ours");
+        ourGEl = card.querySelector(".castle-gain.ours");
+        rivalKEl = card.querySelector(".castle-kills.rival");
+        rivalGEl = card.querySelector(".castle-gain.rival");
+        tagEl = card.querySelector(".castle-tag");
+        pillEl = card.querySelector(".castle-rank-pill");
+        rivalRankEl = card.querySelector(".castle-rival-rank");
+        rivalNameEl = card.querySelector(".castle-rival-name");
+      }
       var ourK = our.kills, rivalK = rival.kills;
       var pc = cache ? cache[csm] : null;
       var ourG = pc ? ourK - pc.our_kills : 0, rivalG = pc ? rivalK - pc.rival_kills : 0;
@@ -804,12 +827,14 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
         newSCache[csm] = null;
       }
       newTCache[csm] = trig || null;
+      newPCache[csm] = our.rank;
     }
     var nm = new Date().getMinutes(), blk = nm <= 1 ? "01" : (nm >= 31 && nm <= 32 ? "31" : null);
     if (blk) localStorage.setItem("nr_castle_30m", JSON.stringify(newCache));
     localStorage.setItem("nr_castle_baseline", JSON.stringify(newBCache));
     localStorage.setItem("nr_castle_trigger", JSON.stringify(newTCache));
     localStorage.setItem("nr_castle_snapshot", JSON.stringify(newSCache));
+    localStorage.setItem("nr_castle_prev_rank", JSON.stringify(newPCache));
   }
   function refreshData() {
     if (dotEl) dotEl.className = "status-dot wait";
