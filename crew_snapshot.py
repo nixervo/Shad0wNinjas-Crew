@@ -20,6 +20,8 @@ CACHE_30M_KILLS = "_30m_kills_cache.json"
 CACHE_1H = "_1h_cache.json"
 CHANGES_JSON = "_changes.json"
 PHASE1_CACHE = "_phase1_cache.json"
+CASTLE_API = "https://playninjarift.com/api/crew_ranking_castles_website.php"
+CASTLE_CACHE_1H = "_1h_castle_cache.json"
 
 def fetch_crew():
     req = urllib.request.Request(API_URL, headers={"User-Agent": "Crew-snapshot/1.0"})
@@ -42,6 +44,11 @@ def fetch_crew_ranking():
         if entry["crew_id"] == CREW_ID:
             return entry
     return {}
+
+def fetch_castle_ranking():
+    req = urllib.request.Request(CASTLE_API, headers={"User-Agent": "Crew-snapshot/1.0"})
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        return json.loads(resp.read().decode())
 
 def get_previous_sheet_names(wb):
     names = [s.title for s in wb.worksheets]
@@ -142,6 +149,16 @@ def save_1h_cache(member_dict, timestamp):
     with open(CACHE_1H, "w", encoding="utf-8") as f:
         json.dump({"timestamp": timestamp, "members": member_dict}, f)
 
+def load_1h_castle_cache():
+    if not os.path.exists(CASTLE_CACHE_1H):
+        return None
+    with open(CASTLE_CACHE_1H, encoding="utf-8") as f:
+        return json.load(f)
+
+def save_1h_castle_cache(castle_data, timestamp):
+    with open(CASTLE_CACHE_1H, "w", encoding="utf-8") as f:
+        json.dump({"timestamp": timestamp, "castles": castle_data}, f)
+
 def compute_rolling_avg_daily_gain(filename, before_date):
     if not os.path.exists(filename):
         return None
@@ -215,23 +232,32 @@ def write_sheet(ws, data, prev_data, now, unique_names):
     ws["A2"].font = Font(bold=True, size=11)
     ws["A2"].alignment = Alignment(horizontal="center", vertical="center")
 
-    headers = ["Name", "Dmg", "Daily ΔDmg", "Boss Kills", "Daily ΔKills"]
+    headers = ["Name", "Dmg", "Daily Dmg", "Boss Kills", "Daily Kills"]
     for col_idx, h in enumerate(headers, 1):
         cell = ws.cell(row=3, column=col_idx, value=h)
         cell.font = Font(bold=True)
         cell.alignment = Alignment(horizontal="center", vertical="center")
 
     kills_map = {m["character_name"]: (m.get("boss_kills", 0) or 0) for m in data["members"]}
+    prev_kills_map = {}
+    if os.path.exists(EXCEL_FILE):
+        pw = load_workbook(EXCEL_FILE)
+        pn = sorted([s.title for s in pw.worksheets if s.title != "Sheet1"])
+        if len(pn) >= 2:
+            ps = pw[pn[-2]]
+            for row in ps.iter_rows(min_row=4, max_col=4, values_only=True):
+                if row[0] and row[1] is not None:
+                    prev_kills_map[row[0]] = int(row[3]) if len(row) >= 4 and row[3] is not None else 0
     for row_idx, (name, reps_val, diff_val) in enumerate(rows, 4):
         ws.cell(row=row_idx, column=1, value=name).alignment = Alignment(vertical="center")
         ws.cell(row=row_idx, column=2, value=reps_val).alignment = Alignment(horizontal="center", vertical="center")
         ws.cell(row=row_idx, column=3, value=diff_val).alignment = Alignment(horizontal="center", vertical="center")
         raw_name = uniq[row_idx - 4][0] if uniq else name.split(" (#")[0]
-        ws.cell(row=row_idx, column=4, value=kills_map.get(raw_name, 0)).alignment = Alignment(horizontal="center", vertical="center")
-        ws.cell(row=row_idx, column=5, value="N/A").alignment = Alignment(horizontal="center", vertical="center")
-        if row_idx - 4 < len(daily_rows):
-            daily_k = "N/A"
-        ws.cell(row=row_idx, column=5, value=daily_k).alignment = Alignment(horizontal="center", vertical="center")
+        cur_kills = kills_map.get(raw_name, 0)
+        prev_k = prev_kills_map.get(raw_name, cur_kills) if prev_kills_map else cur_kills
+        dk = cur_kills - prev_k
+        ws.cell(row=row_idx, column=4, value=cur_kills).alignment = Alignment(horizontal="center", vertical="center")
+        ws.cell(row=row_idx, column=5, value=f"+{dk}" if dk > 0 else str(dk) if prev_kills_map else "N/A").alignment = Alignment(horizontal="center", vertical="center")
 
 def save_xlsx(data, prev_data, now, uniq):
     sheet_name = now.strftime("%Y-%m-%d")
@@ -305,7 +331,7 @@ def diff_html(diff_str):
     else:
         return f'<span class="na">{diff_str}</span>'
 
-def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all_dates, show_changes, season_info=None, stats=None, diff_30m=None, changes=None, hourly_cache=None, cache_30m=None, phase1=None, diffs_30m_kills=None):
+def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all_dates, show_changes, season_info=None, stats=None, diff_30m=None, changes=None, hourly_cache=None, cache_30m=None, phase1=None, diffs_30m_kills=None, castle_stats=None):
     daily_rows = compute_diff(data["members"], prev_data)
     crew_name = data.get("crew_name", "Unknown")
     date_str = now.strftime("%Y-%m-%d")
@@ -408,6 +434,37 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     </div>
   </div>"""
 
+    castle_html = ""
+    if castle_stats and phase_num == 1:
+        castle_rows = ""
+        for cs in castle_stats:
+            our_g_str = f"+{cs['our_gain']:,}" if cs['our_gain'] > 0 else str(cs['our_gain'])
+            rival_g_str = f"+{cs['rival_gain']:,}" if cs['rival_gain'] > 0 else str(cs['rival_gain'])
+            cls = ""
+            if cs["rank"] == 1 and cs["rival_gain"] > cs["our_gain"]:
+                cls = " dangerous"
+            elif cs["rank"] == 2 and cs["our_gain"] > cs["rival_gain"]:
+                cls = " catching"
+            castle_rows += f"""        <div class="castle-row{cls}" data-castle="{cs['name']}">
+          <div class="castle-info">
+            <span class="castle-rank">&#127983; {cs['name']} #{cs['rank']}</span>
+            <span class="castle-kills">{cs['our_kills']:,}</span>
+            <span class="castle-gain">({our_g_str}/h)</span>
+          </div>
+          <span class="castle-vs">vs</span>
+          <div class="castle-info rival">
+            <span class="castle-rank">#{cs['rival_rank']} {cs['rival_name']}</span>
+            <span class="castle-kills">{cs['rival_kills']:,}</span>
+            <span class="castle-gain">({rival_g_str}/h)</span>
+          </div>
+          <span class="castle-gap">Gap {cs['gap']:,}</span>
+        </div>
+"""
+        castle_html = f"""
+  <div class="castle-bar" id="castle-bar">
+    <div class="castle-header">CASTLES</div>
+{castle_rows}  </div>"""
+
     script_html = ""
     if season_info:
         script_html = """<script>
@@ -469,7 +526,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   try { var _s = JSON.parse(localStorage.getItem("nr_sort")); if (_s && _s.dir > 0) { sortCol = _s.col; sortDir = _s.dir; applySort(); } } catch(e) {}
 })();
 (function() {
-  var API = "https://playninjarift.com/api/detail_crew_website.php?crew_id=" + window.__crewId, RK = "https://playninjarift.com/api/crew_ranking_website.php";
+  var API = "https://playninjarift.com/api/detail_crew_website.php?crew_id=" + window.__crewId, RK = "https://playninjarift.com/api/crew_ranking_website.php", CA = "https://playninjarift.com/api/crew_ranking_castles_website.php";
   var tb = document.querySelector("tbody"), names = [], rws = tb.querySelectorAll("tr");
   for (var i = 0; i < rws.length; i++) names.push(rws[i].cells[1].textContent.trim());
   var autoSeconds = 60, autoEl = document.getElementById("auto-seconds"), searchEl = document.getElementById("search-input"), dotEl = document.getElementById("status-dot"), statusEl = document.getElementById("status-text");
@@ -534,10 +591,51 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     var sr = tb.querySelectorAll("tr");
     for (var ri = 0; ri < sr.length; ri++) sr[ri].cells[0].textContent = ri + 1;
   }
+  function castleUpd(cdata) {
+    var cb = document.getElementById("castle-bar");
+    if (!cb || window.__phase !== 1) return;
+    var rows = cb.querySelectorAll(".castle-row");
+    var cache = null; try { cache = JSON.parse(localStorage.getItem("nr_castle_1h")); } catch(e) {}
+    var newCache = {};
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var csm = row.getAttribute("data-castle");
+      if (!csm) { var cr = row.querySelector(".castle-rank"); if (cr) csm = cr.textContent.replace(/#\d+/, "").trim(); else continue; }
+      var entries = cdata[csm];
+      if (!entries) continue;
+      var our = null, rival = null;
+      for (var ei = 0; ei < entries.length; ei++) {
+        if (entries[ei].crew_id === window.__crewId) our = {rank: ei + 1, kills: entries[ei].boss_kills};
+        if (ei === 0 && entries[ei].crew_id !== window.__crewId) rival = {rank: ei + 1, kills: entries[ei].boss_kills, name: entries[ei].crew_name};
+        else if (ei === 1 && our && our.rank === 1) rival = {rank: ei + 1, kills: entries[ei].boss_kills, name: entries[ei].crew_name};
+      }
+      if (!our && entries.length >= 1) { rival = {rank: 1, kills: entries[0].boss_kills, name: entries[0].crew_name}; our = {rank: 2, kills: 0}; for (var ei2 = 0; ei2 < entries.length; ei2++) { if (entries[ei2].crew_id === window.__crewId) { our = {rank: ei2+1, kills: entries[ei2].boss_kills}; rival = {rank: 1, kills: entries[0].boss_kills, name: entries[0].crew_name}; break; } } }
+      if (!our || !rival) continue;
+      var ourK = our.kills, rivalK = rival.kills;
+      var pc = cache ? cache[csm] : null;
+      var ourG = pc ? ourK - pc.our_kills : 0, rivalG = pc ? rivalK - pc.rival_kills : 0;
+      newCache[csm] = {our_kills: ourK, rival_kills: rivalK, rival_name: rival.name};
+      var gStr = ourG > 0 ? "+" + ourG : "" + ourG;
+      var rgStr = rivalG > 0 ? "+" + rivalG : "" + rivalG;
+      var ourEls = row.querySelectorAll(".castle-info:first-child .castle-kills"), ourGainEls = row.querySelectorAll(".castle-info:first-child .castle-gain");
+      var rivalEls = row.querySelectorAll(".castle-info.rival .castle-kills"), rivalGainEls = row.querySelectorAll(".castle-info.rival .castle-gain");
+      var gapEl = row.querySelector(".castle-gap");
+      if (ourEls.length) ourEls[0].textContent = ourK;
+      if (ourGainEls.length) ourGainEls[0].textContent = "(" + gStr + "/h)";
+      if (rivalEls.length) rivalEls[0].textContent = rivalK;
+      if (rivalGainEls.length) rivalGainEls[0].textContent = "(" + rgStr + "/h)";
+      if (gapEl) gapEl.textContent = "Gap " + (ourK - rivalK);
+      row.classList.remove("dangerous", "catching");
+      if (our.rank === 1 && rivalG > ourG) row.classList.add("dangerous");
+      else if (our.rank === 2 && ourG > rivalG) row.classList.add("catching");
+    }
+    var nm = new Date().getMinutes(), blk = nm <= 1 ? "01" : (nm >= 31 && nm <= 32 ? "31" : null);
+    if (blk) localStorage.setItem("nr_castle_1h", JSON.stringify(newCache));
+  }
   function refreshData() {
     if (dotEl) dotEl.className = "status-dot wait";
     if (statusEl) statusEl.textContent = "Loading...";
-    Promise.all([fj(API), fj(RK)]).then(function(r) {
+    Promise.all([fj(API), fj(RK), fj(CA).then(function(cdata) { if (cdata && window.__phase === 1) castleUpd(cdata); return cdata; }).catch(function() { return null; })]).then(function(r) {
       if (r[0] && r[0].members) {
         upd(r[0].members, r[1]);
         if (dotEl) dotEl.className = "status-dot ok";
@@ -838,6 +936,60 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   .stat-label {{ color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 0.3px; }}
   .stat-val {{ color: #e0e0e0; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }}
   #today-gain {{ color: #4caf50; }}
+  .castle-bar {{
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: #0f0f1e;
+    border-top: 2px solid #c9a84c44;
+    border-bottom: 1px solid #1a1a2e;
+    padding: 0;
+  }}
+  .castle-header {{
+    padding: 8px 16px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #c9a84c;
+    font-weight: 600;
+    background: rgba(0,0,0,0.25);
+  }}
+  .castle-row {{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 13px;
+  }}
+  .castle-row.dangerous {{ background: rgba(244,67,54,0.12); }}
+  .castle-row.catching {{ background: rgba(76,175,80,0.12); }}
+  .castle-info {{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }}
+  .castle-info .castle-rank {{ color: #ddd; font-weight: 600; white-space: nowrap; }}
+  .castle-info .castle-kills {{ color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; }}
+  .castle-info .castle-gain {{ color: #999; font-size: 12px; font-variant-numeric: tabular-nums; }}
+  .castle-vs {{ color: #666; font-size: 12px; font-weight: 600; flex-shrink: 0; }}
+  .castle-info.rival .castle-rank {{ color: #999; }}
+  .castle-info.rival .castle-kills {{ color: #bbb; }}
+  .castle-gap {{
+    color: #c9a84c;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }}
+  @media (max-width: 600px) {{
+    .castle-row {{ padding: 8px 12px; gap: 8px; font-size: 12px; }}
+    .castle-info .castle-gain {{ font-size: 11px; }}
+    .castle-gap {{ font-size: 12px; }}
+  }}
   th {{ cursor: pointer; user-select: none; }}
   th .sort-arrow {{ font-size: 11px; margin-left: 3px; }}
   @media (max-width: 600px) {{
@@ -947,6 +1099,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   </div>
   {timer_html}
   {stats_html}
+  {castle_html}
   <div class="live-bar">
     <div style="display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap">
       <input type="text" id="search-input" placeholder="Search member...">
@@ -1087,6 +1240,47 @@ def save_snapshot(data):
         save_changes(changes)
   
     stats = {"today_gain": 0, "season_total": crew_damage}
+    is_hourly_mark = (now.minute <= 1)
+
+    castle_stats = []
+    if season_info and season_info.get("phase", 1) == 1:
+        try:
+            castles = fetch_castle_ranking()
+            cache_1h_castle = load_1h_castle_cache()
+            castle_cache_dict = {}
+            if cache_1h_castle and "castles" in cache_1h_castle:
+                castle_cache_dict = cache_1h_castle["castles"]
+            new_castle_cache = {}
+            for castle_name, entries in castles.items():
+                our_idx = next((i for i, e in enumerate(entries) if e["crew_id"] == CREW_ID), None)
+                if our_idx is None or our_idx > 1:
+                    continue
+                our_rank = our_idx + 1
+                our_kills = entries[our_idx]["boss_kills"]
+                rival_idx = 1 if our_rank == 1 else 0
+                if our_rank == 1 and len(entries) < 2:
+                    continue
+                rival = entries[rival_idx]
+                rival_kills = rival["boss_kills"]
+                gap = our_kills - rival_kills
+                our_gain = 0
+                rival_gain = 0
+                if castle_name in castle_cache_dict:
+                    pc = castle_cache_dict[castle_name]
+                    our_gain = our_kills - pc.get("our_kills", our_kills)
+                    rival_gain = rival_kills - pc.get("rival_kills", rival_kills)
+                new_castle_cache[castle_name] = {"our_kills": our_kills, "rival_kills": rival_kills, "rival_name": rival["crew_name"]}
+                castle_stats.append({
+                    "name": castle_name, "rank": our_rank, "our_kills": our_kills,
+                    "our_gain": our_gain, "rival_name": rival["crew_name"],
+                    "rival_rank": rival_idx + 1, "rival_kills": rival_kills,
+                    "rival_gain": rival_gain, "gap": gap
+                })
+            if is_hourly_mark:
+                save_1h_castle_cache(new_castle_cache, now.strftime("%Y-%m-%d %H:%M:%S"))
+        except Exception as e:
+            print(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Castle error: {e}")
+            pass
 
     if season_info and season_info.get("phase", 1) == 2 and not os.path.exists(PHASE1_CACHE):
         phase1_data = {}
@@ -1096,16 +1290,14 @@ def save_snapshot(data):
             json.dump(phase1_data, f)
         print(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Phase 1 snapshot saved")
 
-    is_hourly_mark = (now.minute <= 1)
-
     if is_daily:
         save_xlsx(data, prev_data, now, uniq)
         existing_html = [f.replace(".html", "") for f in os.listdir(".") if f.endswith(".html") and f[:4].isdigit() and f != "index.html"]
         all_dates = set(existing_html)
         all_dates.add(sheet_name)
-        save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, sorted(all_dates), show_changes=True, season_info=season_info, stats=stats, diff_30m=diff_30m_data, changes=changes, hourly_cache=cache_1h["members"] if cache_1h else {}, cache_30m=cache_30m, diffs_30m_kills=diffs_30m_kills)
+        save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, sorted(all_dates), show_changes=True, season_info=season_info, stats=stats, diff_30m=diff_30m_data, changes=changes, hourly_cache=cache_1h["members"] if cache_1h else {}, cache_30m=cache_30m, diffs_30m_kills=diffs_30m_kills, castle_stats=castle_stats)
     else:
-        save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, [], show_changes=False, season_info=season_info, stats=stats, diff_30m=diff_30m_data, changes=changes, hourly_cache=cache_1h["members"] if cache_1h else {}, cache_30m=cache_30m, diffs_30m_kills=diffs_30m_kills)
+        save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, [], show_changes=False, season_info=season_info, stats=stats, diff_30m=diff_30m_data, changes=changes, hourly_cache=cache_1h["members"] if cache_1h else {}, cache_30m=cache_30m, diffs_30m_kills=diffs_30m_kills, castle_stats=castle_stats)
 
     save_30m_cache(data["members"], uniq)
     save_30m_kills_cache(data["members"], uniq)
@@ -1151,14 +1343,11 @@ def save_daily_history():
   .nav a { color: #c9a84c; text-decoration: none; font-size: 13px; }
   .nav a:hover { text-decoration: underline; }
   .nav .inactive { color: #444; pointer-events: none; }
-  .summary { text-align: center; padding: 10px 20px; background: #0a0a14; color: #888; font-size: 13px; border-bottom: 1px solid #14141f; }
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; background: #0c0c14; }
   th { background: #0f0f1e; padding: 12px 16px; text-align: center; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #c9a84c; font-weight: 600; }
   td { padding: 10px 16px; border-bottom: 1px solid #14141f; font-size: 13px; color: #ccc; text-align: center; }
   tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
-  .green td { color: #4caf50; }
-  .red td { color: #f44336; }
   .footer { text-align: center; padding: 16px 20px; background: #08080f; color: #444; font-size: 12px; border-top: 1px solid #12121e; }
   .footer a { color: #c9a84c; text-decoration: none; }
   .footer a:hover { text-decoration: underline; }
@@ -1166,7 +1355,6 @@ def save_daily_history():
   .index-list a { display: block; padding: 8px 14px; color: #ccc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #14141f; }
   .index-list a:hover { background: rgba(233,69,96,0.04); color: #fff; }
   .index-list a:last-child { border-bottom: none; }
-  .index-list .met { color: #4caf50; font-weight: 600; }
   .star-joined { color: #42a5f5; }
   .star-left { color: #f44336; }
 </style>"""
@@ -1176,7 +1364,6 @@ def save_daily_history():
         date = curr["date"]
         dt = datetime.strptime(date, "%Y-%m-%d")
         day_name = dt.strftime("%a")
-        threshold = 1000 if dt.weekday() in (6, 0) else 500
         prev_list, curr_list = prev["members"], curr["members"]
         max_len = max(len(prev_list), len(curr_list))
         gains = []
@@ -1192,19 +1379,14 @@ def save_daily_history():
                 pname, prep = prev_list[j]
                 gains.append({"name": pname, "gain": None, "joined": False, "left": True})
         gains.sort(key=lambda x: (x["gain"] is None, -(x["gain"] or 0)))
-        met_count = sum(1 for g in gains if g["gain"] is not None and g["gain"] >= threshold)
-        total_current = len(curr["members"])
-        daily_pages.append({"date": date, "day_name": day_name, "threshold": threshold, "met": met_count, "total": total_current})
+        daily_pages.append({"date": date, "day_name": day_name})
         rows_html = ""
         for idx, g in enumerate(gains, 1):
             star = ""
             if g["joined"]: star = '<span class="star-joined">&#9733;</span> '
             elif g["left"]: star = '<span class="star-left">&#9734;</span> '
             gain_str = f'+{g["gain"]:,}' if g["gain"] is not None else '<span class="star-left">N/A</span>'
-            row_class = ""
-            if g["gain"] is not None:
-                row_class = "green" if g["gain"] >= threshold else "red"
-            rows_html += f'<tr class="{row_class}"><td>{idx}</td><td>{star}{g["name"]}</td><td>{gain_str}</td><td>{"✅" if g["gain"] is not None and g["gain"] >= threshold else "❌"}</td></tr>\n'
+            rows_html += f'<tr><td>{idx}</td><td>{star}{g["name"]}</td><td>{gain_str}</td></tr>\n'
         prev_link = f'<a href="history_{prev["date"]}.html">&larr; Previous</a>' if i > 1 else '<span class="inactive">&larr; Previous</span>'
         next_link = f'<a href="history_{sheets_data[i+1]["date"]}.html">Next &rarr;</a>' if i < len(sheets_data) - 1 else '<span class="inactive">Next &rarr;</span>'
         page_html = f"""<!DOCTYPE html>
@@ -1220,10 +1402,9 @@ def save_daily_history():
 </head>
 <body>
 <div class="container">
-  <div class="header"><h1>SHAD0W NINJAS</h1><div class="sub">Daily Reps · {date} ({day_name}) &middot; Min: <b>{threshold:,}</b></div></div>
-  <div class="summary">{met_count} of {total_current} members met the threshold ({threshold:,})</div>
+  <div class="header"><h1>SHAD0W NINJAS</h1><div class="sub">Daily Reps · {date} ({day_name})</div></div>
   <div class="nav">{prev_link}<a href="history.html">Index</a>{next_link}</div>
-  <div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Gain</th><th>Status</th></tr></thead><tbody>{rows_html}</tbody></table></div>
+  <div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Gain</th></tr></thead><tbody>{rows_html}</tbody></table></div>
   <div class="footer"><a href="index.html">&larr; Back to main page</a></div>
 </div>
 </body>
@@ -1233,7 +1414,7 @@ def save_daily_history():
         print(f"[{datetime.now(TARGET_TZ).strftime('%Y-%m-%d %H:%M:%S')}] Saved history_{date}.html")
     index_rows = ""
     for dp in daily_pages:
-        index_rows += f'<a href="history_{dp["date"]}.html">{dp["date"]} ({dp["day_name"]}) <span class="met">{dp["met"]}/{dp["total"]}</span> met &rarr;</a>\n'
+        index_rows += f'<a href="history_{dp["date"]}.html">{dp["date"]} ({dp["day_name"]}) &rarr;</a>\n'
     index_html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
