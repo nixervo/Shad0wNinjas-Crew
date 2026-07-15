@@ -623,10 +623,11 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     var cb = document.getElementById("castle-bar");
     if (!cb || window.__phase !== 1) return;
     var cards = cb.querySelectorAll(".castle-card");
-    var cache = null, bCache = null, tCache = null;
-    try { cache = JSON.parse(localStorage.getItem("nr_castle_30m")); bCache = JSON.parse(localStorage.getItem("nr_castle_baseline")); tCache = JSON.parse(localStorage.getItem("nr_castle_trigger")); } catch(e) {}
+    var cache = null, bCache = null, tCache = null, sCache = null;
+    try { cache = JSON.parse(localStorage.getItem("nr_castle_30m")); bCache = JSON.parse(localStorage.getItem("nr_castle_baseline")); tCache = JSON.parse(localStorage.getItem("nr_castle_trigger")); sCache = JSON.parse(localStorage.getItem("nr_castle_snapshot")); } catch(e) {}
     tCache = tCache || {};
-    var newCache = {}, newBCache = {}, newTCache = {};
+    sCache = sCache || {};
+    var newCache = {}, newBCache = {}, newTCache = {}, newSCache = {};
     for (var i = 0; i < cards.length; i++) {
       var card = cards[i];
       var csm = card.getAttribute("data-castle");
@@ -692,11 +693,17 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
         }
       }
       if (!trig) {
-        var prevGap = 0;
-        if (pc) { prevGap = isLead ? (pc.our_kills - pc.rival_kills) : (pc.rival_kills - pc.our_kills); }
-        var pct = prevGap > 0 ? Math.round((prevGap - curGap) / prevGap * 100) : 0;
+        var snap = sCache[csm];
+        if (!snap) {
+          snap = {our_kills: ourK, rival_kills: rivalK};
+        }
+        var snapGap = isLead ? (snap.our_kills - snap.rival_kills) : (snap.rival_kills - snap.our_kills);
+        var pct = snapGap > 0 ? Math.round((snapGap - curGap) / snapGap * 100) : 0;
         if (isLead && pct >= 30) { trig = {state: "dangerous", ref_gap: curGap}; card.classList.add("dangerous"); tagEl.classList.add("castle-tag-danger"); }
         else if (!isLead && pct >= 30) { trig = {state: "catching", ref_gap: curGap}; card.classList.add("catching"); tagEl.classList.add("castle-tag-catch"); }
+        newSCache[csm] = snap;
+      } else {
+        newSCache[csm] = null;
       }
       newTCache[csm] = trig || null;
     }
@@ -704,6 +711,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     if (blk) localStorage.setItem("nr_castle_30m", JSON.stringify(newCache));
     localStorage.setItem("nr_castle_baseline", JSON.stringify(newBCache));
     localStorage.setItem("nr_castle_trigger", JSON.stringify(newTCache));
+    localStorage.setItem("nr_castle_snapshot", JSON.stringify(newSCache));
   }
   function refreshData() {
     if (dotEl) dotEl.className = "status-dot wait";
