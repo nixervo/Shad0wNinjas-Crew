@@ -989,12 +989,14 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     background: rgba(0,0,0,0.25);
   }}
   .castle-grid {{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 10px;
     padding: 10px;
   }}
   .castle-card {{
+    flex: 0 0 calc((100% - 20px) / 3);
     background: #0c0c1a;
     border: 1px solid #1a1a2e;
     border-radius: 10px;
@@ -1004,6 +1006,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     flex-direction: column;
     align-items: center;
     gap: 4px;
+    box-sizing: border-box;
   }}
   .castle-card.dangerous {{ border-color: #f4433666; }}
   .castle-card.catching {{ border-color: #4caf5066; }}
@@ -1045,8 +1048,8 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   .castle-tag-danger {{ color: #f44336; background: #f4433618; }}
   .castle-tag-catch {{ color: #4caf50; background: #4caf5018; }}
   @media (max-width: 600px) {{
-    .castle-grid {{ grid-template-columns: 1fr; gap: 8px; padding: 8px; }}
-    .castle-card {{ padding: 12px 10px 8px; }}
+    .castle-grid {{ padding: 8px; gap: 8px; }}
+    .castle-card {{ flex: 0 0 100%; padding: 12px 10px 8px; }}
     .castle-kills {{ font-size: 16px; }}
   }}
   th {{ cursor: pointer; user-select: none; }}
