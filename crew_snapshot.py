@@ -23,6 +23,7 @@ CACHE_1H_KILLS = "_1h_kills_cache.json"
 CHANGES_JSON = "_changes.json"
 PHASE1_CACHE = "_phase1_cache.json"
 DAILY_BASELINE = "_daily_baseline.json"
+DAILY_KILLS_BASELINE = "_daily_kills_baseline.json"
 CASTLE_API = "https://playninjarift.com/api/crew_ranking_castles_website.php"
 CASTLE_CACHE_30M = "_30m_castle_cache.json"
 
@@ -516,8 +517,12 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
   <div class="stats-bar">
     <div class="stats-row">
       <div class="stats-col">
-        <span class="stat-label">Today</span>
+        <span class="stat-label">Today Dmg</span>
         <span class="stat-val" id="today-gain">+{stats['today_gain']:,}</span>
+      </div>
+      <div class="stats-col">
+        <span class="stat-label">Today Kills</span>
+        <span class="stat-val" id="today-kills">+{stats['today_kills']:,}</span>
       </div>
       <div class="stats-col">
         <span class="stat-label">Total Damage</span>
@@ -685,14 +690,21 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     }
     if (clan) {
       var sv = document.querySelectorAll(".stats-col .stat-val");
-      if (sv.length >= 2 && clan.crew_damage !== undefined) {
-        sv[1].textContent = Number(clan.crew_damage).toLocaleString();
-        if (window.__initDmg !== undefined) {
-          var tg = clan.crew_damage - window.__initDmg;
-          sv[0].textContent = (tg >= 0 ? "+" : "") + tg.toLocaleString();
-        } else {
-          window.__initDmg = clan.crew_damage;
+      if (sv.length >= 3 && clan.crew_damage !== undefined) {
+        var gainEl = sv[0], killEl = sv[1], totalEl = sv[2];
+        var liveKills = 0;
+        for (var ki = 0; ki < d.length; ki++) liveKills += (d[ki].boss_kills || 0);
+        if (window.__initDmg === undefined) {
+          var startGain = parseInt(gainEl.textContent.replace(/[^0-9-]/g, "")) || 0;
+          var startKills = parseInt(killEl.textContent.replace(/[^0-9-]/g, "")) || 0;
+          window.__initDmg = clan.crew_damage - startGain;
+          window.__initKills = liveKills - startKills;
         }
+        var tg = clan.crew_damage - window.__initDmg;
+        var tk = liveKills - window.__initKills;
+        gainEl.textContent = (tg >= 0 ? "+" : "") + tg.toLocaleString();
+        killEl.textContent = (tk >= 0 ? "+" : "") + tk.toLocaleString();
+        totalEl.textContent = Number(clan.crew_damage).toLocaleString();
       }
     }
     var ft = document.querySelector(".footer");
@@ -1459,13 +1471,17 @@ def save_snapshot(data):
         save_changes(changes)
    
     today_gain = 0
+    today_kills = 0
     if os.path.exists(DAILY_BASELINE):
         with open(DAILY_BASELINE, encoding="utf-8") as f:
             bl = json.load(f)
             today_gain = crew_damage - bl.get("crew_damage", crew_damage)
-    if not is_daily:
-        today_gain = 0
-    stats = {"today_gain": today_gain, "season_total": crew_damage}
+    if os.path.exists(DAILY_KILLS_BASELINE):
+        with open(DAILY_KILLS_BASELINE, encoding="utf-8") as f:
+            kl = json.load(f)
+            tot_kills = sum((m.get("boss_kills", 0) or 0) for m in data["members"])
+            today_kills = tot_kills - kl.get("crew_kills", tot_kills)
+    stats = {"today_gain": today_gain, "today_kills": today_kills, "season_total": crew_damage}
     is_hourly_mark = (now.minute <= 1)
     is_30m_mark = (now.minute <= 1 or (now.minute >= 31 and now.minute <= 32))
 
@@ -1525,6 +1541,9 @@ def save_snapshot(data):
         save_xlsx(data, prev_data, now, uniq)
         with open(DAILY_BASELINE, "w", encoding="utf-8") as f:
             json.dump({"crew_damage": crew_damage, "date": sheet_name}, f)
+        tot_kills = sum((m.get("boss_kills", 0) or 0) for m in data["members"])
+        with open(DAILY_KILLS_BASELINE, "w", encoding="utf-8") as f:
+            json.dump({"crew_kills": tot_kills, "date": sheet_name}, f)
         existing_html = [f.replace(".html", "") for f in os.listdir(".") if f.endswith(".html") and f[:4].isdigit() and f != "index.html"]
         all_dates = set(existing_html)
         all_dates.add(sheet_name)
