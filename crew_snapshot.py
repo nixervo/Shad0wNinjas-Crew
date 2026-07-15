@@ -436,7 +436,7 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
 
     castle_html = ""
     if castle_stats and phase_num == 1:
-        castle_rows = ""
+        castle_cards = ""
         for cs in castle_stats:
             our_g_str = f"+{cs['our_gain']:,}" if cs['our_gain'] > 0 else str(cs['our_gain'])
             rival_g_str = f"+{cs['rival_gain']:,}" if cs['rival_gain'] > 0 else str(cs['rival_gain'])
@@ -448,25 +448,40 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
             is_lead = (cs["rank"] == 1)
             gap_label = "Lead" if is_lead else "Need"
             gap_disp = cs["gap"] if is_lead else cs["rival_kills"] - cs["our_kills"]
-            castle_rows += f"""        <div class="castle-row{cls}" data-castle="{cs['name']}">
-          <div class="castle-info">
-            <span class="castle-rank">&#127983; {cs['name']} #{cs['rank']}</span>
-            <span class="castle-kills">{cs['our_kills']:,}</span>
-            <span class="castle-gain">({our_g_str}/½h)</span>
-          </div>
-          <span class="castle-vs">vs</span>
-          <div class="castle-info rival">
-            <span class="castle-rank">#{cs['rival_rank']} {cs['rival_name']}</span>
-            <span class="castle-kills">{cs['rival_kills']:,}</span>
-            <span class="castle-gain">({rival_g_str}/½h)</span>
-          </div>
-          <span class="castle-gap">{gap_label} {gap_disp:,}</span>
+            tag_cls = "castle-tag-danger" if cls.strip() == "dangerous" else ("castle-tag-catch" if cls.strip() == "catching" else "")
+            if is_lead:
+                top_html = f"""          <div class="castle-emoji">&#127983;</div>
+          <div class="castle-name">{cs['name']}</div>
+          <div class="castle-rank-pill">[#{cs['rank']}]</div>
+          <div class="castle-kills ours">{cs['our_kills']:,}</div>
+          <div class="castle-gain ours">({our_g_str}/½h)</div>
+          <div class="castle-div"></div>
+          <div class="castle-rival-rank">#{cs['rival_rank']}</div>
+          <div class="castle-rival-name">{cs['rival_name']}</div>
+          <div class="castle-kills rival">{cs['rival_kills']:,}</div>
+          <div class="castle-gain rival">({rival_g_str}/½h)</div>"""
+            else:
+                top_html = f"""          <div class="castle-emoji">&#127983;</div>
+          <div class="castle-name">{cs['name']}</div>
+          <div class="castle-rival-rank">#{cs['rival_rank']}</div>
+          <div class="castle-rival-name">{cs['rival_name']}</div>
+          <div class="castle-kills rival">{cs['rival_kills']:,}</div>
+          <div class="castle-gain rival">({rival_g_str}/½h)</div>
+          <div class="castle-div"></div>
+          <div class="castle-rank-pill">[#{cs['rank']}]</div>
+          <div class="castle-kills ours">{cs['our_kills']:,}</div>
+          <div class="castle-gain ours">({our_g_str}/½h)</div>"""
+            castle_cards += f"""        <div class="castle-card{cls}" data-castle="{cs['name']}">
+{top_html}
+          <div class="castle-tag {tag_cls}">{gap_label} {gap_disp:,}</div>
         </div>
 """
         castle_html = f"""
   <div class="castle-bar" id="castle-bar">
     <div class="castle-header">CASTLES</div>
-{castle_rows}  </div>"""
+    <div class="castle-grid">
+{castle_cards}    </div>
+  </div>"""
 
     script_html = ""
     if season_info:
@@ -597,13 +612,13 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   function castleUpd(cdata) {
     var cb = document.getElementById("castle-bar");
     if (!cb || window.__phase !== 1) return;
-    var rows = cb.querySelectorAll(".castle-row");
+    var cards = cb.querySelectorAll(".castle-card");
     var cache = null; try { cache = JSON.parse(localStorage.getItem("nr_castle_30m")); } catch(e) {}
     var newCache = {};
-    for (var i = 0; i < rows.length; i++) {
-      var row = rows[i];
-      var csm = row.getAttribute("data-castle");
-      if (!csm) { var cr = row.querySelector(".castle-rank"); if (cr) csm = cr.textContent.replace(/#\d+/, "").trim(); else continue; }
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
+      var csm = card.getAttribute("data-castle");
+      if (!csm) { var cn = card.querySelector(".castle-name"); if (cn) csm = cn.textContent.trim(); else continue; }
       var entries = cdata[csm];
       if (!entries) continue;
       var our = null, rival = null;
@@ -625,19 +640,29 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       newCache[csm] = {our_kills: ourK, rival_kills: rivalK, rival_name: rival.name, our_rank: our.rank};
       var gStr = ourG > 0 ? "+" + ourG : "" + ourG;
       var rgStr = rivalG > 0 ? "+" + rivalG : "" + rivalG;
-      var ourEls = row.querySelectorAll(".castle-info:first-child .castle-kills"), ourGainEls = row.querySelectorAll(".castle-info:first-child .castle-gain");
-      var rivalEls = row.querySelectorAll(".castle-info.rival .castle-kills"), rivalGainEls = row.querySelectorAll(".castle-info.rival .castle-gain");
-      var gapEl = row.querySelector(".castle-gap");
-      if (ourEls.length) ourEls[0].textContent = ourK;
-      if (ourGainEls.length) ourGainEls[0].textContent = "(" + gStr + "/½h)";
-      if (rivalEls.length) rivalEls[0].textContent = rivalK;
-      if (rivalGainEls.length) rivalGainEls[0].textContent = "(" + rgStr + "/½h)";
+      var ourKEl = card.querySelector(".castle-kills.ours");
+      var ourGEl = card.querySelector(".castle-gain.ours");
+      var rivalKEl = card.querySelector(".castle-kills.rival");
+      var rivalGEl = card.querySelector(".castle-gain.rival");
+      var tagEl = card.querySelector(".castle-tag");
+      var pillEl = card.querySelector(".castle-rank-pill");
+      var rivalRankEl = card.querySelector(".castle-rival-rank");
+      var rivalNameEl = card.querySelector(".castle-rival-name");
+      if (ourKEl) ourKEl.textContent = ourK;
+      if (ourGEl) ourGEl.textContent = "(" + gStr + "/½h)";
+      if (rivalKEl) rivalKEl.textContent = rivalK;
+      if (rivalGEl) rivalGEl.textContent = "(" + rgStr + "/½h)";
+      if (pillEl) pillEl.textContent = "[#" + our.rank + "]";
+      if (rivalRankEl) rivalRankEl.textContent = "#" + rival.rank;
+      if (rivalNameEl) rivalNameEl.textContent = rival.name;
       var isLead = (our.rank === 1);
       var gapVal = isLead ? (ourK - rivalK) : (rivalK - ourK);
-      if (gapEl) gapEl.textContent = (isLead ? "Lead " : "Need ") + gapVal;
-      row.classList.remove("dangerous", "catching");
-      if (our.rank === 1 && rivalG > ourG) row.classList.add("dangerous");
-      else if (our.rank > 1 && ourG > rivalG) row.classList.add("catching");
+      var label = isLead ? "Lead " : "Need ";
+      if (tagEl) tagEl.textContent = label + gapVal;
+      card.classList.remove("dangerous", "catching");
+      tagEl.classList.remove("castle-tag-danger", "castle-tag-catch");
+      if (our.rank === 1 && rivalG > ourG) { card.classList.add("dangerous"); tagEl.classList.add("castle-tag-danger"); }
+      else if (our.rank > 1 && ourG > rivalG) { card.classList.add("catching"); tagEl.classList.add("castle-tag-catch"); }
     }
     var nm = new Date().getMinutes(), blk = nm <= 1 ? "01" : (nm >= 31 && nm <= 32 ? "31" : null);
     if (blk) localStorage.setItem("nr_castle_30m", JSON.stringify(newCache));
@@ -949,7 +974,6 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   .castle-bar {{
     display: flex;
     flex-direction: column;
-    gap: 1px;
     background: #0f0f1e;
     border-top: 2px solid #c9a84c44;
     border-bottom: 1px solid #1a1a2e;
@@ -964,39 +988,66 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     font-weight: 600;
     background: rgba(0,0,0,0.25);
   }}
-  .castle-row {{
+  .castle-grid {{
     display: grid;
-    grid-template-columns: 1fr auto 1fr auto;
-    align-items: center;
-    padding: 8px 16px;
-    gap: 12px;
-    font-size: 13px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 10px;
   }}
-  .castle-row.dangerous {{ background: rgba(244,67,54,0.12); }}
-  .castle-row.catching {{ background: rgba(76,175,80,0.12); }}
-  .castle-info {{
+  .castle-card {{
+    background: #0c0c1a;
+    border: 1px solid #1a1a2e;
+    border-radius: 10px;
+    padding: 14px 12px 10px;
+    text-align: center;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    min-width: 0;
+    gap: 4px;
   }}
-  .castle-info .castle-rank {{ color: #ddd; font-weight: 600; white-space: nowrap; }}
-  .castle-info .castle-kills {{ color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; }}
-  .castle-info .castle-gain {{ color: #999; font-size: 12px; font-variant-numeric: tabular-nums; }}
-  .castle-vs {{ color: #666; font-size: 12px; font-weight: 600; flex-shrink: 0; }}
-  .castle-info.rival .castle-rank {{ color: #999; }}
-  .castle-info.rival .castle-kills {{ color: #bbb; }}
-  .castle-gap {{
+  .castle-card.dangerous {{ border-color: #f4433666; }}
+  .castle-card.catching {{ border-color: #4caf5066; }}
+  .castle-emoji {{ font-size: 28px; line-height: 1.2; }}
+  .castle-name {{ color: #ddd; font-size: 13px; font-weight: 600; }}
+  .castle-rank-pill {{
+    background: #c9a84c22;
     color: #c9a84c;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 10px;
+    margin: 2px 0 4px;
+  }}
+  .castle-rival-rank {{ color: #777; font-size: 12px; font-weight: 600; }}
+  .castle-rival-name {{ color: #999; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }}
+  .castle-kills {{ font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }}
+  .castle-kills.ours {{ color: #fff; }}
+  .castle-kills.rival {{ color: #bbb; }}
+  .castle-gain {{ font-size: 11px; font-variant-numeric: tabular-nums; }}
+  .castle-gain.ours {{ color: #4caf50; }}
+  .castle-gain.rival {{ color: #777; }}
+  .castle-div {{
+    width: 80%;
+    height: 1px;
+    background: #1a1a2e;
+    margin: 6px 0;
     flex-shrink: 0;
   }}
+  .castle-tag {{
+    margin-top: 6px;
+    padding: 4px 12px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #c9a84c;
+    background: #c9a84c18;
+  }}
+  .castle-tag-danger {{ color: #f44336; background: #f4433618; }}
+  .castle-tag-catch {{ color: #4caf50; background: #4caf5018; }}
   @media (max-width: 600px) {{
-    .castle-row {{ padding: 8px 12px; gap: 8px; font-size: 12px; grid-template-columns: 1fr auto 1fr auto; }}
-    .castle-info .castle-gain {{ font-size: 11px; }}
-    .castle-gap {{ font-size: 12px; }}
+    .castle-grid {{ grid-template-columns: 1fr; gap: 8px; padding: 8px; }}
+    .castle-card {{ padding: 12px 10px 8px; }}
+    .castle-kills {{ font-size: 16px; }}
   }}
   th {{ cursor: pointer; user-select: none; }}
   th .sort-arrow {{ font-size: 11px; margin-left: 3px; }}
