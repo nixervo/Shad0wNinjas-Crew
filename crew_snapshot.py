@@ -873,10 +873,12 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     letter-spacing: 1px;
     color: #c9a84c;
     font-weight: 600;
+    border-left: 2px solid transparent;
   }}
   td {{
     padding: 11px 18px;
     border-bottom: 1px solid #14141f;
+    border-left: 2px solid transparent;
     font-size: 14px;
     color: #ccc;
     text-align: center;
