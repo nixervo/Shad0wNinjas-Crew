@@ -758,7 +758,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {favicon_html}
-<title>{crew_name} [Reps]</title>
+<title>{crew_name} [Crew]</title>
 <style>
   * {{ margin: 0; padding: 0; box-sizing: border-box; }}
   body {{
@@ -1496,7 +1496,7 @@ def save_daily_history():
 <div class="container">
   <div class="header"><h1>SHAD0W NINJAS</h1><div class="sub">Daily Rep History (Season 61)</div></div>
   <div class="index-list">{index_rows}</div>
-  <div class="footer"><a href="index.html">&larr; Back to main page</a> &middot; <a href="https://github.com/nixervo/SHAD0W NINJAS-Reps">Source</a></div>
+  <div class="footer"><a href="index.html">&larr; Back to main page</a> &middot; <a href="https://github.com/nixervo/Shad0wNinjas-Crew">Source</a></div>
 </div>
 </body>
 </html>"""
