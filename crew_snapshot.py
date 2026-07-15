@@ -623,9 +623,10 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     var cb = document.getElementById("castle-bar");
     if (!cb || window.__phase !== 1) return;
     var cards = cb.querySelectorAll(".castle-card");
-    var cache = null, bCache = null;
-    try { cache = JSON.parse(localStorage.getItem("nr_castle_30m")); bCache = JSON.parse(localStorage.getItem("nr_castle_baseline")); } catch(e) {}
-    var newCache = {}, newBCache = {};
+    var cache = null, bCache = null, tCache = null;
+    try { cache = JSON.parse(localStorage.getItem("nr_castle_30m")); bCache = JSON.parse(localStorage.getItem("nr_castle_baseline")); tCache = JSON.parse(localStorage.getItem("nr_castle_trigger")); } catch(e) {}
+    tCache = tCache || {};
+    var newCache = {}, newBCache = {}, newTCache = {};
     for (var i = 0; i < cards.length; i++) {
       var card = cards[i];
       var csm = card.getAttribute("data-castle");
@@ -675,15 +676,34 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       card.classList.remove("dangerous", "catching");
       tagEl.classList.remove("castle-tag-danger", "castle-tag-catch");
       var curGap = isLead ? (ourK - rivalK) : (rivalK - ourK);
-      var prevGap = 0;
-      if (bp) { prevGap = isLead ? (bp.our_kills - bp.rival_kills) : (bp.rival_kills - bp.our_kills); }
-      var pct = prevGap > 0 ? Math.round((prevGap - curGap) / prevGap * 100) : 0;
-      if (isLead && pct >= 30) { card.classList.add("dangerous"); tagEl.classList.add("castle-tag-danger"); }
-      else if (!isLead && pct >= 30) { card.classList.add("catching"); tagEl.classList.add("castle-tag-catch"); }
+      var trig = tCache[csm];
+      var active = false;
+      if (trig) {
+        var ref = trig.ref_gap;
+        var changePct = ref > 0 ? Math.round((curGap - ref) / ref * 100) : 0;
+        if (trig.state === "dangerous" && changePct >= 15) {
+          trig = null;
+        } else if (trig.state === "catching" && changePct >= 15) {
+          trig = null;
+        } else {
+          active = true;
+          if (trig.state === "dangerous") { card.classList.add("dangerous"); tagEl.classList.add("castle-tag-danger"); }
+          else { card.classList.add("catching"); tagEl.classList.add("castle-tag-catch"); }
+        }
+      }
+      if (!trig) {
+        var prevGap = 0;
+        if (bp) { prevGap = isLead ? (bp.our_kills - bp.rival_kills) : (bp.rival_kills - bp.our_kills); }
+        var pct = prevGap > 0 ? Math.round((prevGap - curGap) / prevGap * 100) : 0;
+        if (isLead && pct >= 30) { trig = {state: "dangerous", ref_gap: curGap}; card.classList.add("dangerous"); tagEl.classList.add("castle-tag-danger"); }
+        else if (!isLead && pct >= 30) { trig = {state: "catching", ref_gap: curGap}; card.classList.add("catching"); tagEl.classList.add("castle-tag-catch"); }
+      }
+      newTCache[csm] = trig || null;
     }
     var nm = new Date().getMinutes(), blk = nm <= 1 ? "01" : (nm >= 31 && nm <= 32 ? "31" : null);
     if (blk) localStorage.setItem("nr_castle_30m", JSON.stringify(newCache));
     localStorage.setItem("nr_castle_baseline", JSON.stringify(newBCache));
+    localStorage.setItem("nr_castle_trigger", JSON.stringify(newTCache));
   }
   function refreshData() {
     if (dotEl) dotEl.className = "status-dot wait";
