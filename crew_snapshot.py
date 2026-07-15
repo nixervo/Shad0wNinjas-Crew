@@ -290,31 +290,101 @@ def save_xlsx(data, prev_data, now, uniq):
     wb.save(EXCEL_FILE)
     print(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Saved sheet '{sheet_name}' to {EXCEL_FILE}")
 
-def save_seasonal_xlsx(members, season_num):
-    filename = f"S{season_num}_ID{CREW_ID}.xlsx"
+def save_seasonal_xlsx(members, season_num, phase):
+    filename = f"S{season_num}_P{phase}_ID{CREW_ID}.xlsx"
     if os.path.exists(filename):
         return
     wb = Workbook()
     ws = wb.active
-    ws.title = f"Season {season_num}"
-    header = f"[S{season_num}] Total Reps"
-    ws["A1"] = "Name"
-    ws["B1"] = header
-    ws["A1"].font = Font(bold=True)
-    ws["B1"].font = Font(bold=True)
-    ws["A1"].alignment = Alignment(horizontal="center", vertical="center")
-    ws["B1"].alignment = Alignment(horizontal="center", vertical="center")
-    max_name = 10
-    max_reps = 4
-    for idx, m in enumerate(members, 2):
-        name = m["character_name"]
-        reps = m["member_damage"]
-        ws.cell(row=idx, column=1, value=name).alignment = Alignment(vertical="center")
-        ws.cell(row=idx, column=2, value=reps).alignment = Alignment(horizontal="center", vertical="center")
-        max_name = max(max_name, len(name))
-        max_reps = max(max_reps, len(str(reps)))
-    ws.column_dimensions["A"].width = max_name + 5
-    ws.column_dimensions["B"].width = max_reps + 3
+    ws.title = f"Season {season_num} P{phase}"
+    bold = Font(bold=True)
+    center = Alignment(horizontal="center", vertical="center")
+    vcenter = Alignment(vertical="center")
+
+    if phase == 1:
+        headers = ["Name", "Boss Kills", "Total Damage"]
+        ws["A1"] = headers[0]
+        ws["B1"] = headers[1]
+        ws["C1"] = headers[2]
+        for col in ["A", "B", "C"]:
+            ws[f"{col}1"].font = bold
+            ws[f"{col}1"].alignment = center
+        total_kills = 0
+        total_dmg = 0
+        row = 2
+        for m in members:
+            name = m["character_name"]
+            kills = m.get("boss_kills", 0) or 0
+            dmg = m["member_damage"]
+            ws.cell(row=row, column=1, value=name).alignment = vcenter
+            ws.cell(row=row, column=2, value=kills).alignment = center
+            ws.cell(row=row, column=3, value=dmg).alignment = center
+            total_kills += kills
+            total_dmg += dmg
+            row += 1
+        ws.cell(row=row, column=1, value="CREW TOTAL").font = bold
+        ws.cell(row=row, column=2, value=total_kills).font = bold
+        ws.cell(row=row, column=3, value=total_dmg).font = bold
+        for c in [1, 2, 3]:
+            ws.cell(row=row, column=c).alignment = center
+        ws.column_dimensions["A"].width = 22
+        ws.column_dimensions["B"].width = 14
+        ws.column_dimensions["C"].width = 16
+    else:
+        headers = ["Name", "P1 Kills", "P1 Damage", "P2 Kills", "P2 Damage", "Total Damage"]
+        ws["A1"] = headers[0]
+        ws["B1"] = headers[1]
+        ws["C1"] = headers[2]
+        ws["D1"] = headers[3]
+        ws["E1"] = headers[4]
+        ws["F1"] = headers[5]
+        for col in ["A", "B", "C", "D", "E", "F"]:
+            ws[f"{col}1"].font = bold
+            ws[f"{col}1"].alignment = center
+        p1_data = {}
+        if os.path.exists(PHASE1_CACHE):
+            with open(PHASE1_CACHE, encoding="utf-8") as f:
+                p1_data = json.load(f)
+        t_p1_kills = 0
+        t_p1_dmg = 0
+        t_p2_kills = 0
+        t_p2_dmg = 0
+        t_total = 0
+        row = 2
+        for m in members:
+            name = m["character_name"]
+            p1k = p1_data.get(name, {}).get("kills", 0) if p1_data.get(name) else 0
+            p1d = p1_data.get(name, {}).get("damage", 0) if p1_data.get(name) else 0
+            cur_kills = m.get("boss_kills", 0) or 0
+            cur_dmg = m["member_damage"]
+            p2k = cur_kills - p1k
+            p2d = cur_dmg - p1d
+            ws.cell(row=row, column=1, value=name).alignment = vcenter
+            ws.cell(row=row, column=2, value=p1k).alignment = center
+            ws.cell(row=row, column=3, value=p1d).alignment = center
+            ws.cell(row=row, column=4, value=p2k).alignment = center
+            ws.cell(row=row, column=5, value=p2d).alignment = center
+            ws.cell(row=row, column=6, value=cur_dmg).alignment = center
+            t_p1_kills += p1k
+            t_p1_dmg += p1d
+            t_p2_kills += p2k
+            t_p2_dmg += p2d
+            t_total += cur_dmg
+            row += 1
+        ws.cell(row=row, column=1, value="CREW TOTAL").font = bold
+        ws.cell(row=row, column=2, value=t_p1_kills).font = bold
+        ws.cell(row=row, column=3, value=t_p1_dmg).font = bold
+        ws.cell(row=row, column=4, value=t_p2_kills).font = bold
+        ws.cell(row=row, column=5, value=t_p2_dmg).font = bold
+        ws.cell(row=row, column=6, value=t_total).font = bold
+        for c in [1, 2, 3, 4, 5, 6]:
+            ws.cell(row=row, column=c).alignment = center
+        ws.column_dimensions["A"].width = 22
+        ws.column_dimensions["B"].width = 12
+        ws.column_dimensions["C"].width = 13
+        ws.column_dimensions["D"].width = 12
+        ws.column_dimensions["E"].width = 13
+        ws.column_dimensions["F"].width = 15
     wb.save(filename)
     print(f"Saved seasonal snapshot: {filename}")
 
@@ -1425,6 +1495,7 @@ def save_snapshot(data):
             phase1_data[m["character_name"]] = {"damage": m["member_damage"], "kills": m.get("boss_kills", 0)}
         with open(PHASE1_CACHE, "w", encoding="utf-8") as f:
             json.dump(phase1_data, f)
+        save_seasonal_xlsx(data["members"], season_info["season"], 1)
         print(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Phase 1 snapshot saved")
 
     if is_daily:
@@ -1448,7 +1519,7 @@ def save_snapshot(data):
     if season_info:
         end_dt = datetime(2026, 7, 19, 5, 0, 0, tzinfo=timezone.utc)
         if now >= end_dt:
-            save_seasonal_xlsx(data["members"], season_info["season"])
+            save_seasonal_xlsx(data["members"], season_info["season"], 2)
 
     try:
         save_daily_history()
