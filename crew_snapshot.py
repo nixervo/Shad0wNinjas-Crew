@@ -661,8 +661,12 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       if (tagEl) tagEl.textContent = label + gapVal;
       card.classList.remove("dangerous", "catching");
       tagEl.classList.remove("castle-tag-danger", "castle-tag-catch");
-      if (our.rank === 1 && rivalG > ourG) { card.classList.add("dangerous"); tagEl.classList.add("castle-tag-danger"); }
-      else if (our.rank > 1 && ourG > rivalG) { card.classList.add("catching"); tagEl.classList.add("castle-tag-catch"); }
+      var curGap = isLead ? (ourK - rivalK) : (rivalK - ourK);
+      var prevGap = 0;
+      if (pc) { prevGap = isLead ? (pc.our_kills - pc.rival_kills) : (pc.rival_kills - pc.our_kills); }
+      var pct = prevGap > 0 ? Math.round((prevGap - curGap) / prevGap * 100) : 0;
+      if (isLead && pct >= 30) { card.classList.add("dangerous"); tagEl.classList.add("castle-tag-danger"); }
+      else if (!isLead && pct >= 30) { card.classList.add("catching"); tagEl.classList.add("castle-tag-catch"); }
     }
     var nm = new Date().getMinutes(), blk = nm <= 1 ? "01" : (nm >= 31 && nm <= 32 ? "31" : null);
     if (blk) localStorage.setItem("nr_castle_30m", JSON.stringify(newCache));
