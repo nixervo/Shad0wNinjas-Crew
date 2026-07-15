@@ -508,7 +508,7 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
         <span class="timer-digits"><span id="timer-s">--</span><span class="timer-unit">s</span></span>
       </span>
     </span>
-    <span class="timer-right" id="auto-refresh">&#x21BB; Auto Refresh in <span id="auto-seconds">60</span>s</span>
+     <span class="timer-right" id="auto-refresh">&#x21BB; Auto Refresh in <span id="auto-seconds">30</span>s</span>
   </div>"""
 
     stats_html = ""
@@ -638,7 +638,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   var API = "https://playninjarift.com/api/detail_crew_website.php?crew_id=" + window.__crewId, RK = "https://playninjarift.com/api/crew_ranking_website.php", CA = "https://playninjarift.com/api/crew_ranking_castles_website.php";
   var tb = document.querySelector("tbody"), names = [], rws = tb.querySelectorAll("tr");
   for (var i = 0; i < rws.length; i++) names.push(rws[i].cells[1].textContent.trim());
-  var autoSeconds = 60, autoEl = document.getElementById("auto-seconds"), searchEl = document.getElementById("search-input"), dotEl = document.getElementById("status-dot"), statusEl = document.getElementById("status-text");
+  var autoSeconds = 30, autoEl = document.getElementById("auto-seconds"), searchEl = document.getElementById("search-input"), dotEl = document.getElementById("status-dot"), statusEl = document.getElementById("status-text");
   if (window.__hourlyCache && Object.keys(window.__hourlyCache).length > 0) { var _ts = ts(), _m = String(new Date().getMinutes()), _b = _m <= "1" ? "01" : (_m >= "31" && _m <= "32" ? "31" : _m); localStorage.setItem("nr_1h", JSON.stringify({b: _b, ts: _ts, rs: window.__hourlyCache})); }
   if (window.__30mCache && Object.keys(window.__30mCache).length > 0) { var _b30 = (new Date().getMinutes() <= 1 ? "01" : "31"); localStorage.setItem("nr_30m", JSON.stringify({b: _b30, ts: _ts, rs: window.__30mCache})); }
   function pad(n) { return n < 10 ? "0"+n : ""+n; }
@@ -648,7 +648,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   function blk30(m) { return m <= 1 ? "01" : (m >= 31 && m <= 32 ? "31" : null); }
   function blk1h(m) { return m <= 1 ? "01" : null; }
   function upd(d, rk) {
-    autoSeconds = 60;
+    autoSeconds = 30;
     var clan = null;
     if (rk) {
       if (Array.isArray(rk)) {
@@ -671,6 +671,12 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
         cel[5].textContent = md.damage;
       }
       if (window.__phase !== 1) { cel[8].textContent = md.damage; }
+      if (c30 && c30.ks && c30.ks[name] !== undefined) cel[3].innerHTML = dh(md.kills - c30.ks[name]);
+      if (c1h && c1h.ks && c1h.ks[name] !== undefined) cel[4].innerHTML = dh(md.kills - c1h.ks[name]);
+      if (c30 && c30.rs && c30.rs[name] !== undefined) cel[6].innerHTML = dh(md.damage - c30.rs[name]);
+      if (c1h && c1h.rs && c1h.rs[name] !== undefined) cel[7].innerHTML = dh(md.damage - c1h.rs[name]);
+      if (c30 && c30.rs && c30.rs[name] !== undefined) cel[9].innerHTML = dh(md.damage - c30.rs[name]);
+      if (c1h && c1h.rs && c1h.rs[name] !== undefined) cel[10].innerHTML = dh(md.damage - c1h.rs[name]);
     }
     for (var _n in lm) {
       if (names.indexOf(_n) === -1) {
@@ -710,9 +716,10 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     var ft = document.querySelector(".footer");
     var st = document.getElementById("snapshot-ts"); if (st) st.textContent = ns;
     var rs = {}; for (var i = 0; i < d.length; i++) rs[d[i].character_name] = d[i].member_damage;
+    var ks = {}; for (var i = 0; i < d.length; i++) ks[d[i].character_name] = d[i].boss_kills || 0;
     var b30 = blk30(nm), b1h = blk1h(nm);
-    if (b30 && (!c30 || c30.b !== b30)) localStorage.setItem("nr_30m", JSON.stringify({b: b30, ts: ns, rs: rs}));
-    if (b1h && (!c1h || c1h.b !== b1h)) localStorage.setItem("nr_1h", JSON.stringify({b: b1h, ts: ns, rs: rs}));
+    if (b30 && (!c30 || c30.b !== b30)) localStorage.setItem("nr_30m", JSON.stringify({b: b30, ts: ns, rs: rs, ks: ks}));
+    if (b1h && (!c1h || c1h.b !== b1h)) localStorage.setItem("nr_1h", JSON.stringify({b: b1h, ts: ns, rs: rs, ks: ks}));
     window.__defaultRows = tb.innerHTML;
     var sr = tb.querySelectorAll("tr");
     for (var ri = 0; ri < sr.length; ri++) sr[ri].cells[0].textContent = ri + 1;
@@ -852,9 +859,9 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   }
   window.__refreshData = refreshData;
   refreshData();
-  setInterval(refreshData, 60000);
+  setInterval(refreshData, 30000);
   setInterval(function(){if(autoSeconds>0)autoSeconds--;if(autoEl)autoEl.textContent=autoSeconds;},1000);
-  if(autoEl)autoEl.parentElement.addEventListener("click",function(){autoSeconds=60;refreshData();});
+  if(autoEl)autoEl.parentElement.addEventListener("click",function(){autoSeconds=30;refreshData();});
   if(searchEl)searchEl.addEventListener("input",function(){
     var q = this.value.toLowerCase(), r = tb.querySelectorAll("tr");
     for(var i=0;i<r.length;i++)r[i].style.display=r[i].cells[1].textContent.trim().toLowerCase().indexOf(q)>=0?"":"none";
