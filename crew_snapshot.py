@@ -18,6 +18,7 @@ HOURLY_CACHE = "_hourly_cache.json"
 CACHE_30M = "_30m_cache.json"
 CACHE_30M_KILLS = "_30m_kills_cache.json"
 CACHE_1H = "_1h_cache.json"
+CACHE_1H_KILLS = "_1h_kills_cache.json"
 CHANGES_JSON = "_changes.json"
 PHASE1_CACHE = "_phase1_cache.json"
 CASTLE_API = "https://playninjarift.com/api/crew_ranking_castles_website.php"
@@ -147,6 +148,16 @@ def load_1h_cache():
 
 def save_1h_cache(member_dict, timestamp):
     with open(CACHE_1H, "w", encoding="utf-8") as f:
+        json.dump({"timestamp": timestamp, "members": member_dict}, f)
+
+def load_1h_kills_cache():
+    if not os.path.exists(CACHE_1H_KILLS):
+        return None
+    with open(CACHE_1H_KILLS, encoding="utf-8") as f:
+        return json.load(f)
+
+def save_1h_kills_cache(member_dict, timestamp):
+    with open(CACHE_1H_KILLS, "w", encoding="utf-8") as f:
         json.dump({"timestamp": timestamp, "members": member_dict}, f)
 
 def load_30m_castle_cache():
@@ -331,7 +342,7 @@ def diff_html(diff_str):
     else:
         return f'<span class="na">{diff_str}</span>'
 
-def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all_dates, show_changes, season_info=None, stats=None, diff_30m=None, changes=None, hourly_cache=None, cache_30m=None, phase1=None, diffs_30m_kills=None, castle_stats=None):
+def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all_dates, show_changes, season_info=None, stats=None, diff_30m=None, changes=None, hourly_cache=None, cache_30m=None, phase1=None, diffs_30m_kills=None, castle_stats=None, diffs_1h_kills=None):
     daily_rows = compute_diff(data["members"], prev_data)
     crew_name = data.get("crew_name", "Unknown")
     date_str = now.strftime("%Y-%m-%d")
@@ -357,12 +368,14 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     diffs_30m_map = diff_30m.get("diffs", {}) if isinstance(diff_30m, dict) else {}
     daily_lookup = {name: diff for name, _, diff in daily_rows}
     kills_30m_map = diffs_30m_kills if diffs_30m_kills else {}
+    kills_1h_map = diffs_1h_kills if diffs_1h_kills else {}
+    dmg_1h_map = hourly_diffs if hourly_diffs else {}
     uniq_names = get_unique_names(data["members"])
     phase_num = season_info.get("phase", 1) if season_info else 1
     in_p1 = (phase_num == 1)
     na = '<span class="na">N/A</span>'
     table_rows = "".join(
-        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num\">{m.get('boss_kills', 0) or 0:,}</td><td class=\"num\">{diff_html(kills_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">" + (na if in_p1 else f'{m["member_damage"]:,}') + "</td><td class=\"num\">" + (na if in_p1 else diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))) + f"</td><td class=\"num\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td><td class=\"num\">{na}</td></tr>"
+        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num\">{m.get('boss_kills', 0) or 0:,}</td><td class=\"num ph1-diff\">{diff_html(kills_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(kills_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num ph1-diff\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">" + (na if in_p1 else f'{m["member_damage"]:,}') + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))) + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))) + f"</td><td class=\"num\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td><td class=\"num\">{na}</td></tr>"
         for i, m in enumerate(data["members"])
     )
 
@@ -504,6 +517,18 @@ window.__phase = """ + str(phase_num) + """;
 window.__hourlyCache = """ + json.dumps(hourly_cache if hourly_cache else {}) + """;
 window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "members" in cache_30m else {}) + """;
 (function() {
+  var p = window.__phase;
+  var hideCls = p === 1 ? "ph2-diff" : "ph1-diff";
+  var ss = document.createElement("style");
+  ss.textContent = "." + hideCls + " { display: none; }";
+  if (p === 1) {
+    ss.textContent += " th.meg.divider { border-left: 2px solid #c9a84c88; padding-left: 12px; } td:nth-child(9) { border-left: 2px solid #c9a84c88; }";
+  } else {
+    ss.textContent += " th.meg { border-left: none; padding-left: 0; } th.meg.divider { border-left: 2px solid #c9a84c88; padding-left: 12px; } td:nth-child(3) { border-left: none; } td:nth-child(9) { border-left: 2px solid #c9a84c88; }";
+  }
+  document.head.appendChild(ss);
+})();
+(function() {
   var tbody = document.querySelector("tbody");
   window.__originalRows = tbody.innerHTML;
   window.__defaultRows = tbody.innerHTML;
@@ -576,15 +601,15 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       var row = n2r[name]; if (!row) continue;
       var cel = row.cells;
       cel[2].textContent = md.kills;
-      cel[4].textContent = md.damage;
-      if (window.__phase !== 1) { cel[6].textContent = md.damage; }
+      cel[5].textContent = md.damage;
+      if (window.__phase !== 1) { cel[8].textContent = md.damage; }
     }
     for (var _n in lm) {
       if (names.indexOf(_n) === -1) {
         names.push(_n);
         var tr = document.createElement("tr");
         tr.className = "new-row";
-        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num">' + (lm[_n].kills||0) + '</td><td class="num"><span class="na">N/A</span></td><td class="num">' + lm[_n].damage + '</td><td class="num"><span class="na">N/A</span></td><td class="num">' + (window.__phase !== 1 ? lm[_n].damage : '<span class="na">N/A</span>') + '</td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td>';
+        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num">' + (lm[_n].kills||0) + '</td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num">' + lm[_n].damage + '</td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num">' + (window.__phase !== 1 ? lm[_n].damage : '<span class="na">N/A</span>') + '</td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td>';
         tb.appendChild(tr);
         if (searchEl && searchEl.value && _n.toLowerCase().indexOf(searchEl.value.toLowerCase()) === -1) tr.style.display = "none";
       }
@@ -1143,7 +1168,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   td:first-child {{ width: 28px; min-width: 28px; text-align: center; color: #666; font-size: 12px; }}
   .meg.divider {{ border-left: 2px solid #c9a84c88; padding-left: 12px; }}
   .divider {{ border-left: 2px solid #c9a84c88; }}
-  td:nth-child(3), td:nth-child(7), td:nth-child(9) {{ border-left: 2px solid #c9a84c88; }}
+  td:nth-child(3), td:nth-child(9), td:nth-child(12) {{ border-left: 2px solid #c9a84c88; }}
   .action-btn {{ cursor: pointer; font-size: 12px; color: #888; padding: 4px 10px; border-radius: 4px; border: 1px solid #1a1a2e; background: #0f0f1e; user-select: none; white-space: nowrap; }}
   .action-btn:hover {{ border-color: #c9a84c; color: #c9a84c; }}
   .footer-updated {{ color: #555; font-size: 11px; margin: 2px 0; }}
@@ -1183,19 +1208,22 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       <tr>
         <th rowspan="2" data-col="0"># <span class="sort-arrow"></span></th>
         <th rowspan="2" data-col="1">Name <span class="sort-arrow"></span></th>
-        <th colspan="4">Phase 1</th>
-        <th colspan="2" class="meg divider">Phase 2</th>
+        <th colspan="6" class="meg">Phase 1</th>
+        <th colspan="3" class="meg divider">Phase 2</th>
         <th colspan="2" class="meg divider">DAILY</th>
       </tr>
       <tr>
         <th data-col="2">B.Kills <span class="sort-arrow"></span></th>
-        <th data-col="3">1/2H[K] <span class="sort-arrow"></span></th>
-        <th data-col="4">Dmg <span class="sort-arrow"></span></th>
-        <th data-col="5">1/2H[D] <span class="sort-arrow"></span></th>
-        <th data-col="6">Dmg <span class="sort-arrow"></span></th>
-        <th data-col="7">1/2H[D] <span class="sort-arrow"></span></th>
+        <th data-col="3" class="ph1-diff">½H[K] <span class="sort-arrow"></span></th>
+        <th data-col="4" class="ph1-diff">1H[K] <span class="sort-arrow"></span></th>
+        <th data-col="5">Dmg <span class="sort-arrow"></span></th>
+        <th data-col="6" class="ph1-diff">½H[D] <span class="sort-arrow"></span></th>
+        <th data-col="7" class="ph1-diff">1H[D] <span class="sort-arrow"></span></th>
         <th data-col="8">Dmg <span class="sort-arrow"></span></th>
-        <th data-col="9">Kills <span class="sort-arrow"></span></th>
+        <th data-col="9" class="ph2-diff">½H[D] <span class="sort-arrow"></span></th>
+        <th data-col="10" class="ph2-diff">1H[D] <span class="sort-arrow"></span></th>
+        <th data-col="11">Dmg <span class="sort-arrow"></span></th>
+        <th data-col="12">Kills <span class="sort-arrow"></span></th>
       </tr>
     </thead>
     <tbody>{table_rows}</tbody>
@@ -1274,6 +1302,18 @@ def save_snapshot(data):
                 diffs_30m_kills[uni_name] = f"+{diff}" if diff > 0 else str(diff)
             else:
                 diffs_30m_kills[uni_name] = "N/A"
+
+    cache_1h_kills = load_1h_kills_cache()
+    diffs_1h_kills = {}
+    if cache_1h_kills and cache_1h_kills.get("members"):
+        for i, m in enumerate(data["members"]):
+            uni_name = uniq[i][1]
+            kills = m.get("boss_kills", 0) or 0
+            if uni_name in cache_1h_kills["members"]:
+                diff = kills - cache_1h_kills["members"][uni_name]
+                diffs_1h_kills[uni_name] = f"+{diff}" if diff > 0 else str(diff)
+            else:
+                diffs_1h_kills[uni_name] = "N/A"
 
     try:
         season_info = fetch_season_info()
@@ -1366,14 +1406,16 @@ def save_snapshot(data):
         existing_html = [f.replace(".html", "") for f in os.listdir(".") if f.endswith(".html") and f[:4].isdigit() and f != "index.html"]
         all_dates = set(existing_html)
         all_dates.add(sheet_name)
-        save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, sorted(all_dates), show_changes=True, season_info=season_info, stats=stats, diff_30m=diff_30m_data, changes=changes, hourly_cache=cache_1h["members"] if cache_1h else {}, cache_30m=cache_30m, diffs_30m_kills=diffs_30m_kills, castle_stats=castle_stats)
+        save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, sorted(all_dates), show_changes=True, season_info=season_info, stats=stats, diff_30m=diff_30m_data, changes=changes, hourly_cache=cache_1h["members"] if cache_1h else {}, cache_30m=cache_30m, diffs_30m_kills=diffs_30m_kills, castle_stats=castle_stats, diffs_1h_kills=diffs_1h_kills)
     else:
-        save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, [], show_changes=False, season_info=season_info, stats=stats, diff_30m=diff_30m_data, changes=changes, hourly_cache=cache_1h["members"] if cache_1h else {}, cache_30m=cache_30m, diffs_30m_kills=diffs_30m_kills, castle_stats=castle_stats)
+        save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, [], show_changes=False, season_info=season_info, stats=stats, diff_30m=diff_30m_data, changes=changes, hourly_cache=cache_1h["members"] if cache_1h else {}, cache_30m=cache_30m, diffs_30m_kills=diffs_30m_kills, castle_stats=castle_stats, diffs_1h_kills=diffs_1h_kills)
 
     save_30m_cache(data["members"], uniq)
     save_30m_kills_cache(data["members"], uniq)
     if cache_30m:
         save_1h_cache(cache_30m.get("members", {}), cache_30m.get("timestamp", ""))
+    if cache_30m_kills:
+        save_1h_kills_cache(cache_30m_kills.get("members", {}), cache_30m_kills.get("timestamp", ""))
     if is_hourly_mark:
         save_hourly_cache(data["members"], uniq, now)
 
