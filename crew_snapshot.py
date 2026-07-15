@@ -629,8 +629,9 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     var cb = document.getElementById("castle-bar");
     if (!cb || window.__phase !== 1) return;
     var cards = cb.querySelectorAll(".castle-card");
-    var cache = null; try { cache = JSON.parse(localStorage.getItem("nr_castle_30m")); } catch(e) {}
-    var newCache = {};
+    var cache = null, bCache = null;
+    try { cache = JSON.parse(localStorage.getItem("nr_castle_30m")); bCache = JSON.parse(localStorage.getItem("nr_castle_baseline")); } catch(e) {}
+    var newCache = {}, newBCache = {};
     for (var i = 0; i < cards.length; i++) {
       var card = cards[i];
       var csm = card.getAttribute("data-castle");
@@ -654,6 +655,8 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       var pc = cache ? cache[csm] : null;
       var ourG = pc ? ourK - pc.our_kills : 0, rivalG = pc ? rivalK - pc.rival_kills : 0;
       newCache[csm] = {our_kills: ourK, rival_kills: rivalK, rival_name: rival.name, our_rank: our.rank};
+      var bp = bCache ? bCache[csm] : null;
+      newBCache[csm] = {our_kills: ourK, rival_kills: rivalK};
       var gStr = ourG > 0 ? "+" + ourG : "" + ourG;
       var rgStr = rivalG > 0 ? "+" + rivalG : "" + rivalG;
       var ourKEl = card.querySelector(".castle-kills.ours");
@@ -679,13 +682,14 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       tagEl.classList.remove("castle-tag-danger", "castle-tag-catch");
       var curGap = isLead ? (ourK - rivalK) : (rivalK - ourK);
       var prevGap = 0;
-      if (pc) { prevGap = isLead ? (pc.our_kills - pc.rival_kills) : (pc.rival_kills - pc.our_kills); }
+      if (bp) { prevGap = isLead ? (bp.our_kills - bp.rival_kills) : (bp.rival_kills - bp.our_kills); }
       var pct = prevGap > 0 ? Math.round((prevGap - curGap) / prevGap * 100) : 0;
       if (isLead && pct >= 30) { card.classList.add("dangerous"); tagEl.classList.add("castle-tag-danger"); }
       else if (!isLead && pct >= 30) { card.classList.add("catching"); tagEl.classList.add("castle-tag-catch"); }
     }
     var nm = new Date().getMinutes(), blk = nm <= 1 ? "01" : (nm >= 31 && nm <= 32 ? "31" : null);
     if (blk) localStorage.setItem("nr_castle_30m", JSON.stringify(newCache));
+    localStorage.setItem("nr_castle_baseline", JSON.stringify(newBCache));
   }
   function refreshData() {
     if (dotEl) dotEl.className = "status-dot wait";
