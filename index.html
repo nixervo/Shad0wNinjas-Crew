@@ -12,7 +12,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: #080810;
+    background: #080a24;
     color: #e0e0e0;
     min-height: 100vh;
     display: flex;
@@ -29,7 +29,7 @@
   .header {
     text-align: center;
     padding: 32px 24px 24px;
-    background: linear-gradient(135deg, #0f0f1e 0%, #1a1a30 50%, #0d1b2a 100%);
+    background: linear-gradient(135deg, #111346 0%, #14184a 50%, #0f123a 100%);
     position: relative;
     overflow: hidden;
   }
@@ -37,7 +37,7 @@
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, #c9a84c, #e8c877, #c9a84c);
+    background: linear-gradient(90deg, #aba8af, #c4bfc6, #aba8af);
     background-size: 200% 100%;
     animation: shimmer 3s ease-in-out infinite;
   }
@@ -69,7 +69,7 @@
     gap: 6px;
     justify-content: center;
     padding: 14px 20px;
-    background: #0c0c18;
+    background: #0d0f34;
     border-bottom: 1px solid #1a1a2e;
     border-top: 1px solid #1a1a2e;
   }
@@ -82,18 +82,18 @@
     border: 1px solid #1a1a2e;
     transition: 0.25s;
   }
-  .archive a:hover { border-color: #c9a84c; color: #fff; background: rgba(233, 69, 96, 0.08); }
-  .archive a.active { border-color: #c9a84c; color: #fff; background: #c9a84c; font-weight: 600; }
+  .archive a:hover { border-color: #aba8af; color: #fff; background: rgba(233, 69, 96, 0.08); }
+  .archive a.active { border-color: #aba8af; color: #fff; background: #aba8af; font-weight: 600; }
   .table-wrap { overflow-x: auto; }
   table {
     width: 100%;
     min-width: 0;
     border-collapse: collapse;
-    background: #0c0c14;
+    background: #090b28;
   }
   thead { position: sticky; top: 0; z-index: 1; }
   th {
-    background: #0f0f1e;
+    background: #111346;
     padding: 14px 18px;
     text-align: center;
     vertical-align: middle;
@@ -101,7 +101,7 @@
     line-height: 1;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #c9a84c;
+    color: #aba8af;
     font-weight: 600;
     border-left: 2px solid transparent;
     box-sizing: border-box;
@@ -122,13 +122,13 @@
   .down { color: #f44336; }
   .na { color: #555; }
   .changes {
-    background: #0c0c14;
+    background: #090b28;
     padding: 20px 24px;
     border-top: 1px solid #14141f;
   }
   .changes-title {
     font-size: 13px;
-    color: #c9a84c;
+    color: #aba8af;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -170,20 +170,20 @@
   .footer {
     text-align: center;
     padding: 18px 20px;
-    background: #08080f;
+    background: #070922;
     color: #444;
     font-size: 12px;
     border-top: 1px solid #12121e;
   }
   .footer .ref { color: #555; font-size: 11px; margin-top: 2px; }
-  .footer a { color: #c9a84c; text-decoration: none; }
+  .footer a { color: #aba8af; text-decoration: none; }
   .timer-bar {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     padding: 12px 20px;
-    background: #0f142373;
+    background: #1113468a;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border-top: 1px solid #1a1a2e;
@@ -192,21 +192,21 @@
     position: relative;
   }
   .timer-left { display: flex; align-items: center; gap: 10px; }
-  .timer-season { color: #eab308; font-weight: 700; letter-spacing: 0.5px; }
+  .timer-season { color: #aba8af; font-weight: 700; letter-spacing: 0.5px; }
   .timer-sep { color: #444; }
   .timer-clock { display: flex; align-items: center; gap: 6px; }
   .timer-digits { font-variant-numeric: tabular-nums; }
-  .timer-digits span:first-child { color: #2dd4bf; font-weight: 600; min-width: 28px; display: inline-block; text-align: center; }
+  .timer-digits span:first-child { color: #aba8af; font-weight: 600; min-width: 28px; display: inline-block; text-align: center; }
   .timer-unit { color: #888; font-size: 12px; margin-left: 1px; }
   .timer-right { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 12px; color: #888; user-select: none; white-space: nowrap; }
-  .timer-right:hover { color: #c9a84c; }
+  .timer-right:hover { color: #aba8af; }
   .stats-bar {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
     padding: 14px 20px;
-    background: #0f142373;
+    background: #1113468a;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border-top: 1px solid #1a1a2e;
@@ -229,8 +229,8 @@
   .castle-bar {
     display: flex;
     flex-direction: column;
-    background: #0f0f1e;
-    border-top: 2px solid #c9a84c44;
+    background: #111346;
+    border-top: 2px solid #aba8af44;
     border-bottom: 1px solid #1a1a2e;
     padding: 0;
   }
@@ -240,7 +240,7 @@
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #c9a84c;
+    color: #aba8af;
     font-weight: 600;
     background: rgba(0,0,0,0.25);
   }
@@ -253,7 +253,7 @@
   }
   .castle-card {
     flex: 0 0 calc((100% - 36px) / 7);
-    background: #0c0c1a;
+    background: #0d0f36;
     border: 1px solid #1a1a2e;
     border-radius: 8px;
     padding: 6px 5px 6px;
@@ -269,8 +269,8 @@
   .castle-emoji { font-size: 20px; line-height: 1; }
   .castle-name { color: #ddd; font-size: 10px; font-weight: 600; }
   .castle-rank-pill {
-    background: #c9a84c22;
-    color: #c9a84c;
+    background: #aba8af22;
+    color: #aba8af;
     font-size: 9px;
     font-weight: 700;
     padding: 1px 6px;
@@ -298,8 +298,8 @@
     border-radius: 8px;
     font-size: 9px;
     font-weight: 600;
-    color: #c9a84c;
-    background: #c9a84c18;
+    color: #aba8af;
+    background: #aba8af18;
   }
   .castle-tag-danger { color: #f44336; background: #f4433618; }
   .castle-tag-catch { color: #4caf50; background: #4caf5018; }
@@ -336,7 +336,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 8px 20px;
-    background: #0a0a14;
+    background: #090b2a;
     border-top: 1px solid #14141f;
     border-bottom: 1px solid #14141f;
     gap: 12px;
@@ -348,12 +348,12 @@
     padding: 7px 12px;
     border-radius: 6px;
     border: 1px solid #1a1a2e;
-    background: #0f0f1e;
+    background: #111346;
     color: #e0e0e0;
     font-size: 13px;
     outline: none;
   }
-  #search-input:focus { border-color: #c9a84c; }
+  #search-input:focus { border-color: #aba8af; }
   #search-input::placeholder { color: #555; }
   .live-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; white-space: nowrap; }
   .status-dot { width: 8px; height: 8px; border-radius: 50%; }
@@ -369,7 +369,7 @@
     flex-direction: column;
     gap: 4px;
     padding: 14px 20px;
-    background: #0c0c18;
+    background: #0d0f34;
     border-top: 1px solid #1a1a2e;
   }
   .goal-track {
@@ -381,7 +381,7 @@
   }
   .goal-fill {
     height: 100%;
-    background: linear-gradient(90deg, #c9a84c, #e8c877);
+    background: linear-gradient(90deg, #aba8af, #c4bfc6);
     border-radius: 8px;
     transition: width 0.5s ease;
   }
@@ -391,20 +391,20 @@
     font-size: 12px;
     color: #888;
   }
-  .goal-info .goal-next { color: #c9a84c; font-weight: 600; }
+  .goal-info .goal-next { color: #aba8af; font-weight: 600; }
   .goal-info .goal-num { color: #ccc; font-variant-numeric: tabular-nums; }
   td:first-child { width: 28px; min-width: 28px; text-align: center; color: #666; font-size: 12px; }
-  .meg.divider { border-left: 2px solid #c9a84c88; padding-left: 12px; }
-  .divider { border-left: 2px solid #c9a84c88; }
-  .div-col { border-left: 2px solid #c9a84c88; }
+  .meg.divider { border-left: 2px solid #aba8af88; padding-left: 12px; }
+  .divider { border-left: 2px solid #aba8af88; }
+  .div-col { border-left: 2px solid #aba8af88; }
   .ph2-diff { display: none !important; }
-  .action-btn { cursor: pointer; font-size: 12px; color: #888; padding: 4px 10px; border-radius: 4px; border: 1px solid #1a1a2e; background: #0f0f1e; user-select: none; white-space: nowrap; }
-  .action-btn:hover { border-color: #c9a84c; color: #c9a84c; }
+  .action-btn { cursor: pointer; font-size: 12px; color: #888; padding: 4px 10px; border-radius: 4px; border: 1px solid #1a1a2e; background: #111346; user-select: none; white-space: nowrap; }
+  .action-btn:hover { border-color: #aba8af; color: #aba8af; }
   .footer-updated { color: #555; font-size: 11px; margin: 2px 0; }
   .footer-csv { margin-top: 8px; }
-  .footer-csv a { color: #c9a84c; text-decoration: none; font-size: 12px; cursor: pointer; }
+  .footer-csv a { color: #aba8af; text-decoration: none; font-size: 12px; cursor: pointer; }
   .footer-csv a:hover { text-decoration: underline; }
-  .copied-toast { position: absolute; background: #c9a84c; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 4px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 10; }
+  .copied-toast { position: absolute; background: #aba8af; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 4px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 10; }
 </style>
 </head>
 <body>
@@ -441,7 +441,7 @@
       </div>
       <div class="stats-col">
         <span class="stat-label">Total Damage</span>
-        <span class="stat-val" id="season-total">11,630,813</span>
+        <span class="stat-val" id="season-total">11,664,249</span>
       </div>
     </div>
   </div>
@@ -453,14 +453,14 @@
           <div class="castle-emoji">&#127983;</div>
           <div class="castle-name">Hiroshima</div>
           <div class="castle-rank-pill">[#1]</div>
-          <div class="castle-kills ours">9,256</div>
-          <div class="castle-gain ours">(+40/½h)</div>
+          <div class="castle-kills ours">9,271</div>
+          <div class="castle-gain ours">(+55/½h)</div>
           <div class="castle-div"></div>
           <div class="castle-rival-rank">#2</div>
           <div class="castle-rival-name">Sangre Latina Crew</div>
-          <div class="castle-kills rival">5,138</div>
-          <div class="castle-gain rival">(+174/½h)</div>
-          <div class="castle-tag castle-tag-danger">Lead 4,118</div>
+          <div class="castle-kills rival">5,152</div>
+          <div class="castle-gain rival">(+188/½h)</div>
+          <div class="castle-tag castle-tag-danger">Lead 4,119</div>
         </div>
         <div class="castle-card" data-castle="Himeji">
           <div class="castle-emoji">&#127983;</div>
@@ -480,13 +480,13 @@
           <div class="castle-name">Kumamoto</div>
           <div class="castle-rival-rank">#2</div>
           <div class="castle-rival-name">Shinigami Anbu</div>
-          <div class="castle-kills rival">732</div>
-          <div class="castle-gain rival">(+16/½h)</div>
+          <div class="castle-kills rival">743</div>
+          <div class="castle-gain rival">(+27/½h)</div>
           <div class="castle-div"></div>
           <div class="castle-rank-pill">[#3]</div>
           <div class="castle-kills ours">694</div>
           <div class="castle-gain ours">(0/½h)</div>
-          <div class="castle-tag ">Need 38</div>
+          <div class="castle-tag ">Need 49</div>
         </div>
         <div class="castle-card" data-castle="Okazaki">
           <div class="castle-emoji">&#127983;</div>
@@ -505,14 +505,14 @@
           <div class="castle-emoji">&#127983;</div>
           <div class="castle-name">Inuyama</div>
           <div class="castle-rank-pill">[#1]</div>
-          <div class="castle-kills ours">42,849</div>
-          <div class="castle-gain ours">(+411/½h)</div>
+          <div class="castle-kills ours">42,918</div>
+          <div class="castle-gain ours">(+480/½h)</div>
           <div class="castle-div"></div>
           <div class="castle-rival-rank">#2</div>
           <div class="castle-rival-name">Shinigami Anbu</div>
-          <div class="castle-kills rival">20,319</div>
-          <div class="castle-gain rival">(+16/½h)</div>
-          <div class="castle-tag ">Lead 22,530</div>
+          <div class="castle-kills rival">20,332</div>
+          <div class="castle-gain rival">(+29/½h)</div>
+          <div class="castle-tag ">Lead 22,586</div>
         </div>
         <div class="castle-card" data-castle="Gifu">
           <div class="castle-emoji">&#127983;</div>
@@ -536,9 +536,9 @@
           <div class="castle-gain rival">(+249/½h)</div>
           <div class="castle-div"></div>
           <div class="castle-rank-pill">[#3]</div>
-          <div class="castle-kills ours">1,130</div>
-          <div class="castle-gain ours">(+256/½h)</div>
-          <div class="castle-tag castle-tag-catch">Need 6,687</div>
+          <div class="castle-kills ours">1,205</div>
+          <div class="castle-gain ours">(+331/½h)</div>
+          <div class="castle-tag castle-tag-catch">Need 6,612</div>
         </div>
     </div>
   </div>
@@ -576,14 +576,14 @@
         <th data-col="12">Kills <span class="sort-arrow"></span></th>
       </tr>
     </thead>
-    <tbody><tr><td class="num">1</td><td>dogan</td><td class="num div-col">1,314</td><td class="num ph1-diff"><span class="up">+18</span></td><td class="num ph1-diff"><span class="up">+28</span></td><td class="num">276,372</td><td class="num ph1-diff"><span class="up">+3781</span></td><td class="num ph1-diff"><span class="up">+5875</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">2</td><td>I Am Dead  @_@</td><td class="num div-col">1,187</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">248,828</td><td class="num ph1-diff"><span class="up">+2070</span></td><td class="num ph1-diff"><span class="up">+4176</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">3</td><td>Yata</td><td class="num div-col">1,142</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">239,688</td><td class="num ph1-diff"><span class="up">+2066</span></td><td class="num ph1-diff"><span class="up">+4168</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">4</td><td>AangEX</td><td class="num div-col">1,658</td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num ph1-diff"><span class="up">+40</span></td><td class="num">348,407</td><td class="num ph1-diff"><span class="up">+4201</span></td><td class="num ph1-diff"><span class="up">+8417</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">5</td><td>Feirisu</td><td class="num div-col">1,257</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">263,923</td><td class="num ph1-diff"><span class="up">+2055</span></td><td class="num ph1-diff"><span class="up">+4182</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">6</td><td>[R23] Wolf †</td><td class="num div-col">1,094</td><td class="num ph1-diff"><span class="up">+25</span></td><td class="num ph1-diff"><span class="up">+35</span></td><td class="num">229,624</td><td class="num ph1-diff"><span class="up">+5231</span></td><td class="num ph1-diff"><span class="up">+7383</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">7</td><td>MATHEMATRICK</td><td class="num div-col">719</td><td class="num ph1-diff"><span class="up">+33</span></td><td class="num ph1-diff"><span class="up">+33</span></td><td class="num">150,984</td><td class="num ph1-diff"><span class="up">+6947</span></td><td class="num ph1-diff"><span class="up">+6947</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">8</td><td>BlacKAkiresu O</td><td class="num div-col">917</td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num ph1-diff"><span class="up">+30</span></td><td class="num">192,738</td><td class="num ph1-diff"><span class="up">+4233</span></td><td class="num ph1-diff"><span class="up">+6305</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">9</td><td>Tuyu|Fortuners</td><td class="num div-col">893</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">187,420</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">10</td><td>Khakashi Hatake</td><td class="num div-col">1,179</td><td class="num ph1-diff"><span class="up">+35</span></td><td class="num ph1-diff"><span class="up">+35</span></td><td class="num">247,461</td><td class="num ph1-diff"><span class="up">+7334</span></td><td class="num ph1-diff"><span class="up">+7334</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">11</td><td>Ikhram </td><td class="num div-col">1,620</td><td class="num ph1-diff"><span class="up">+42</span></td><td class="num ph1-diff"><span class="up">+78</span></td><td class="num">340,189</td><td class="num ph1-diff"><span class="up">+8766</span></td><td class="num ph1-diff"><span class="up">+16432</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">12</td><td>Prince G™</td><td class="num div-col">1,418</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">297,813</td><td class="num ph1-diff"><span class="up">+2098</span></td><td class="num ph1-diff"><span class="up">+4199</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">13</td><td>Yhwach Genryusai</td><td class="num div-col">1,129</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">252,123</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">14</td><td>NicolasRicko</td><td class="num div-col">1,949</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">409,488</td><td class="num ph1-diff"><span class="up">+2099</span></td><td class="num ph1-diff"><span class="up">+4222</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">15</td><td>Izx Hatake Jr</td><td class="num div-col">1,098</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">245,587</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">16</td><td>ASHBORN™</td><td class="num div-col">769</td><td class="num ph1-diff"><span class="up">+36</span></td><td class="num ph1-diff"><span class="up">+36</span></td><td class="num">161,181</td><td class="num ph1-diff"><span class="up">+7596</span></td><td class="num ph1-diff"><span class="up">+7596</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">17</td><td>Heisenberg </td><td class="num div-col">1,004</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">226,172</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">18</td><td>Tobirama Senju™</td><td class="num div-col">2,260</td><td class="num ph1-diff"><span class="up">+59</span></td><td class="num ph1-diff"><span class="up">+103</span></td><td class="num">474,518</td><td class="num ph1-diff"><span class="up">+12418</span></td><td class="num ph1-diff"><span class="up">+21611</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">19</td><td>ZenithEX</td><td class="num div-col">1,827</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">383,905</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">20</td><td>§åñÐåïmårµ | Frtners</td><td class="num div-col">1,069</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">239,817</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">21</td><td>Meru™</td><td class="num div-col">2,048</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">429,707</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">22</td><td>SNC | Vnzla Anbu |SN</td><td class="num div-col">1,364</td><td class="num ph1-diff"><span class="up">+15</span></td><td class="num ph1-diff"><span class="up">+25</span></td><td class="num">286,691</td><td class="num ph1-diff"><span class="up">+3193</span></td><td class="num ph1-diff"><span class="up">+5267</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">23</td><td>SNC | Signature</td><td class="num div-col">697</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">146,288</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">24</td><td>Fusion</td><td class="num div-col">1,579</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num">331,052</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+2119</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">25</td><td>Sesshomaru</td><td class="num div-col">2,049</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">430,401</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">26</td><td>KYO</td><td class="num div-col">1,003</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">210,579</td><td class="num ph1-diff"><span class="up">+2098</span></td><td class="num ph1-diff"><span class="up">+4179</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">27</td><td>SL41F3RT</td><td class="num div-col">1,288</td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num ph1-diff"><span class="up">+30</span></td><td class="num">270,420</td><td class="num ph1-diff"><span class="up">+4210</span></td><td class="num ph1-diff"><span class="up">+6295</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">28</td><td>Lovebird | Gorelax</td><td class="num div-col">1,028</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">231,523</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">29</td><td>ShadowRavenX</td><td class="num div-col">1,502</td><td class="num ph1-diff"><span class="up">+54</span></td><td class="num ph1-diff"><span class="up">+95</span></td><td class="num">315,694</td><td class="num ph1-diff"><span class="up">+11399</span></td><td class="num ph1-diff"><span class="up">+20030</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">30</td><td>SNC | TemperiTa</td><td class="num div-col">1,356</td><td class="num ph1-diff"><span class="up">+43</span></td><td class="num ph1-diff"><span class="up">+78</span></td><td class="num">284,449</td><td class="num ph1-diff"><span class="up">+9012</span></td><td class="num ph1-diff"><span class="up">+16376</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">31</td><td>SmallDino</td><td class="num div-col">1,457</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+19</span></td><td class="num">305,808</td><td class="num ph1-diff"><span class="up">+2131</span></td><td class="num ph1-diff"><span class="up">+4002</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">32</td><td>Breaker LITE</td><td class="num div-col">1,216</td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num ph1-diff"><span class="up">+30</span></td><td class="num">255,116</td><td class="num ph1-diff"><span class="up">+4201</span></td><td class="num ph1-diff"><span class="up">+6309</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">33</td><td>Snoopy | Kokyotosu</td><td class="num div-col">1,926</td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num ph1-diff"><span class="up">+30</span></td><td class="num">405,604</td><td class="num ph1-diff"><span class="up">+4199</span></td><td class="num ph1-diff"><span class="up">+6290</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">34</td><td>Arya</td><td class="num div-col">1,494</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">313,704</td><td class="num ph1-diff"><span class="up">+2110</span></td><td class="num ph1-diff"><span class="up">+4205</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">35</td><td>Morrissey</td><td class="num div-col">1,667</td><td class="num ph1-diff"><span class="up">+65</span></td><td class="num ph1-diff"><span class="up">+114</span></td><td class="num">352,195</td><td class="num ph1-diff"><span class="up">+13741</span></td><td class="num ph1-diff"><span class="up">+24021</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">36</td><td>Jonny Brown</td><td class="num div-col">1,930</td><td class="num ph1-diff"><span class="up">+45</span></td><td class="num ph1-diff"><span class="up">+81</span></td><td class="num">405,274</td><td class="num ph1-diff"><span class="up">+9369</span></td><td class="num ph1-diff"><span class="up">+16961</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">37</td><td>Knightwalker</td><td class="num div-col">1,128</td><td class="num ph1-diff"><span class="up">+57</span></td><td class="num ph1-diff"><span class="up">+67</span></td><td class="num">237,136</td><td class="num ph1-diff"><span class="up">+11979</span></td><td class="num ph1-diff"><span class="up">+14081</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">38</td><td>a fucking ninja </td><td class="num div-col">1,451</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num">304,457</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+2112</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">39</td><td>Izx Infernity </td><td class="num div-col">993</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">223,738</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">40</td><td>Erza Scarlet</td><td class="num div-col">2,255</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">474,739</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr></tbody>
+    <tbody><tr><td class="num">1</td><td>dogan</td><td class="num div-col">1,316</td><td class="num ph1-diff"><span class="up">+2</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">276,803</td><td class="num ph1-diff"><span class="up">+431</span></td><td class="num ph1-diff"><span class="up">+4212</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">2</td><td>I Am Dead  @_@</td><td class="num div-col">1,197</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">250,946</td><td class="num ph1-diff"><span class="up">+2118</span></td><td class="num ph1-diff"><span class="up">+4188</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">3</td><td>Yata</td><td class="num div-col">1,142</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num">239,688</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+2066</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">4</td><td>AangEX</td><td class="num div-col">1,658</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">348,407</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+4201</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">5</td><td>Feirisu</td><td class="num div-col">1,265</td><td class="num ph1-diff"><span class="up">+8</span></td><td class="num ph1-diff"><span class="up">+18</span></td><td class="num">265,614</td><td class="num ph1-diff"><span class="up">+1691</span></td><td class="num ph1-diff"><span class="up">+3746</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">6</td><td>[R23] Wolf †</td><td class="num div-col">1,106</td><td class="num ph1-diff"><span class="up">+12</span></td><td class="num ph1-diff"><span class="up">+37</span></td><td class="num">232,140</td><td class="num ph1-diff"><span class="up">+2516</span></td><td class="num ph1-diff"><span class="up">+7747</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">7</td><td>MATHEMATRICK</td><td class="num div-col">733</td><td class="num ph1-diff"><span class="up">+14</span></td><td class="num ph1-diff"><span class="up">+47</span></td><td class="num">153,892</td><td class="num ph1-diff"><span class="up">+2908</span></td><td class="num ph1-diff"><span class="up">+9855</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">8</td><td>BlacKAkiresu O</td><td class="num div-col">917</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">192,738</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+4233</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">9</td><td>Tuyu|Fortuners</td><td class="num div-col">893</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">187,420</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">10</td><td>Khakashi Hatake</td><td class="num div-col">1,179</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+35</span></td><td class="num">247,461</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+7334</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">11</td><td>Ikhram </td><td class="num div-col">1,628</td><td class="num ph1-diff"><span class="up">+8</span></td><td class="num ph1-diff"><span class="up">+50</span></td><td class="num">341,862</td><td class="num ph1-diff"><span class="up">+1673</span></td><td class="num ph1-diff"><span class="up">+10439</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">12</td><td>Prince G™</td><td class="num div-col">1,428</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">299,926</td><td class="num ph1-diff"><span class="up">+2113</span></td><td class="num ph1-diff"><span class="up">+4211</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">13</td><td>Yhwach Genryusai</td><td class="num div-col">1,129</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">252,123</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">14</td><td>NicolasRicko</td><td class="num div-col">1,954</td><td class="num ph1-diff"><span class="up">+5</span></td><td class="num ph1-diff"><span class="up">+15</span></td><td class="num">410,522</td><td class="num ph1-diff"><span class="up">+1034</span></td><td class="num ph1-diff"><span class="up">+3133</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">15</td><td>Izx Hatake Jr</td><td class="num div-col">1,098</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">245,587</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">16</td><td>ASHBORN™</td><td class="num div-col">783</td><td class="num ph1-diff"><span class="up">+14</span></td><td class="num ph1-diff"><span class="up">+50</span></td><td class="num">164,156</td><td class="num ph1-diff"><span class="up">+2975</span></td><td class="num ph1-diff"><span class="up">+10571</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">17</td><td>Heisenberg </td><td class="num div-col">1,004</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">226,172</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">18</td><td>Tobirama Senju™</td><td class="num div-col">2,269</td><td class="num ph1-diff"><span class="up">+9</span></td><td class="num ph1-diff"><span class="up">+68</span></td><td class="num">476,417</td><td class="num ph1-diff"><span class="up">+1899</span></td><td class="num ph1-diff"><span class="up">+14317</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">19</td><td>ZenithEX</td><td class="num div-col">1,827</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">383,905</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">20</td><td>§åñÐåïmårµ | Frtners</td><td class="num div-col">1,069</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">239,817</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">21</td><td>Meru™</td><td class="num div-col">2,048</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">429,707</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">22</td><td>SNC | Vnzla Anbu |SN</td><td class="num div-col">1,369</td><td class="num ph1-diff"><span class="up">+5</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">287,718</td><td class="num ph1-diff"><span class="up">+1027</span></td><td class="num ph1-diff"><span class="up">+4220</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">23</td><td>SNC | Signature</td><td class="num div-col">700</td><td class="num ph1-diff"><span class="up">+3</span></td><td class="num ph1-diff"><span class="up">+3</span></td><td class="num">146,916</td><td class="num ph1-diff"><span class="up">+628</span></td><td class="num ph1-diff"><span class="up">+628</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">24</td><td>Fusion</td><td class="num div-col">1,579</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">331,052</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">25</td><td>Sesshomaru</td><td class="num div-col">2,049</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">430,401</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">26</td><td>KYO</td><td class="num div-col">1,013</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">212,698</td><td class="num ph1-diff"><span class="up">+2119</span></td><td class="num ph1-diff"><span class="up">+4217</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">27</td><td>SL41F3RT</td><td class="num div-col">1,288</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">270,420</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+4210</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">28</td><td>Lovebird | Gorelax</td><td class="num div-col">1,028</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">231,523</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">29</td><td>ShadowRavenX</td><td class="num div-col">1,509</td><td class="num ph1-diff"><span class="up">+7</span></td><td class="num ph1-diff"><span class="up">+61</span></td><td class="num">317,171</td><td class="num ph1-diff"><span class="up">+1477</span></td><td class="num ph1-diff"><span class="up">+12876</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">30</td><td>SNC | TemperiTa</td><td class="num div-col">1,364</td><td class="num ph1-diff"><span class="up">+8</span></td><td class="num ph1-diff"><span class="up">+51</span></td><td class="num">286,111</td><td class="num ph1-diff"><span class="up">+1662</span></td><td class="num ph1-diff"><span class="up">+10674</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">31</td><td>SmallDino</td><td class="num div-col">1,467</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">307,924</td><td class="num ph1-diff"><span class="up">+2116</span></td><td class="num ph1-diff"><span class="up">+4247</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">32</td><td>Breaker LITE</td><td class="num div-col">1,216</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">255,116</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+4201</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">33</td><td>Snoopy | Kokyotosu</td><td class="num div-col">1,926</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">405,604</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+4199</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">34</td><td>Arya</td><td class="num div-col">1,494</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num">313,704</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="up">+2110</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">35</td><td>Morrissey</td><td class="num div-col">1,678</td><td class="num ph1-diff"><span class="up">+11</span></td><td class="num ph1-diff"><span class="up">+76</span></td><td class="num">354,493</td><td class="num ph1-diff"><span class="up">+2298</span></td><td class="num ph1-diff"><span class="up">+16039</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">36</td><td>Jonny Brown</td><td class="num div-col">1,931</td><td class="num ph1-diff"><span class="up">+1</span></td><td class="num ph1-diff"><span class="up">+46</span></td><td class="num">405,488</td><td class="num ph1-diff"><span class="up">+214</span></td><td class="num ph1-diff"><span class="up">+9583</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">37</td><td>Knightwalker</td><td class="num div-col">1,140</td><td class="num ph1-diff"><span class="up">+12</span></td><td class="num ph1-diff"><span class="up">+69</span></td><td class="num">239,673</td><td class="num ph1-diff"><span class="up">+2537</span></td><td class="num ph1-diff"><span class="up">+14516</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">38</td><td>a fucking ninja </td><td class="num div-col">1,451</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">304,457</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">39</td><td>Izx Infernity </td><td class="num div-col">993</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">223,738</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">40</td><td>Erza Scarlet</td><td class="num div-col">2,255</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">474,739</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td></tr></tbody>
   </table>
   </div>
   
   <div class="footer">
     <div class="footer-updated" id="updated-ago"></div>
-    Snapshot: <span id="snapshot-ts">2026-07-15 11:40:29</span>
-    <div class="ref">Ref (30m): 2026-07-15 11:01:00 &middot; Ref (hourly): 2026-07-15 10:31:00</div>
+    Snapshot: <span id="snapshot-ts">2026-07-15 11:46:42</span>
+    <div class="ref">Ref (30m): 2026-07-15 11:40:30 &middot; Ref (hourly): 2026-07-15 11:01:00</div>
     <div class="footer-csv"><a id="csv-link">Download CSV</a></div>
   </div>
 </div>
@@ -603,8 +603,8 @@
 })();
 window.__crewId = 101;
 window.__phase = 1;
-window.__hourlyCache = {"dogan": 270497, "I Am Dead  @_@": 244652, "Yata": 235520, "AangEX": 339990, "Feirisu": 259741, "[R23] Wolf \u2020": 222241, "MATHEMATRICK": 144037, "BlacKAkiresu O": 186433, "Tuyu|Fortuners": 187420, "Khakashi Hatake": 240127, "Ikhram ": 323757, "Prince G\u2122": 293614, "Yhwach Genryusai": 252123, "NicolasRicko": 405266, "Izx Hatake Jr": 245587, "ASHBORN\u2122": 153585, "Heisenberg ": 226172, "Tobirama Senju\u2122": 452907, "ZenithEX": 383905, "\u00a7\u00e5\u00f1\u00d0\u00e5\u00efm\u00e5r\u00b5 | Frtners": 239817, "Meru\u2122": 429707, "SNC | Vnzla Anbu |SN": 281424, "SNC | Signature": 146288, "Fusion": 328933, "Sesshomaru": 430401, "KYO": 206400, "SL41F3RT": 264125, "Lovebird | Gorelax": 231523, "ShadowRavenX": 295664, "SNC | TemperiTa": 268073, "SmallDino": 301806, "Breaker LITE": 248807, "Snoopy | Kokyotosu": 399314, "Arya": 309499, "Morrissey": 328174, "Jonny Brown": 388313, "Knightwalker": 223055, "a fucking ninja ": 302345, "Izx Infernity ": 223738, "Erza Scarlet": 474739};
-window.__30mCache = {"dogan": 272591, "I Am Dead  @_@": 246758, "Yata": 237622, "AangEX": 344206, "Feirisu": 261868, "[R23] Wolf \u2020": 224393, "MATHEMATRICK": 144037, "BlacKAkiresu O": 188505, "Tuyu|Fortuners": 187420, "Khakashi Hatake": 240127, "Ikhram ": 331423, "Prince G\u2122": 295715, "Yhwach Genryusai": 252123, "NicolasRicko": 407389, "Izx Hatake Jr": 245587, "ASHBORN\u2122": 153585, "Heisenberg ": 226172, "Tobirama Senju\u2122": 462100, "ZenithEX": 383905, "\u00a7\u00e5\u00f1\u00d0\u00e5\u00efm\u00e5r\u00b5 | Frtners": 239817, "Meru\u2122": 429707, "SNC | Vnzla Anbu |SN": 283498, "SNC | Signature": 146288, "Fusion": 331052, "Sesshomaru": 430401, "KYO": 208481, "SL41F3RT": 266210, "Lovebird | Gorelax": 231523, "ShadowRavenX": 304295, "SNC | TemperiTa": 275437, "SmallDino": 303677, "Breaker LITE": 250915, "Snoopy | Kokyotosu": 401405, "Arya": 311594, "Morrissey": 338454, "Jonny Brown": 395905, "Knightwalker": 225157, "a fucking ninja ": 304457, "Izx Infernity ": 223738, "Erza Scarlet": 474739};
+window.__hourlyCache = {"dogan": 272591, "I Am Dead  @_@": 246758, "Yata": 237622, "AangEX": 344206, "Feirisu": 261868, "[R23] Wolf \u2020": 224393, "MATHEMATRICK": 144037, "BlacKAkiresu O": 188505, "Tuyu|Fortuners": 187420, "Khakashi Hatake": 240127, "Ikhram ": 331423, "Prince G\u2122": 295715, "Yhwach Genryusai": 252123, "NicolasRicko": 407389, "Izx Hatake Jr": 245587, "ASHBORN\u2122": 153585, "Heisenberg ": 226172, "Tobirama Senju\u2122": 462100, "ZenithEX": 383905, "\u00a7\u00e5\u00f1\u00d0\u00e5\u00efm\u00e5r\u00b5 | Frtners": 239817, "Meru\u2122": 429707, "SNC | Vnzla Anbu |SN": 283498, "SNC | Signature": 146288, "Fusion": 331052, "Sesshomaru": 430401, "KYO": 208481, "SL41F3RT": 266210, "Lovebird | Gorelax": 231523, "ShadowRavenX": 304295, "SNC | TemperiTa": 275437, "SmallDino": 303677, "Breaker LITE": 250915, "Snoopy | Kokyotosu": 401405, "Arya": 311594, "Morrissey": 338454, "Jonny Brown": 395905, "Knightwalker": 225157, "a fucking ninja ": 304457, "Izx Infernity ": 223738, "Erza Scarlet": 474739};
+window.__30mCache = {"dogan": 276372, "I Am Dead  @_@": 248828, "Yata": 239688, "AangEX": 348407, "Feirisu": 263923, "[R23] Wolf \u2020": 229624, "MATHEMATRICK": 150984, "BlacKAkiresu O": 192738, "Tuyu|Fortuners": 187420, "Khakashi Hatake": 247461, "Ikhram ": 340189, "Prince G\u2122": 297813, "Yhwach Genryusai": 252123, "NicolasRicko": 409488, "Izx Hatake Jr": 245587, "ASHBORN\u2122": 161181, "Heisenberg ": 226172, "Tobirama Senju\u2122": 474518, "ZenithEX": 383905, "\u00a7\u00e5\u00f1\u00d0\u00e5\u00efm\u00e5r\u00b5 | Frtners": 239817, "Meru\u2122": 429707, "SNC | Vnzla Anbu |SN": 286691, "SNC | Signature": 146288, "Fusion": 331052, "Sesshomaru": 430401, "KYO": 210579, "SL41F3RT": 270420, "Lovebird | Gorelax": 231523, "ShadowRavenX": 315694, "SNC | TemperiTa": 284449, "SmallDino": 305808, "Breaker LITE": 255116, "Snoopy | Kokyotosu": 405604, "Arya": 313704, "Morrissey": 352195, "Jonny Brown": 405274, "Knightwalker": 237136, "a fucking ninja ": 304457, "Izx Infernity ": 223738, "Erza Scarlet": 474739};
 (function() {
   var tbody = document.querySelector("tbody");
   window.__originalRows = tbody.innerHTML;
