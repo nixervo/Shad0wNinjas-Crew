@@ -21,7 +21,7 @@ CACHE_1H = "_1h_cache.json"
 CHANGES_JSON = "_changes.json"
 PHASE1_CACHE = "_phase1_cache.json"
 CASTLE_API = "https://playninjarift.com/api/crew_ranking_castles_website.php"
-CASTLE_CACHE_1H = "_1h_castle_cache.json"
+CASTLE_CACHE_30M = "_30m_castle_cache.json"
 
 def fetch_crew():
     req = urllib.request.Request(API_URL, headers={"User-Agent": "Crew-snapshot/1.0"})
@@ -149,14 +149,14 @@ def save_1h_cache(member_dict, timestamp):
     with open(CACHE_1H, "w", encoding="utf-8") as f:
         json.dump({"timestamp": timestamp, "members": member_dict}, f)
 
-def load_1h_castle_cache():
-    if not os.path.exists(CASTLE_CACHE_1H):
+def load_30m_castle_cache():
+    if not os.path.exists(CASTLE_CACHE_30M):
         return None
-    with open(CASTLE_CACHE_1H, encoding="utf-8") as f:
+    with open(CASTLE_CACHE_30M, encoding="utf-8") as f:
         return json.load(f)
 
-def save_1h_castle_cache(castle_data, timestamp):
-    with open(CASTLE_CACHE_1H, "w", encoding="utf-8") as f:
+def save_30m_castle_cache(castle_data, timestamp):
+    with open(CASTLE_CACHE_30M, "w", encoding="utf-8") as f:
         json.dump({"timestamp": timestamp, "castles": castle_data}, f)
 
 def compute_rolling_avg_daily_gain(filename, before_date):
@@ -443,21 +443,24 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
             cls = ""
             if cs["rank"] == 1 and cs["rival_gain"] > cs["our_gain"]:
                 cls = " dangerous"
-            elif cs["rank"] == 2 and cs["our_gain"] > cs["rival_gain"]:
+            elif cs["rank"] > 1 and cs["our_gain"] > cs["rival_gain"]:
                 cls = " catching"
+            is_lead = (cs["rank"] == 1)
+            gap_label = "Lead" if is_lead else "Need"
+            gap_disp = cs["gap"] if is_lead else cs["rival_kills"] - cs["our_kills"]
             castle_rows += f"""        <div class="castle-row{cls}" data-castle="{cs['name']}">
           <div class="castle-info">
             <span class="castle-rank">&#127983; {cs['name']} #{cs['rank']}</span>
             <span class="castle-kills">{cs['our_kills']:,}</span>
-            <span class="castle-gain">({our_g_str}/h)</span>
+            <span class="castle-gain">({our_g_str}/½h)</span>
           </div>
           <span class="castle-vs">vs</span>
           <div class="castle-info rival">
             <span class="castle-rank">#{cs['rival_rank']} {cs['rival_name']}</span>
             <span class="castle-kills">{cs['rival_kills']:,}</span>
-            <span class="castle-gain">({rival_g_str}/h)</span>
+            <span class="castle-gain">({rival_g_str}/½h)</span>
           </div>
-          <span class="castle-gap">Gap {cs['gap']:,}</span>
+          <span class="castle-gap">{gap_label} {gap_disp:,}</span>
         </div>
 """
         castle_html = f"""
@@ -595,7 +598,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     var cb = document.getElementById("castle-bar");
     if (!cb || window.__phase !== 1) return;
     var rows = cb.querySelectorAll(".castle-row");
-    var cache = null; try { cache = JSON.parse(localStorage.getItem("nr_castle_1h")); } catch(e) {}
+    var cache = null; try { cache = JSON.parse(localStorage.getItem("nr_castle_30m")); } catch(e) {}
     var newCache = {};
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i];
@@ -606,31 +609,38 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       var our = null, rival = null;
       for (var ei = 0; ei < entries.length; ei++) {
         if (entries[ei].crew_id === window.__crewId) our = {rank: ei + 1, kills: entries[ei].boss_kills};
-        if (ei === 0 && entries[ei].crew_id !== window.__crewId) rival = {rank: ei + 1, kills: entries[ei].boss_kills, name: entries[ei].crew_name};
-        else if (ei === 1 && our && our.rank === 1) rival = {rank: ei + 1, kills: entries[ei].boss_kills, name: entries[ei].crew_name};
       }
-      if (!our && entries.length >= 1) { rival = {rank: 1, kills: entries[0].boss_kills, name: entries[0].crew_name}; our = {rank: 2, kills: 0}; for (var ei2 = 0; ei2 < entries.length; ei2++) { if (entries[ei2].crew_id === window.__crewId) { our = {rank: ei2+1, kills: entries[ei2].boss_kills}; rival = {rank: 1, kills: entries[0].boss_kills, name: entries[0].crew_name}; break; } } }
+      if (!our) continue;
+      if (our.rank === 1) {
+        if (entries.length < 2) continue;
+        rival = {rank: 2, kills: entries[1].boss_kills, name: entries[1].crew_name};
+      } else {
+        var ri = our.rank - 2;
+        if (ri >= 0 && ri < entries.length) rival = {rank: ri + 1, kills: entries[ri].boss_kills, name: entries[ri].crew_name};
+      }
       if (!our || !rival) continue;
       var ourK = our.kills, rivalK = rival.kills;
       var pc = cache ? cache[csm] : null;
       var ourG = pc ? ourK - pc.our_kills : 0, rivalG = pc ? rivalK - pc.rival_kills : 0;
-      newCache[csm] = {our_kills: ourK, rival_kills: rivalK, rival_name: rival.name};
+      newCache[csm] = {our_kills: ourK, rival_kills: rivalK, rival_name: rival.name, our_rank: our.rank};
       var gStr = ourG > 0 ? "+" + ourG : "" + ourG;
       var rgStr = rivalG > 0 ? "+" + rivalG : "" + rivalG;
       var ourEls = row.querySelectorAll(".castle-info:first-child .castle-kills"), ourGainEls = row.querySelectorAll(".castle-info:first-child .castle-gain");
       var rivalEls = row.querySelectorAll(".castle-info.rival .castle-kills"), rivalGainEls = row.querySelectorAll(".castle-info.rival .castle-gain");
       var gapEl = row.querySelector(".castle-gap");
       if (ourEls.length) ourEls[0].textContent = ourK;
-      if (ourGainEls.length) ourGainEls[0].textContent = "(" + gStr + "/h)";
+      if (ourGainEls.length) ourGainEls[0].textContent = "(" + gStr + "/½h)";
       if (rivalEls.length) rivalEls[0].textContent = rivalK;
-      if (rivalGainEls.length) rivalGainEls[0].textContent = "(" + rgStr + "/h)";
-      if (gapEl) gapEl.textContent = "Gap " + (ourK - rivalK);
+      if (rivalGainEls.length) rivalGainEls[0].textContent = "(" + rgStr + "/½h)";
+      var isLead = (our.rank === 1);
+      var gapVal = isLead ? (ourK - rivalK) : (rivalK - ourK);
+      if (gapEl) gapEl.textContent = (isLead ? "Lead " : "Need ") + gapVal;
       row.classList.remove("dangerous", "catching");
       if (our.rank === 1 && rivalG > ourG) row.classList.add("dangerous");
-      else if (our.rank === 2 && ourG > rivalG) row.classList.add("catching");
+      else if (our.rank > 1 && ourG > rivalG) row.classList.add("catching");
     }
     var nm = new Date().getMinutes(), blk = nm <= 1 ? "01" : (nm >= 31 && nm <= 32 ? "31" : null);
-    if (blk) localStorage.setItem("nr_castle_1h", JSON.stringify(newCache));
+    if (blk) localStorage.setItem("nr_castle_30m", JSON.stringify(newCache));
   }
   function refreshData() {
     if (dotEl) dotEl.className = "status-dot wait";
@@ -955,12 +965,11 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     background: rgba(0,0,0,0.25);
   }}
   .castle-row {{
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto;
     align-items: center;
-    justify-content: space-between;
     padding: 8px 16px;
     gap: 12px;
-    flex-wrap: wrap;
     font-size: 13px;
   }}
   .castle-row.dangerous {{ background: rgba(244,67,54,0.12); }}
@@ -969,7 +978,6 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     display: flex;
     align-items: center;
     gap: 8px;
-    flex: 1;
     min-width: 0;
   }}
   .castle-info .castle-rank {{ color: #ddd; font-weight: 600; white-space: nowrap; }}
@@ -986,7 +994,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     flex-shrink: 0;
   }}
   @media (max-width: 600px) {{
-    .castle-row {{ padding: 8px 12px; gap: 8px; font-size: 12px; }}
+    .castle-row {{ padding: 8px 12px; gap: 8px; font-size: 12px; grid-template-columns: 1fr auto 1fr auto; }}
     .castle-info .castle-gain {{ font-size: 11px; }}
     .castle-gap {{ font-size: 12px; }}
   }}
@@ -1076,7 +1084,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   td:first-child {{ width: 28px; min-width: 28px; text-align: center; color: #666; font-size: 12px; }}
   .meg.divider {{ border-left: 2px solid #c9a84c88; padding-left: 12px; }}
   .divider {{ border-left: 2px solid #c9a84c88; }}
-  td:nth-child(7), td:nth-child(9) {{ border-left: 2px solid #c9a84c88; }}
+  td:nth-child(3), td:nth-child(7), td:nth-child(9) {{ border-left: 2px solid #c9a84c88; }}
   .action-btn {{ cursor: pointer; font-size: 12px; color: #888; padding: 4px 10px; border-radius: 4px; border: 1px solid #1a1a2e; background: #0f0f1e; user-select: none; white-space: nowrap; }}
   .action-btn:hover {{ border-color: #c9a84c; color: #c9a84c; }}
   .footer-updated {{ color: #555; font-size: 11px; margin: 2px 0; }}
@@ -1241,25 +1249,29 @@ def save_snapshot(data):
   
     stats = {"today_gain": 0, "season_total": crew_damage}
     is_hourly_mark = (now.minute <= 1)
+    is_30m_mark = (now.minute <= 1 or (now.minute >= 31 and now.minute <= 32))
 
     castle_stats = []
     if season_info and season_info.get("phase", 1) == 1:
         try:
             castles = fetch_castle_ranking()
-            cache_1h_castle = load_1h_castle_cache()
+            cache_30m_castle = load_30m_castle_cache()
             castle_cache_dict = {}
-            if cache_1h_castle and "castles" in cache_1h_castle:
-                castle_cache_dict = cache_1h_castle["castles"]
+            if cache_30m_castle and "castles" in cache_30m_castle:
+                castle_cache_dict = cache_30m_castle["castles"]
             new_castle_cache = {}
             for castle_name, entries in castles.items():
                 our_idx = next((i for i, e in enumerate(entries) if e["crew_id"] == CREW_ID), None)
-                if our_idx is None or our_idx > 1:
+                if our_idx is None:
                     continue
                 our_rank = our_idx + 1
                 our_kills = entries[our_idx]["boss_kills"]
-                rival_idx = 1 if our_rank == 1 else 0
-                if our_rank == 1 and len(entries) < 2:
-                    continue
+                if our_rank == 1:
+                    if len(entries) < 2:
+                        continue
+                    rival_idx = 1
+                else:
+                    rival_idx = our_idx - 1
                 rival = entries[rival_idx]
                 rival_kills = rival["boss_kills"]
                 gap = our_kills - rival_kills
@@ -1269,15 +1281,15 @@ def save_snapshot(data):
                     pc = castle_cache_dict[castle_name]
                     our_gain = our_kills - pc.get("our_kills", our_kills)
                     rival_gain = rival_kills - pc.get("rival_kills", rival_kills)
-                new_castle_cache[castle_name] = {"our_kills": our_kills, "rival_kills": rival_kills, "rival_name": rival["crew_name"]}
+                new_castle_cache[castle_name] = {"our_kills": our_kills, "rival_kills": rival_kills, "rival_name": rival["crew_name"], "our_rank": our_rank}
                 castle_stats.append({
                     "name": castle_name, "rank": our_rank, "our_kills": our_kills,
                     "our_gain": our_gain, "rival_name": rival["crew_name"],
                     "rival_rank": rival_idx + 1, "rival_kills": rival_kills,
                     "rival_gain": rival_gain, "gap": gap
                 })
-            if is_hourly_mark:
-                save_1h_castle_cache(new_castle_cache, now.strftime("%Y-%m-%d %H:%M:%S"))
+            if is_30m_mark:
+                save_30m_castle_cache(new_castle_cache, now.strftime("%Y-%m-%d %H:%M:%S"))
         except Exception as e:
             print(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Castle error: {e}")
             pass
