@@ -378,7 +378,7 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     hide_css = ".ph2-diff { display: none !important; }" if in_p1 else ".ph1-diff { display: none !important; }"
     na = '<span class="na">N/A</span>'
     table_rows = "".join(
-        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num div-col\">{m.get('boss_kills', 0) or 0:,}</td><td class=\"num ph1-diff\">{diff_html(kills_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(kills_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num ph1-diff\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num div-col\">" + (na if in_p1 else f'{m["member_damage"]:,}') + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))) + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))) + f"</td><td class=\"num\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td><td class=\"num div-col\">{na}</td></tr>"
+        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num div-col\">{m.get('boss_kills', 0) or 0:,}</td><td class=\"num ph1-diff\">{diff_html(kills_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(kills_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num ph1-diff\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num div-col\">" + (na if in_p1 else f'{m["member_damage"]:,}') + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))) + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))) + f"</td><td class=\"num div-col\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td><td class=\"num\">{na}</td></tr>"
         for i, m in enumerate(data["members"])
     )
 
@@ -600,7 +600,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
         names.push(_n);
         var tr = document.createElement("tr");
         tr.className = "new-row";
-        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num">' + (lm[_n].kills||0) + '</td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num">' + lm[_n].damage + '</td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num">' + (window.__phase !== 1 ? lm[_n].damage : '<span class="na">N/A</span>') + '</td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td>';
+        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num div-col">' + (lm[_n].kills||0) + '</td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num">' + lm[_n].damage + '</td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num div-col">' + (window.__phase !== 1 ? lm[_n].damage : '<span class="na">N/A</span>') + '</td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td>';
         tb.appendChild(tr);
         if (searchEl && searchEl.value && _n.toLowerCase().indexOf(searchEl.value.toLowerCase()) === -1) tr.style.display = "none";
       }
@@ -867,6 +867,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     background: #0f0f1e;
     padding: 14px 18px;
     text-align: center;
+    vertical-align: middle;
     font-size: 15px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -1214,8 +1215,8 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
         <th data-col="8" class="div-col">Dmg <span class="sort-arrow"></span></th>
         <th data-col="9" class="ph2-diff">½H[D] <span class="sort-arrow"></span></th>
         <th data-col="10" class="ph2-diff">1H[D] <span class="sort-arrow"></span></th>
-        <th data-col="11">Dmg <span class="sort-arrow"></span></th>
-        <th data-col="12" class="div-col">Kills <span class="sort-arrow"></span></th>
+        <th data-col="11" class="div-col">Dmg <span class="sort-arrow"></span></th>
+        <th data-col="12">Kills <span class="sort-arrow"></span></th>
       </tr>
     </thead>
     <tbody>{table_rows}</tbody>
