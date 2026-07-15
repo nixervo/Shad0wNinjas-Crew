@@ -375,7 +375,7 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     in_p1 = (phase_num == 1)
     p1_colspan = 6 if in_p1 else 2
     p2_colspan = 1 if in_p1 else 3
-    hide_css = ".ph2-diff {{ display: none !important; }}" if in_p1 else ".ph1-diff {{ display: none !important; }}"
+    hide_css = ".ph2-diff { display: none !important; }" if in_p1 else ".ph1-diff { display: none !important; }"
     na = '<span class="na">N/A</span>'
     table_rows = "".join(
         f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num div-col\">{m.get('boss_kills', 0) or 0:,}</td><td class=\"num ph1-diff\">{diff_html(kills_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(kills_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num ph1-diff\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num div-col\">" + (na if in_p1 else f'{m["member_damage"]:,}') + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))) + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))) + f"</td><td class=\"num\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td><td class=\"num div-col\">{na}</td></tr>"
