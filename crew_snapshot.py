@@ -373,9 +373,12 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     uniq_names = get_unique_names(data["members"])
     phase_num = season_info.get("phase", 1) if season_info else 1
     in_p1 = (phase_num == 1)
+    p1_colspan = 6 if in_p1 else 2
+    p2_colspan = 1 if in_p1 else 3
+    hide_css = ".ph2-diff {{ display: none !important; }}" if in_p1 else ".ph1-diff {{ display: none !important; }}"
     na = '<span class="na">N/A</span>'
     table_rows = "".join(
-        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num\">{m.get('boss_kills', 0) or 0:,}</td><td class=\"num ph1-diff\">{diff_html(kills_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(kills_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num ph1-diff\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">" + (na if in_p1 else f'{m["member_damage"]:,}') + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))) + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))) + f"</td><td class=\"num\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td><td class=\"num\">{na}</td></tr>"
+        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num div-col\">{m.get('boss_kills', 0) or 0:,}</td><td class=\"num ph1-diff\">{diff_html(kills_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(kills_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num ph1-diff\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num div-col\">" + (na if in_p1 else f'{m["member_damage"]:,}') + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))) + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))) + f"</td><td class=\"num\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td><td class=\"num div-col\">{na}</td></tr>"
         for i, m in enumerate(data["members"])
     )
 
@@ -516,7 +519,6 @@ window.__crewId = """ + str(CREW_ID) + """;
 window.__phase = """ + str(phase_num) + """;
 window.__hourlyCache = """ + json.dumps(hourly_cache if hourly_cache else {}) + """;
 window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "members" in cache_30m else {}) + """;
-document.body.className = "ph" + window.__phase;
 (function() {
   var tbody = document.querySelector("tbody");
   window.__originalRows = tbody.innerHTML;
@@ -1157,9 +1159,8 @@ document.body.className = "ph" + window.__phase;
   td:first-child {{ width: 28px; min-width: 28px; text-align: center; color: #666; font-size: 12px; }}
   .meg.divider {{ border-left: 2px solid #c9a84c88; padding-left: 12px; }}
   .divider {{ border-left: 2px solid #c9a84c88; }}
-  td:nth-child(3), td:nth-child(9), td:nth-child(12), th:nth-child(3), th:nth-child(9), th:nth-child(12) {{ border-left: 2px solid #c9a84c88; }}
-  .ph1 .ph2-diff {{ opacity: 0.25; pointer-events: none; }}
-  .ph2 .ph1-diff {{ opacity: 0.25; pointer-events: none; }}
+  .div-col {{ border-left: 2px solid #c9a84c88; }}
+  {hide_css}
   .action-btn {{ cursor: pointer; font-size: 12px; color: #888; padding: 4px 10px; border-radius: 4px; border: 1px solid #1a1a2e; background: #0f0f1e; user-select: none; white-space: nowrap; }}
   .action-btn:hover {{ border-color: #c9a84c; color: #c9a84c; }}
   .footer-updated {{ color: #555; font-size: 11px; margin: 2px 0; }}
@@ -1199,22 +1200,22 @@ document.body.className = "ph" + window.__phase;
       <tr>
         <th rowspan="2" data-col="0"># <span class="sort-arrow"></span></th>
         <th rowspan="2" data-col="1">Name <span class="sort-arrow"></span></th>
-        <th colspan="6" class="meg">Phase 1</th>
-        <th colspan="3" class="meg divider">Phase 2</th>
+        <th colspan="{p1_colspan}" class="meg">Phase 1</th>
+        <th colspan="{p2_colspan}" class="meg divider">Phase 2</th>
         <th colspan="2" class="meg divider">DAILY</th>
       </tr>
       <tr>
-        <th data-col="2">B.Kills <span class="sort-arrow"></span></th>
+        <th data-col="2" class="div-col">B.Kills <span class="sort-arrow"></span></th>
         <th data-col="3" class="ph1-diff">½H[K] <span class="sort-arrow"></span></th>
         <th data-col="4" class="ph1-diff">1H[K] <span class="sort-arrow"></span></th>
         <th data-col="5">Dmg <span class="sort-arrow"></span></th>
         <th data-col="6" class="ph1-diff">½H[D] <span class="sort-arrow"></span></th>
         <th data-col="7" class="ph1-diff">1H[D] <span class="sort-arrow"></span></th>
-        <th data-col="8">Dmg <span class="sort-arrow"></span></th>
+        <th data-col="8" class="div-col">Dmg <span class="sort-arrow"></span></th>
         <th data-col="9" class="ph2-diff">½H[D] <span class="sort-arrow"></span></th>
         <th data-col="10" class="ph2-diff">1H[D] <span class="sort-arrow"></span></th>
         <th data-col="11">Dmg <span class="sort-arrow"></span></th>
-        <th data-col="12">Kills <span class="sort-arrow"></span></th>
+        <th data-col="12" class="div-col">Kills <span class="sort-arrow"></span></th>
       </tr>
     </thead>
     <tbody>{table_rows}</tbody>
