@@ -447,8 +447,12 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     p2_colspan = 1 if in_p1 else 3
     hide_css = ".ph2-diff { display: none !important; }" if in_p1 else ".ph1-diff { display: none !important; }"
     na = '<span class="na">N/A</span>'
+    p1_frozen = {}
+    if not in_p1 and os.path.exists(PHASE1_CACHE):
+        with open(PHASE1_CACHE, encoding="utf-8") as f:
+            p1_frozen = json.load(f)
     table_rows = "".join(
-        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num div-col\">{m.get('boss_kills', 0) or 0:,}</td><td class=\"num ph1-diff\">{diff_html(kills_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(kills_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">{m['member_damage']:,}</td><td class=\"num ph1-diff\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num div-col\">" + (na if in_p1 else f'{m["member_damage"]:,}') + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))) + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))) + f"</td><td class=\"num div-col\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td><td class=\"num\">{na}</td></tr>"
+        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num div-col\">" + (f"{m.get('boss_kills', 0) or 0:,}" if in_p1 else f"{p1_frozen.get(m['character_name'], {}).get('kills', 0):,}") + f"</td><td class=\"num ph1-diff\">{diff_html(kills_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(kills_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">" + (f"{m['member_damage']:,}" if in_p1 else f"{p1_frozen.get(m['character_name'], {}).get('damage', 0):,}") + f"</td><td class=\"num ph1-diff\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num div-col\">" + (na if in_p1 else f'{m["member_damage"]:,}') + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))) + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))) + f"</td><td class=\"num div-col\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td><td class=\"num\">{na}</td></tr>"
         for i, m in enumerate(data["members"])
     )
 
@@ -655,8 +659,10 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       var name = names[i], md = lm[name]; if (!md) continue;
       var row = n2r[name]; if (!row) continue;
       var cel = row.cells;
-      cel[2].textContent = md.kills;
-      cel[5].textContent = md.damage;
+      if (window.__phase === 1) {
+        cel[2].textContent = md.kills;
+        cel[5].textContent = md.damage;
+      }
       if (window.__phase !== 1) { cel[8].textContent = md.damage; }
     }
     for (var _n in lm) {
@@ -664,7 +670,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
         names.push(_n);
         var tr = document.createElement("tr");
         tr.className = "new-row";
-        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num div-col">' + (lm[_n].kills||0) + '</td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num">' + lm[_n].damage + '</td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num div-col">' + (window.__phase !== 1 ? lm[_n].damage : '<span class="na">N/A</span>') + '</td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td>';
+        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num div-col">' + (window.__phase === 1 ? (lm[_n].kills||0) : 0) + '</td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num">' + (window.__phase === 1 ? lm[_n].damage : 0) + '</td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num div-col">' + (window.__phase !== 1 ? lm[_n].damage : '<span class="na">N/A</span>') + '</td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td>';
         tb.appendChild(tr);
         if (searchEl && searchEl.value && _n.toLowerCase().indexOf(searchEl.value.toLowerCase()) === -1) tr.style.display = "none";
       }
