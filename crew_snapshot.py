@@ -869,11 +869,13 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     text-align: center;
     vertical-align: middle;
     font-size: 15px;
+    line-height: 1;
     text-transform: uppercase;
     letter-spacing: 1px;
     color: #c9a84c;
     font-weight: 600;
     border-left: 2px solid transparent;
+    box-sizing: border-box;
   }}
   td {{
     padding: 11px 18px;
@@ -882,6 +884,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     font-size: 14px;
     color: #ccc;
     text-align: center;
+    box-sizing: border-box;
   }}
   tr:nth-child(even) td {{ background: rgba(255,255,255,0.015); }}
   tr:hover td {{ background: rgba(233, 69, 96, 0.04); }}
@@ -1016,55 +1019,55 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
-    padding: 10px;
+    gap: 6px;
+    padding: 6px;
   }}
   .castle-card {{
-    flex: 0 0 calc((100% - 20px) / 3);
+    flex: 0 0 calc((100% - 36px) / 7);
     background: #0c0c1a;
     border: 1px solid #1a1a2e;
-    border-radius: 10px;
-    padding: 14px 12px 10px;
+    border-radius: 8px;
+    padding: 6px 5px 6px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 1px;
     box-sizing: border-box;
   }}
   .castle-card.dangerous {{ border-color: #f4433666; }}
   .castle-card.catching {{ border-color: #4caf5066; }}
-  .castle-emoji {{ font-size: 28px; line-height: 1.2; }}
-  .castle-name {{ color: #ddd; font-size: 13px; font-weight: 600; }}
+  .castle-emoji {{ font-size: 20px; line-height: 1; }}
+  .castle-name {{ color: #ddd; font-size: 10px; font-weight: 600; }}
   .castle-rank-pill {{
     background: #c9a84c22;
     color: #c9a84c;
-    font-size: 12px;
+    font-size: 9px;
     font-weight: 700;
-    padding: 2px 10px;
-    border-radius: 10px;
-    margin: 2px 0 4px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin: 1px 0 2px;
   }}
-  .castle-rival-rank {{ color: #777; font-size: 12px; font-weight: 600; }}
-  .castle-rival-name {{ color: #999; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }}
-  .castle-kills {{ font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }}
+  .castle-rival-rank {{ color: #777; font-size: 9px; font-weight: 600; }}
+  .castle-rival-name {{ color: #999; font-size: 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }}
+  .castle-kills {{ font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }}
   .castle-kills.ours {{ color: #fff; }}
   .castle-kills.rival {{ color: #bbb; }}
-  .castle-gain {{ font-size: 11px; font-variant-numeric: tabular-nums; }}
+  .castle-gain {{ font-size: 9px; font-variant-numeric: tabular-nums; }}
   .castle-gain.ours {{ color: #4caf50; }}
   .castle-gain.rival {{ color: #777; }}
   .castle-div {{
     width: 80%;
     height: 1px;
     background: #1a1a2e;
-    margin: 6px 0;
+    margin: 3px 0;
     flex-shrink: 0;
   }}
   .castle-tag {{
-    margin-top: 6px;
-    padding: 4px 12px;
-    border-radius: 10px;
-    font-size: 11px;
+    margin-top: 3px;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 9px;
     font-weight: 600;
     color: #c9a84c;
     background: #c9a84c18;
@@ -1072,9 +1075,11 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   .castle-tag-danger {{ color: #f44336; background: #f4433618; }}
   .castle-tag-catch {{ color: #4caf50; background: #4caf5018; }}
   @media (max-width: 600px) {{
-    .castle-grid {{ padding: 8px; gap: 8px; }}
-    .castle-card {{ flex: 0 0 100%; padding: 12px 10px 8px; }}
+    .castle-grid {{ padding: 6px; gap: 6px; }}
+    .castle-card {{ flex: 0 0 100%; padding: 10px 8px 8px; gap: 3px; }}
     .castle-kills {{ font-size: 16px; }}
+    .castle-emoji {{ font-size: 26px; }}
+    .castle-name {{ font-size: 13px; }}
   }}
   th {{ cursor: pointer; user-select: none; }}
   th .sort-arrow {{ font-size: 11px; margin-left: 3px; }}
