@@ -693,7 +693,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       }
       if (!trig) {
         var prevGap = 0;
-        if (bp) { prevGap = isLead ? (bp.our_kills - bp.rival_kills) : (bp.rival_kills - bp.our_kills); }
+        if (pc) { prevGap = isLead ? (pc.our_kills - pc.rival_kills) : (pc.rival_kills - pc.our_kills); }
         var pct = prevGap > 0 ? Math.round((prevGap - curGap) / prevGap * 100) : 0;
         if (isLead && pct >= 30) { trig = {state: "dangerous", ref_gap: curGap}; card.classList.add("dangerous"); tagEl.classList.add("castle-tag-danger"); }
         else if (!isLead && pct >= 30) { trig = {state: "catching", ref_gap: curGap}; card.classList.add("catching"); tagEl.classList.add("castle-tag-catch"); }
