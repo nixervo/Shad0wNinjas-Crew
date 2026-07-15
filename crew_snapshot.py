@@ -981,7 +981,8 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   }}
   .castle-header {{
     padding: 8px 16px;
-    font-size: 11px;
+    font-size: 15px;
+    text-align: center;
     text-transform: uppercase;
     letter-spacing: 2px;
     color: #c9a84c;
