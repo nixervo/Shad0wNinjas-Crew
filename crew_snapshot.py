@@ -8,6 +8,7 @@ import time
 import sys
 import base64
 import re
+import glob
 
 CREW_ID = 101  # Shad0w Ninjas
 
@@ -1571,6 +1572,7 @@ def save_daily_history():
   .index-list a { display: block; padding: 8px 14px; color: #ccc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #14141f; }
   .index-list a:hover { background: rgba(233,69,96,0.04); color: #fff; }
   .index-list a:last-child { border-bottom: none; }
+  .section-header { padding: 10px 20px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #4a6ad8; font-weight: 600; background: #0f0f0f; border-top: 1px solid #1a1a2e; }
   .star-joined { color: #42a5f5; }
   .star-left { color: #f44336; }
 </style>"""
@@ -1631,6 +1633,16 @@ def save_daily_history():
     index_rows = ""
     for dp in daily_pages:
         index_rows += f'<a href="history_{dp["date"]}.html">{dp["date"]} ({dp["day_name"]}) &rarr;</a>\n'
+    xlsx_links = ""
+    pattern = f"S*_P*_ID{CREW_ID}.xlsx"
+    xlsx_files = sorted(glob.glob(pattern))
+    if xlsx_files:
+        xlsx_items = ""
+        for f in xlsx_files:
+            label = f.replace(f"_ID{CREW_ID}.xlsx", "").replace("S", "Season ").replace("_P", " Phase ")
+            xlsx_items += f'<a href="{f}">&#xF4FF; {label} Summary</a>\n'
+        xlsx_links = f"""  <div class="section-header">Season Archives</div>
+  <div class="index-list">{xlsx_items}</div>\n"""
     index_html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1646,7 +1658,7 @@ def save_daily_history():
 <div class="container">
   <div class="header"><h1>SHAD0W NINJAS</h1><div class="sub">Daily Rep History (Season 61)</div></div>
   <div class="index-list">{index_rows}</div>
-  <div class="footer"><a href="index.html">&larr; Back to main page</a> &middot; <a href="https://github.com/nixervo/Shad0wNinjas-Crew">Source</a></div>
+{xlsx_links}  <div class="footer"><a href="index.html">&larr; Back to main page</a> &middot; <a href="https://github.com/nixervo/Shad0wNinjas-Crew">Source</a></div>
 </div>
 </body>
 </html>"""
