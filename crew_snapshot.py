@@ -516,18 +516,7 @@ window.__crewId = """ + str(CREW_ID) + """;
 window.__phase = """ + str(phase_num) + """;
 window.__hourlyCache = """ + json.dumps(hourly_cache if hourly_cache else {}) + """;
 window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "members" in cache_30m else {}) + """;
-(function() {
-  var p = window.__phase;
-  var hideCls = p === 1 ? "ph2-diff" : "ph1-diff";
-  var ss = document.createElement("style");
-  ss.textContent = "." + hideCls + " { display: none; }";
-  if (p === 1) {
-    ss.textContent += " th.meg.divider { border-left: 2px solid #c9a84c88; padding-left: 12px; } td:nth-child(9) { border-left: 2px solid #c9a84c88; }";
-  } else {
-    ss.textContent += " th.meg { border-left: none; padding-left: 0; } th.meg.divider { border-left: 2px solid #c9a84c88; padding-left: 12px; } td:nth-child(3) { border-left: none; } td:nth-child(9) { border-left: 2px solid #c9a84c88; }";
-  }
-  document.head.appendChild(ss);
-})();
+document.body.className = "ph" + window.__phase;
 (function() {
   var tbody = document.querySelector("tbody");
   window.__originalRows = tbody.innerHTML;
@@ -1168,7 +1157,9 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   td:first-child {{ width: 28px; min-width: 28px; text-align: center; color: #666; font-size: 12px; }}
   .meg.divider {{ border-left: 2px solid #c9a84c88; padding-left: 12px; }}
   .divider {{ border-left: 2px solid #c9a84c88; }}
-  td:nth-child(3), td:nth-child(9), td:nth-child(12) {{ border-left: 2px solid #c9a84c88; }}
+  td:nth-child(3), td:nth-child(9), td:nth-child(12), th:nth-child(3), th:nth-child(9), th:nth-child(12) {{ border-left: 2px solid #c9a84c88; }}
+  .ph1 .ph2-diff {{ opacity: 0.25; pointer-events: none; }}
+  .ph2 .ph1-diff {{ opacity: 0.25; pointer-events: none; }}
   .action-btn {{ cursor: pointer; font-size: 12px; color: #888; padding: 4px 10px; border-radius: 4px; border: 1px solid #1a1a2e; background: #0f0f1e; user-select: none; white-space: nowrap; }}
   .action-btn:hover {{ border-color: #c9a84c; color: #c9a84c; }}
   .footer-updated {{ color: #555; font-size: 11px; margin: 2px 0; }}
