@@ -625,7 +625,6 @@ window.__phase = """ + str(phase_num) + """;
 window.__hourlyCache = """ + json.dumps(hourly_cache if hourly_cache else {}) + """;
 window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "members" in cache_30m else {}) + """;
 """ + ("""
-window.__pageTs = """ + str(int(now.timestamp() * 1000)) + """;
 window.__castleCache = """ + (json.dumps(load_30m_castle_cache().get("castles", {})) if load_30m_castle_cache() and "castles" in load_30m_castle_cache() else "{}") + """;
 """ if castle_stats else "") + """(function() {
   var tbody = document.querySelector("tbody");
@@ -674,6 +673,7 @@ window.__castleCache = """ + (json.dumps(load_30m_castle_cache().get("castles", 
   var autoSeconds = 30, autoEl = document.getElementById("auto-seconds"), searchEl = document.getElementById("search-input"), dotEl = document.getElementById("status-dot"), statusEl = document.getElementById("status-text");
   if (window.__hourlyCache && Object.keys(window.__hourlyCache).length > 0) { var _ts = ts(), _m = String(new Date().getMinutes()), _b = _m <= "1" ? "01" : (_m >= "31" && _m <= "32" ? "31" : _m); localStorage.setItem("nr_1h", JSON.stringify({b: _b, ts: _ts, rs: window.__hourlyCache})); }
   if (window.__30mCache && Object.keys(window.__30mCache).length > 0) { var _b30 = (new Date().getMinutes() <= 1 ? "01" : "31"); localStorage.setItem("nr_30m", JSON.stringify({b: _b30, ts: _ts, rs: window.__30mCache})); }
+  if (window.__castleCache) { localStorage.setItem("nr_castle_30m", JSON.stringify({ts: Date.now(), data: window.__castleCache})); }
   try { localStorage.removeItem("nr_castle_baseline"); localStorage.removeItem("nr_castle_trigger"); localStorage.removeItem("nr_castle_snapshot"); localStorage.removeItem("nr_castle_prev_rank"); } catch(e) {}
   function pad(n) { return n < 10 ? "0"+n : ""+n; }
   function ts() { var d = new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "+pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds()); }
@@ -762,13 +762,8 @@ window.__castleCache = """ + (json.dumps(load_30m_castle_cache().get("castles", 
     var cb = document.getElementById("castle-bar");
     if (!cb || window.__phase !== 1) return;
     var cards = cb.querySelectorAll(".castle-card");
-    var cache = null, cts = null, nowMs = Date.now();
-    if (window.__castleCache) {
-      try { var _r = JSON.parse(localStorage.getItem("nr_castle_30m")); if (_r && _r.ts && _r.ts >= window.__pageTs && (nowMs - _r.ts) / 60000 < 30) { cts = _r.ts; cache = _r.data; } } catch(e) {}
-      if (!cache) { cts = window.__pageTs || nowMs; cache = window.__castleCache; localStorage.setItem("nr_castle_30m", JSON.stringify({ts: cts, data: cache})); }
-    } else {
-      try { var _r = JSON.parse(localStorage.getItem("nr_castle_30m")); if (_r && _r.ts && (nowMs - _r.ts) / 60000 < 30) { cts = _r.ts; cache = _r.data; } } catch(e) {}
-    }
+    var cache = null, nowMs = Date.now();
+    try { var _r = JSON.parse(localStorage.getItem("nr_castle_30m")); if (_r) cache = _r.data; } catch(e) {}
     var newCache = {};
     for (var i = 0; i < cards.length; i++) {
       var card = cards[i];
@@ -807,12 +802,11 @@ window.__castleCache = """ + (json.dumps(load_30m_castle_cache().get("castles", 
       card.__prevRank = our.rank;
       var ourK = our.kills, rivalK = rival.kills;
       var pc = cache ? cache[csm] : null;
-      var elapsed = cts ? (nowMs - cts) / 60000 : 0;
       var ourG = 0, rivalG = 0;
-      if (pc && pc.our_kills > 0 && pc.our_kills < ourK && elapsed > 0 && elapsed < 30) {
+      if (pc && pc.our_kills > 0 && pc.our_kills < ourK) {
         ourG = ourK - pc.our_kills;
       }
-      if (pc && pc.rival_kills > 0 && pc.rival_kills < rivalK && elapsed > 0 && elapsed < 30) {
+      if (pc && pc.rival_kills > 0 && pc.rival_kills < rivalK) {
         rivalG = rivalK - pc.rival_kills;
       }
       newCache[csm] = {our_kills: ourK, rival_kills: rivalK, rival_name: rival.name, our_rank: our.rank};
