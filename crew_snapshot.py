@@ -54,6 +54,25 @@ def fetch_castle_ranking():
     with urllib.request.urlopen(req, timeout=10) as resp:
         return json.loads(resp.read().decode())
 
+def fetch_castle_ranking_safe(max_retries=10, delay=60):
+    for attempt in range(max_retries):
+        castles = fetch_castle_ranking()
+        all_valid = True
+        for castle_name, entries in castles.items():
+            our_idx = next((i for i, e in enumerate(entries) if e["crew_id"] == CREW_ID), None)
+            if our_idx is not None:
+                bk = entries[our_idx].get("boss_kills", 0) or 0
+                if bk <= 0:
+                    all_valid = False
+                    break
+        if all_valid:
+            return castles
+        if attempt < max_retries - 1:
+            print(f"[{datetime.now(TARGET_TZ).strftime('%Y-%m-%d %H:%M:%S')}] Bad castle data (attempt {attempt+1}), retrying in {delay}s...")
+            time.sleep(delay)
+    print(f"[{datetime.now(TARGET_TZ).strftime('%Y-%m-%d %H:%M:%S')}] Castle retry exhausted, using last response")
+    return castles
+
 def get_previous_sheet_names(wb):
     names = [s.title for s in wb.worksheets]
     names.sort()
@@ -750,18 +769,19 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       var entries = cdata[csm];
       if (!entries) continue;
       var totalKills = 0;
-      for (var ei = 0; ei < entries.length; ei++) totalKills += entries[ei].boss_kills;
+      for (var ei = 0; ei < entries.length; ei++) totalKills += (entries[ei].boss_kills || 0);
       var our = null, rival = null;
       for (var ei = 0; ei < entries.length; ei++) {
         if (entries[ei].crew_id === window.__crewId) our = {rank: ei + 1, kills: entries[ei].boss_kills};
       }
       if (!our) continue;
+      if (!our.kills || our.kills <= 0 || isNaN(our.kills)) continue;
       if (our.rank === 1) {
         if (entries.length < 2) continue;
-        rival = {rank: 2, kills: entries[1].boss_kills, name: entries[1].crew_name};
+        rival = {rank: 2, kills: entries[1].boss_kills || 0, name: entries[1].crew_name};
       } else {
         var ri = our.rank - 2;
-        if (ri >= 0 && ri < entries.length) rival = {rank: ri + 1, kills: entries[ri].boss_kills, name: entries[ri].crew_name};
+        if (ri >= 0 && ri < entries.length) rival = {rank: ri + 1, kills: (entries[ri].boss_kills || 0), name: entries[ri].crew_name};
       }
       if (!our || !rival) continue;
       var wasLead = (our.rank === 1);
@@ -781,8 +801,10 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       var pc = cache ? cache[csm] : null;
       var elapsed = cts ? (nowMs - cts) / 60000 : 0;
       var ourG = 0, rivalG = 0;
-      if (pc && elapsed > 0 && elapsed < 90) {
+      if (pc && pc.our_kills > 0 && pc.our_kills < ourK && elapsed > 0 && elapsed < 90) {
         ourG = Math.round((ourK - pc.our_kills) * 30 / elapsed);
+      }
+      if (pc && pc.rival_kills > 0 && pc.rival_kills < rivalK && elapsed > 0 && elapsed < 90) {
         rivalG = Math.round((rivalK - pc.rival_kills) * 30 / elapsed);
       }
       newCache[csm] = {our_kills: ourK, rival_kills: rivalK, rival_name: rival.name, our_rank: our.rank};
@@ -1509,7 +1531,7 @@ def save_snapshot(data):
     castle_stats = []
     if season_info and season_info.get("phase", 1) == 1:
         try:
-            castles = fetch_castle_ranking()
+            castles = fetch_castle_ranking_safe()
             cache_30m_castle = load_30m_castle_cache()
             castle_cache_dict = {}
             cache_ts = None
@@ -1522,7 +1544,9 @@ def save_snapshot(data):
                 if our_idx is None:
                     continue
                 our_rank = our_idx + 1
-                our_kills = entries[our_idx]["boss_kills"]
+                our_kills = entries[our_idx].get("boss_kills", 0) or 0
+                if our_kills <= 0:
+                    continue
                 if our_rank == 1:
                     if len(entries) < 2:
                         continue
@@ -1530,13 +1554,15 @@ def save_snapshot(data):
                 else:
                     rival_idx = our_idx - 1
                 rival = entries[rival_idx]
-                rival_kills = rival["boss_kills"]
+                rival_kills = rival.get("boss_kills", 0) or 0
                 total_kills = sum(e["boss_kills"] for e in entries)
                 gap = our_kills - rival_kills
                 our_gain = 0
                 rival_gain = 0
                 if castle_name in castle_cache_dict:
                     pc = castle_cache_dict[castle_name]
+                    pc_our = pc.get("our_kills", 0) or 0
+                    pc_rival = pc.get("rival_kills", 0) or 0
                     elapsed = 30
                     if cache_ts:
                         try:
@@ -1545,10 +1571,11 @@ def save_snapshot(data):
                             if elapsed < 1: elapsed = 1
                         except:
                             elapsed = 30
-                    raw_our = our_kills - pc.get("our_kills", our_kills)
-                    raw_rival = rival_kills - pc.get("rival_kills", rival_kills)
-                    if elapsed < 90:
+                    if pc_our > 0 and pc_our < our_kills and elapsed < 90:
+                        raw_our = our_kills - pc_our
                         our_gain = int(round(raw_our * 30 / elapsed))
+                    if pc_rival > 0 and pc_rival < rival_kills and elapsed < 90:
+                        raw_rival = rival_kills - pc_rival
                         rival_gain = int(round(raw_rival * 30 / elapsed))
                 new_castle_cache[castle_name] = {"our_kills": our_kills, "rival_kills": rival_kills, "rival_name": rival["crew_name"], "our_rank": our_rank}
                 castle_stats.append({
