@@ -740,9 +740,9 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     var cb = document.getElementById("castle-bar");
     if (!cb || window.__phase !== 1) return;
     var cards = cb.querySelectorAll(".castle-card");
-    var cache = null;
-    try { cache = JSON.parse(localStorage.getItem("nr_castle_30m")); } catch(e) {}
-    var newCache = {};
+    var cache = null, cts = null;
+    try { var _r = JSON.parse(localStorage.getItem("nr_castle_30m")); if (_r && _r.ts) { cts = _r.ts; cache = _r.data; } else { cache = _r; } } catch(e) {}
+    var newCache = {}, nowMs = Date.now();
     for (var i = 0; i < cards.length; i++) {
       var card = cards[i];
       var csm = card.getAttribute("data-castle");
@@ -779,7 +779,12 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       card.__prevRank = our.rank;
       var ourK = our.kills, rivalK = rival.kills;
       var pc = cache ? cache[csm] : null;
-      var ourG = pc ? ourK - pc.our_kills : 0, rivalG = pc ? rivalK - pc.rival_kills : 0;
+      var elapsed = cts ? (nowMs - cts) / 60000 : 0;
+      var ourG = 0, rivalG = 0;
+      if (pc && elapsed > 0 && elapsed < 90) {
+        ourG = Math.round((ourK - pc.our_kills) * 30 / elapsed);
+        rivalG = Math.round((rivalK - pc.rival_kills) * 30 / elapsed);
+      }
       newCache[csm] = {our_kills: ourK, rival_kills: rivalK, rival_name: rival.name, our_rank: our.rank};
       var gStr = ourG > 0 ? "+" + ourG : "" + ourG;
       var rgStr = rivalG > 0 ? "+" + rivalG : "" + rivalG;
@@ -813,7 +818,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       }
     }
     var nm = new Date().getMinutes(), blk = nm <= 1 ? "01" : (nm >= 31 && nm <= 32 ? "31" : null);
-    if (blk) localStorage.setItem("nr_castle_30m", JSON.stringify(newCache));
+    if (blk) localStorage.setItem("nr_castle_30m", JSON.stringify({ts: nowMs, data: newCache}));
     var grid = cb.querySelector(".castle-grid");
     var cardsArr = Array.prototype.slice.call(grid.querySelectorAll(".castle-card"));
     cardsArr.sort(function(a, b) {
@@ -1507,8 +1512,10 @@ def save_snapshot(data):
             castles = fetch_castle_ranking()
             cache_30m_castle = load_30m_castle_cache()
             castle_cache_dict = {}
+            cache_ts = None
             if cache_30m_castle and "castles" in cache_30m_castle:
                 castle_cache_dict = cache_30m_castle["castles"]
+                cache_ts = cache_30m_castle.get("timestamp")
             new_castle_cache = {}
             for castle_name, entries in castles.items():
                 our_idx = next((i for i, e in enumerate(entries) if e["crew_id"] == CREW_ID), None)
@@ -1530,8 +1537,19 @@ def save_snapshot(data):
                 rival_gain = 0
                 if castle_name in castle_cache_dict:
                     pc = castle_cache_dict[castle_name]
-                    our_gain = our_kills - pc.get("our_kills", our_kills)
-                    rival_gain = rival_kills - pc.get("rival_kills", rival_kills)
+                    elapsed = 30
+                    if cache_ts:
+                        try:
+                            ct = datetime.strptime(cache_ts, "%Y-%m-%d %H:%M:%S").replace(tzinfo=TARGET_TZ)
+                            elapsed = (now - ct).total_seconds() / 60
+                            if elapsed < 1: elapsed = 1
+                        except:
+                            elapsed = 30
+                    raw_our = our_kills - pc.get("our_kills", our_kills)
+                    raw_rival = rival_kills - pc.get("rival_kills", rival_kills)
+                    if elapsed < 90:
+                        our_gain = int(round(raw_our * 30 / elapsed))
+                        rival_gain = int(round(raw_rival * 30 / elapsed))
                 new_castle_cache[castle_name] = {"our_kills": our_kills, "rival_kills": rival_kills, "rival_name": rival["crew_name"], "our_rank": our_rank}
                 castle_stats.append({
                     "name": castle_name, "rank": our_rank, "our_kills": our_kills,
