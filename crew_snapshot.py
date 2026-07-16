@@ -764,10 +764,10 @@ window.__castleCache = """ + (json.dumps(load_30m_castle_cache().get("castles", 
     var cards = cb.querySelectorAll(".castle-card");
     var cache = null, cts = null, nowMs = Date.now();
     if (window.__castleCache) {
-      try { var _r = JSON.parse(localStorage.getItem("nr_castle_30m")); if (_r && _r.ts && _r.ts >= window.__pageTs) { cts = _r.ts; cache = _r.data; } } catch(e) {}
+      try { var _r = JSON.parse(localStorage.getItem("nr_castle_30m")); if (_r && _r.ts && _r.ts >= window.__pageTs && (nowMs - _r.ts) / 60000 < 30) { cts = _r.ts; cache = _r.data; } } catch(e) {}
       if (!cache) { cts = window.__pageTs || nowMs; cache = window.__castleCache; localStorage.setItem("nr_castle_30m", JSON.stringify({ts: cts, data: cache})); }
     } else {
-      try { var _r = JSON.parse(localStorage.getItem("nr_castle_30m")); if (_r && _r.ts) { cts = _r.ts; cache = _r.data; } else { cache = _r; } } catch(e) {}
+      try { var _r = JSON.parse(localStorage.getItem("nr_castle_30m")); if (_r && _r.ts && (nowMs - _r.ts) / 60000 < 30) { cts = _r.ts; cache = _r.data; } } catch(e) {}
     }
     var newCache = {};
     for (var i = 0; i < cards.length; i++) {
@@ -809,10 +809,10 @@ window.__castleCache = """ + (json.dumps(load_30m_castle_cache().get("castles", 
       var pc = cache ? cache[csm] : null;
       var elapsed = cts ? (nowMs - cts) / 60000 : 0;
       var ourG = 0, rivalG = 0;
-      if (pc && pc.our_kills > 0 && pc.our_kills < ourK && elapsed > 0 && elapsed < 90) {
+      if (pc && pc.our_kills > 0 && pc.our_kills < ourK && elapsed > 0 && elapsed < 30) {
         ourG = ourK - pc.our_kills;
       }
-      if (pc && pc.rival_kills > 0 && pc.rival_kills < rivalK && elapsed > 0 && elapsed < 90) {
+      if (pc && pc.rival_kills > 0 && pc.rival_kills < rivalK && elapsed > 0 && elapsed < 30) {
         rivalG = rivalK - pc.rival_kills;
       }
       newCache[csm] = {our_kills: ourK, rival_kills: rivalK, rival_name: rival.name, our_rank: our.rank};
@@ -1579,9 +1579,9 @@ def save_snapshot(data):
                             if elapsed < 1: elapsed = 1
                         except:
                             elapsed = 30
-                    if pc_our > 0 and pc_our < our_kills and elapsed < 90:
+                    if pc_our > 0 and pc_our < our_kills and elapsed < 30:
                         our_gain = our_kills - pc_our
-                    if pc_rival > 0 and pc_rival < rival_kills and elapsed < 90:
+                    if pc_rival > 0 and pc_rival < rival_kills and elapsed < 30:
                         rival_gain = rival_kills - pc_rival
                 new_castle_cache[castle_name] = {"our_kills": our_kills, "rival_kills": rival_kills, "rival_name": rival["crew_name"], "our_rank": our_rank}
                 castle_stats.append({
