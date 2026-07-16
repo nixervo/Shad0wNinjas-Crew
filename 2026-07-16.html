@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAICAAAAEAIACoEAAAFgAAACgAAAAgAAAAQAAAAAEAIAAAAAAAABAAACMuAAAjLgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADU1NYA1NTWDtrd3xT///8A6PLyAAAAAAAAAAAAAAAAANve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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////////////////////////////////8/Gf/8HhH/+A4Y//AEEP/wBAD/wAAAf4AAAB+AAAAeAAQADgAMAAIADAAEAAQAAAAEAAAAAAAAAAAAAAAAAAAHAMYAHwHHAD+/58A////Cf///z//////////////////////////8=">
+<title>Shad0w Ninjas [Crew]</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0a0a0a;
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+  .container {
+    max-width: 960px;
+    width: 100%;
+    box-shadow: 0 0 40px rgba(233, 69, 96, 0.06), 0 8px 32px rgba(0,0,0,0.5);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .header {
+    text-align: center;
+    padding: 32px 24px 24px;
+    background: linear-gradient(135deg, #121212 0%, #1a1a1a 50%, #101010 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #3b4db8, #5a6cc8, #3b4db8);
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  @keyframes shimmer { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .logo {
+    width: 132px; height: 132px;
+    object-fit: contain;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 0 16px rgba(233, 69, 96, 0.3));
+  }
+  .header h1 {
+    font-size: 30px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .header .sub {
+    font-size: 17px;
+    color: #888;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .header .sub span { color: #aaa; }
+  .archive {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    padding: 14px 20px;
+    background: #0f0f0f;
+    border-bottom: 1px solid #1a1a2e;
+    border-top: 1px solid #1a1a2e;
+  }
+  .archive a {
+    color: #777;
+    text-decoration: none;
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid #1a1a2e;
+    transition: 0.25s;
+  }
+  .archive a:hover { border-color: #3b4db8; color: #fff; background: rgba(233, 69, 96, 0.08); }
+  .archive a.active { border-color: #3b4db8; color: #fff; background: #3b4db8; font-weight: 600; }
+  .table-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    min-width: 0;
+    border-collapse: collapse;
+    background: #0d0d0d;
+  }
+  thead { position: sticky; top: 0; z-index: 1; }
+  th {
+    background: #111111;
+    padding: 14px 18px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 15px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #4a6ad8;
+    font-weight: 600;
+    border-left: 2px solid transparent;
+    box-sizing: border-box;
+  }
+  td {
+    padding: 11px 18px;
+    border-bottom: 1px solid #14141f;
+    border-left: 2px solid transparent;
+    font-size: 14px;
+    color: #ccc;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+  tr:hover td { background: rgba(233, 69, 96, 0.04); }
+  td.num { font-variant-numeric: tabular-nums; }
+  .up { color: #4caf50; }
+  .down { color: #f44336; }
+  .na { color: #555; }
+  .changes {
+    background: #0d0d0d;
+    padding: 20px 24px;
+    border-top: 1px solid #14141f;
+  }
+  .changes-title {
+    font-size: 13px;
+    color: #4a6ad8;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .changes-cols {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+  }
+  .changes-col {
+    flex: 1;
+    max-width: 320px;
+  }
+  .changes-head {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .changes-head.left { color: #f44336; }
+  .changes-head.joined { color: #4caf50; }
+  .changes-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+  }
+  .changes-col li {
+    padding: 4px 0;
+    font-size: 14px;
+    color: #ccc;
+    border-bottom: 1px solid #14141f;
+  }
+  .changes-col li:last-child { border-bottom: none; }
+  .footer {
+    text-align: center;
+    padding: 18px 20px;
+    background: #0a0a0a;
+    color: #444;
+    font-size: 12px;
+    border-top: 1px solid #12121e;
+  }
+  .footer .ref { color: #555; font-size: 11px; margin-top: 2px; }
+  .footer a { color: #4a6ad8; text-decoration: none; }
+  .timer-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: #111111aa;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid #1a1a2e;
+    font-size: 15px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .timer-left { display: flex; align-items: center; gap: 10px; }
+  .timer-season { color: #4a6ad8; font-weight: 700; letter-spacing: 0.5px; }
+  .timer-sep { color: #444; }
+  .timer-clock { display: flex; align-items: center; gap: 6px; }
+  .timer-digits { font-variant-numeric: tabular-nums; }
+  .timer-digits span:first-child { color: #4a6ad8; font-weight: 600; min-width: 28px; display: inline-block; text-align: center; }
+  .timer-unit { color: #888; font-size: 12px; margin-left: 1px; }
+  .timer-right { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 12px; color: #888; user-select: none; white-space: nowrap; }
+  .timer-right:hover { color: #4a6ad8; }
+  .stats-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 20px;
+    background: #111111aa;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid #1a1a2e;
+  }
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    width: 100%;
+  }
+  .stats-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .stat-label { color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .stat-val { color: #e0e0e0; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  #today-gain { color: #4caf50; }
+  .castle-bar {
+    display: flex;
+    flex-direction: column;
+    background: #111111;
+    border-top: 2px solid #3b4db844;
+    border-bottom: 1px solid #1a1a2e;
+    padding: 0;
+  }
+  .castle-header {
+    padding: 8px 16px;
+    font-size: 15px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #4a6ad8;
+    font-weight: 600;
+    background: rgba(0,0,0,0.25);
+  }
+  .castle-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px;
+  }
+  .castle-card {
+    flex: 0 0 calc((100% - 36px) / 7);
+    background: #101010;
+    border: 1px solid #1a1a2e;
+    border-radius: 8px;
+    padding: 6px 5px 6px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    box-sizing: border-box;
+  }
+  .castle-card.dangerous { border-color: #f4433666; }
+  .castle-card.catching { border-color: #4caf5066; }
+  .castle-emoji { font-size: 20px; line-height: 1; }
+  .castle-name { color: #ddd; font-size: 10px; font-weight: 600; }
+  .castle-rank-pill {
+    background: #3b4db822;
+    color: #3b4db8;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin: 1px 0 2px;
+  }
+  .castle-rival-rank { color: #777; font-size: 9px; font-weight: 600; }
+  .castle-rival-name { color: #999; font-size: 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .castle-kills { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .castle-kills.ours { color: #fff; }
+  .castle-kills.rival { color: #bbb; }
+  .castle-gain { font-size: 9px; font-variant-numeric: tabular-nums; }
+  .castle-gain.ours { color: #4caf50; }
+  .castle-gain.rival { color: #777; }
+  .castle-div {
+    width: 80%;
+    height: 1px;
+    background: #1a1a2e;
+    margin: 3px 0;
+    flex-shrink: 0;
+  }
+  .castle-tag {
+    margin-top: 3px;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 9px;
+    font-weight: 600;
+    color: #4a6ad8;
+    background: #4a6ad818;
+  }
+  .castle-tag-danger { color: #f44336; background: #f4433618; }
+  .castle-tag-catch { color: #4caf50; background: #4caf5018; }
+  @media (max-width: 600px) {
+    .castle-grid { padding: 6px; gap: 6px; }
+    .castle-card { flex: 0 0 100%; padding: 10px 8px 8px; gap: 3px; }
+    .castle-kills { font-size: 16px; }
+    .castle-emoji { font-size: 26px; }
+    .castle-name { font-size: 13px; }
+  }
+  th { cursor: pointer; user-select: none; }
+  th .sort-arrow { font-size: 11px; margin-left: 3px; }
+  @media (max-width: 600px) {
+    body { padding: 16px 8px; }
+    .header { padding: 24px 16px 20px; }
+    .header h1 { font-size: 22px; }
+    .header .sub { font-size: 14px; }
+    .logo { width: 96px; height: 96px; }
+    table { min-width: 520px; }
+    th, td { padding: 10px 10px; font-size: 12px; }
+    .changes { padding: 16px; }
+    .changes-cols { flex-direction: column; gap: 14px; }
+    .changes-col { max-width: 100%; }
+    .archive { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .archive::-webkit-scrollbar { display: none; }
+    .archive a { flex-shrink: 0; }
+    .stats-bar { gap: 10px; padding: 12px 16px; }
+    .stat-val { font-size: 15px; }
+    .stats-row { flex-direction: column; gap: 6px; align-items: center; }
+    .stats-row + .stats-row { border-top: 1px solid #1a1a2e; padding-top: 10px; }
+  }
+  .live-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px;
+    background: #0e0e0e;
+    border-top: 1px solid #14141f;
+    border-bottom: 1px solid #14141f;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  #search-input {
+    flex: 1;
+    min-width: 160px;
+    padding: 7px 12px;
+    border-radius: 6px;
+    border: 1px solid #1a1a2e;
+    background: #111111;
+    color: #e0e0e0;
+    font-size: 13px;
+    outline: none;
+  }
+  #search-input:focus { border-color: #3b4db8; }
+  #search-input::placeholder { color: #555; }
+  .live-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; white-space: nowrap; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .status-dot.ok { background: #4caf50; }
+  .status-dot.err { background: #f44336; }
+  .status-dot.wait { background: #888; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  tr.new-row td { animation: fadeIn 0.5s ease; }
+  @keyframes fadeIn { from { opacity: 0; background: rgba(233,69,96,0.1); } to { opacity: 1; background: transparent; } }
+  tr.left-row td { opacity: 0.35; }
+  .goal-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 20px;
+    background: #0f0f0f;
+    border-top: 1px solid #1a1a2e;
+  }
+  .goal-track {
+    width: 100%;
+    height: 16px;
+    background: #14141f;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .goal-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b4db8, #5a6cc8);
+    border-radius: 8px;
+    transition: width 0.5s ease;
+  }
+  .goal-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #888;
+  }
+  .goal-info .goal-next { color: #4a6ad8; font-weight: 600; }
+  .goal-info .goal-num { color: #ccc; font-variant-numeric: tabular-nums; }
+  td:first-child { width: 28px; min-width: 28px; text-align: center; color: #666; font-size: 12px; }
+  .meg.divider { border-left: 2px solid #3b4db888; padding-left: 12px; }
+  .divider { border-left: 2px solid #3b4db888; }
+  .div-col { border-left: 2px solid #3b4db888; }
+  .ph2-diff { display: none !important; }
+  .action-btn { cursor: pointer; font-size: 12px; color: #888; padding: 4px 10px; border-radius: 4px; border: 1px solid #1a1a2e; background: #111111; user-select: none; white-space: nowrap; }
+  .action-btn:hover { border-color: #3b4db8; color: #3b4db8; }
+  .footer-updated { color: #555; font-size: 11px; margin: 2px 0; }
+  .footer-csv { margin-top: 8px; }
+  .footer-csv a { color: #4a6ad8; text-decoration: none; font-size: 12px; cursor: pointer; }
+  .footer-csv a:hover { text-decoration: underline; }
+  .copied-toast { position: absolute; background: #4a6ad8; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 4px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 10; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    
+    <h1>Shad0w Ninjas</h1>
+    <div class="sub">
+      <span>Crew ID: 101</span>
+      <span>&middot;</span>
+      <span>40 members</span>
+    </div>
+  </div>
+  
+  <div class="timer-bar">
+    <span class="timer-left">
+      <span class="timer-season">Season <span id="season-num">28</span> &middot; Phase 1</span>
+      <span class="timer-sep">&middot;</span>
+      <span class="timer-clock">
+        <span class="timer-digits"><span id="timer-d">--</span><span class="timer-unit">d</span></span>
+        <span class="timer-digits"><span id="timer-h">--</span><span class="timer-unit">h</span></span>
+        <span class="timer-digits"><span id="timer-m">--</span><span class="timer-unit">m</span></span>
+        <span class="timer-digits"><span id="timer-s">--</span><span class="timer-unit">s</span></span>
+      </span>
+    </span>
+     <span class="timer-right" id="auto-refresh">&#x21BB; Auto Refresh in <span id="auto-seconds">30</span>s</span>
+  </div>
+  
+  <div class="stats-bar">
+    <div class="stats-row">
+      <div class="stats-col">
+        <span class="stat-label">Today Dmg</span>
+        <span class="stat-val" id="today-gain">+142,987</span>
+      </div>
+      <div class="stats-col">
+        <span class="stat-label">Today Kills</span>
+        <span class="stat-val" id="today-kills">+681</span>
+      </div>
+      <div class="stats-col">
+        <span class="stat-label">Total Damage</span>
+        <span class="stat-val" id="season-total">17,450,895</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="castle-bar" id="castle-bar">
+    <div class="castle-header">CASTLES</div>
+    <div class="castle-grid">
+        <div class="castle-card" data-castle="Hiroshima">
+          <div class="castle-emoji">&#127983;</div>
+          <div class="castle-name">Hiroshima</div>
+          <div class="castle-rank-pill">[#1]</div>
+          <div class="castle-kills ours">10,920</div>
+          <div class="castle-gain ours">(+21/½h)</div>
+          <div class="castle-div"></div>
+          <div class="castle-rival-rank">#2</div>
+          <div class="castle-rival-name">Sangre Latina Crew</div>
+          <div class="castle-kills rival">8,985</div>
+          <div class="castle-gain rival">(+117/½h)</div>
+          <div class="castle-tag">Lead 1,935</div>
+        </div>
+        <div class="castle-card" data-castle="Himeji">
+          <div class="castle-emoji">&#127983;</div>
+          <div class="castle-name">Himeji</div>
+          <div class="castle-rival-rank">#2</div>
+          <div class="castle-rival-name">Shinigami Anbu</div>
+          <div class="castle-kills rival">470</div>
+          <div class="castle-gain rival">(0/½h)</div>
+          <div class="castle-div"></div>
+          <div class="castle-rank-pill">[#3]</div>
+          <div class="castle-kills ours">38</div>
+          <div class="castle-gain ours">(0/½h)</div>
+          <div class="castle-tag">Need 432</div>
+        </div>
+        <div class="castle-card" data-castle="Kumamoto">
+          <div class="castle-emoji">&#127983;</div>
+          <div class="castle-name">Kumamoto</div>
+          <div class="castle-rival-rank">#4</div>
+          <div class="castle-rival-name">Shinigami Anbu</div>
+          <div class="castle-kills rival">914</div>
+          <div class="castle-gain rival">(0/½h)</div>
+          <div class="castle-div"></div>
+          <div class="castle-rank-pill">[#5]</div>
+          <div class="castle-kills ours">695</div>
+          <div class="castle-gain ours">(0/½h)</div>
+          <div class="castle-tag">Need 219</div>
+        </div>
+        <div class="castle-card" data-castle="Okazaki">
+          <div class="castle-emoji">&#127983;</div>
+          <div class="castle-name">Okazaki</div>
+          <div class="castle-rank-pill">[#1]</div>
+          <div class="castle-kills ours">5,771</div>
+          <div class="castle-gain ours">(+186/½h)</div>
+          <div class="castle-div"></div>
+          <div class="castle-rival-rank">#2</div>
+          <div class="castle-rival-name">Farming Clan</div>
+          <div class="castle-kills rival">4,995</div>
+          <div class="castle-gain rival">(0/½h)</div>
+          <div class="castle-tag">Lead 776</div>
+        </div>
+        <div class="castle-card" data-castle="Inuyama">
+          <div class="castle-emoji">&#127983;</div>
+          <div class="castle-name">Inuyama</div>
+          <div class="castle-rank-pill">[#1]</div>
+          <div class="castle-kills ours">46,257</div>
+          <div class="castle-gain ours">(+146/½h)</div>
+          <div class="castle-div"></div>
+          <div class="castle-rival-rank">#2</div>
+          <div class="castle-rival-name">Shinigami Anbu</div>
+          <div class="castle-kills rival">20,659</div>
+          <div class="castle-gain rival">(+10/½h)</div>
+          <div class="castle-tag">Lead 25,598</div>
+        </div>
+        <div class="castle-card" data-castle="Gifu">
+          <div class="castle-emoji">&#127983;</div>
+          <div class="castle-name">Gifu</div>
+          <div class="castle-rival-rank">#3</div>
+          <div class="castle-rival-name">Goomy Bloomy</div>
+          <div class="castle-kills rival">1,388</div>
+          <div class="castle-gain rival">(0/½h)</div>
+          <div class="castle-div"></div>
+          <div class="castle-rank-pill">[#4]</div>
+          <div class="castle-kills ours">534</div>
+          <div class="castle-gain ours">(0/½h)</div>
+          <div class="castle-tag">Need 854</div>
+        </div>
+        <div class="castle-card" data-castle="Hikone">
+          <div class="castle-emoji">&#127983;</div>
+          <div class="castle-name">Hikone</div>
+          <div class="castle-rank-pill">[#1]</div>
+          <div class="castle-kills ours">18,427</div>
+          <div class="castle-gain ours">(+328/½h)</div>
+          <div class="castle-div"></div>
+          <div class="castle-rival-rank">#2</div>
+          <div class="castle-rival-name">Ninjas Born To Fight</div>
+          <div class="castle-kills rival">8,891</div>
+          <div class="castle-gain rival">(+11/½h)</div>
+          <div class="castle-tag">Lead 9,536</div>
+        </div>
+    </div>
+  </div>
+  <div class="live-bar">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap">
+      <input type="text" id="search-input" placeholder="Search member...">
+      <span class="action-btn" id="reset-btn">Reset</span>
+    </div>
+    <div class="live-status">
+      <span class="status-dot wait" id="status-dot"></span>
+      <span id="status-text">Idle</span>
+    </div>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" data-col="0"># <span class="sort-arrow"></span></th>
+        <th rowspan="2" data-col="1">Name <span class="sort-arrow"></span></th>
+        <th colspan="6" class="meg">Phase 1</th>
+        <th colspan="1" class="meg divider">Phase 2</th>
+        <th colspan="2" class="meg divider">DAILY</th>
+      </tr>
+      <tr>
+        <th data-col="2" class="div-col">B.Kills <span class="sort-arrow"></span></th>
+        <th data-col="3" class="ph1-diff">½H[K] <span class="sort-arrow"></span></th>
+        <th data-col="4" class="ph1-diff">1H[K] <span class="sort-arrow"></span></th>
+        <th data-col="5">Dmg <span class="sort-arrow"></span></th>
+        <th data-col="6" class="ph1-diff">½H[D] <span class="sort-arrow"></span></th>
+        <th data-col="7" class="ph1-diff">1H[D] <span class="sort-arrow"></span></th>
+        <th data-col="8" class="div-col">Dmg <span class="sort-arrow"></span></th>
+        <th data-col="9" class="ph2-diff">½H[D] <span class="sort-arrow"></span></th>
+        <th data-col="10" class="ph2-diff">1H[D] <span class="sort-arrow"></span></th>
+        <th data-col="11" class="div-col">Dmg <span class="sort-arrow"></span></th>
+        <th data-col="12">Kills <span class="sort-arrow"></span></th>
+      </tr>
+    </thead>
+    <tbody><tr><td class="num">1</td><td>dogan</td><td class="num div-col">2,144</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+19</span></td><td class="num">450,780</td><td class="num ph1-diff"><span class="up">+2072</span></td><td class="num ph1-diff"><span class="up">+3964</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+167648</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">2</td><td>I Am Dead  @_@</td><td class="num div-col">1,707</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">358,168</td><td class="num ph1-diff"><span class="up">+2120</span></td><td class="num ph1-diff"><span class="up">+4241</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+100879</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">3</td><td>Yata</td><td class="num div-col">1,655</td><td class="num ph1-diff"><span class="up">+73</span></td><td class="num ph1-diff"><span class="up">+90</span></td><td class="num">347,214</td><td class="num ph1-diff"><span class="up">+15220</span></td><td class="num ph1-diff"><span class="up">+18795</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+99100</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">4</td><td>AangEX</td><td class="num div-col">2,468</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">518,454</td><td class="num ph1-diff"><span class="up">+2106</span></td><td class="num ph1-diff"><span class="up">+4181</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+155367</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">5</td><td>Feirisu</td><td class="num div-col">2,096</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">439,923</td><td class="num ph1-diff"><span class="up">+2103</span></td><td class="num ph1-diff"><span class="up">+4213</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+168439</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">6</td><td>[R23] Wolf †</td><td class="num div-col">2,031</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">426,595</td><td class="num ph1-diff"><span class="up">+2114</span></td><td class="num ph1-diff"><span class="up">+4230</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+155412</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">7</td><td>MATHEMATRICK</td><td class="num div-col">1,089</td><td class="num ph1-diff"><span class="up">+1</span></td><td class="num ph1-diff"><span class="up">+1</span></td><td class="num">228,484</td><td class="num ph1-diff"><span class="up">+218</span></td><td class="num ph1-diff"><span class="up">+218</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+24782</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">8</td><td>BlacKAkiresu O</td><td class="num div-col">1,758</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+31</span></td><td class="num">369,288</td><td class="num ph1-diff"><span class="up">+2082</span></td><td class="num ph1-diff"><span class="up">+6481</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+144247</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">9</td><td>Tuyu|Fortuners</td><td class="num div-col">1,789</td><td class="num ph1-diff"><span class="up">+3</span></td><td class="num ph1-diff"><span class="up">+4</span></td><td class="num">375,810</td><td class="num ph1-diff"><span class="up">+625</span></td><td class="num ph1-diff"><span class="up">+829</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+182501</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">10</td><td>Khakashi Hatake</td><td class="num div-col">1,700</td><td class="num ph1-diff"><span class="up">+76</span></td><td class="num ph1-diff"><span class="up">+87</span></td><td class="num">356,812</td><td class="num ph1-diff"><span class="up">+15954</span></td><td class="num ph1-diff"><span class="up">+18290</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+103015</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">11</td><td>Ikhram </td><td class="num div-col">2,713</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">569,898</td><td class="num ph1-diff"><span class="up">+2063</span></td><td class="num ph1-diff"><span class="up">+4183</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+200723</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">12</td><td>Prince G™</td><td class="num div-col">1,862</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">391,092</td><td class="num ph1-diff"><span class="up">+2079</span></td><td class="num ph1-diff"><span class="up">+4170</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+84909</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">13</td><td>Yhwach Genryusai</td><td class="num div-col">1,606</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">352,067</td><td class="num ph1-diff"><span class="up">+2090</span></td><td class="num ph1-diff"><span class="up">+4206</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+90532</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">14</td><td>NicolasRicko</td><td class="num div-col">2,320</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">487,503</td><td class="num ph1-diff"><span class="up">+2140</span></td><td class="num ph1-diff"><span class="up">+4247</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+69608</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">15</td><td>Izx Hatake Jr</td><td class="num div-col">1,561</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">342,881</td><td class="num ph1-diff"><span class="up">+2103</span></td><td class="num ph1-diff"><span class="up">+4225</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+87813</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">16</td><td>ASHBORN™</td><td class="num div-col">1,300</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">272,747</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+64666</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">17</td><td>Heisenberg </td><td class="num div-col">1,468</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">323,523</td><td class="num ph1-diff"><span class="up">+2080</span></td><td class="num ph1-diff"><span class="up">+4163</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+87907</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">18</td><td>Tobirama Senju™</td><td class="num div-col">3,176</td><td class="num ph1-diff"><span class="up">+43</span></td><td class="num ph1-diff"><span class="up">+87</span></td><td class="num">666,988</td><td class="num ph1-diff"><span class="up">+9044</span></td><td class="num ph1-diff"><span class="up">+18286</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+158428</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">19</td><td>ZenithEX</td><td class="num div-col">3,004</td><td class="num ph1-diff"><span class="up">+2</span></td><td class="num ph1-diff"><span class="up">+12</span></td><td class="num">631,056</td><td class="num ph1-diff"><span class="up">+427</span></td><td class="num ph1-diff"><span class="up">+2534</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+241901</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">20</td><td>§åñÐåïmårµ | Frtners</td><td class="num div-col">1,544</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">339,664</td><td class="num ph1-diff"><span class="up">+2100</span></td><td class="num ph1-diff"><span class="up">+4207</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+90350</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">21</td><td>Meru™</td><td class="num div-col">2,968</td><td class="num ph1-diff"><span class="up">+50</span></td><td class="num ph1-diff"><span class="up">+104</span></td><td class="num">623,186</td><td class="num ph1-diff"><span class="up">+10518</span></td><td class="num ph1-diff"><span class="up">+21883</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+193479</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">22</td><td>SNC | Vnzla Anbu |SN</td><td class="num div-col">1,786</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">375,328</td><td class="num ph1-diff"><span class="up">+2083</span></td><td class="num ph1-diff"><span class="up">+4195</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+81313</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">23</td><td>SNC | Signature</td><td class="num div-col">1,128</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">236,736</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+78916</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">24</td><td>Fusion</td><td class="num div-col">1,994</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">418,210</td><td class="num ph1-diff"><span class="up">+2090</span></td><td class="num ph1-diff"><span class="up">+4174</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+87158</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">25</td><td>Sesshomaru</td><td class="num div-col">2,845</td><td class="num ph1-diff"><span class="up">+36</span></td><td class="num ph1-diff"><span class="up">+76</span></td><td class="num">597,746</td><td class="num ph1-diff"><span class="up">+7555</span></td><td class="num ph1-diff"><span class="up">+15975</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+151604</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">26</td><td>KYO</td><td class="num div-col">1,428</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">300,058</td><td class="num ph1-diff"><span class="up">+2080</span></td><td class="num ph1-diff"><span class="up">+4193</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+80768</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">27</td><td>SL41F3RT</td><td class="num div-col">1,955</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">410,635</td><td class="num ph1-diff"><span class="up">+2117</span></td><td class="num ph1-diff"><span class="up">+4235</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+133820</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">28</td><td>Lovebird | Gorelax</td><td class="num div-col">1,505</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">331,781</td><td class="num ph1-diff"><span class="up">+2112</span></td><td class="num ph1-diff"><span class="up">+4232</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+90838</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">29</td><td>ShadowRavenX</td><td class="num div-col">2,652</td><td class="num ph1-diff"><span class="up">+47</span></td><td class="num ph1-diff"><span class="up">+91</span></td><td class="num">557,245</td><td class="num ph1-diff"><span class="up">+9915</span></td><td class="num ph1-diff"><span class="up">+19128</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+210660</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">30</td><td>SNC | TemperiTa</td><td class="num div-col">2,753</td><td class="num ph1-diff"><span class="up">+37</span></td><td class="num ph1-diff"><span class="up">+73</span></td><td class="num">577,650</td><td class="num ph1-diff"><span class="up">+7734</span></td><td class="num ph1-diff"><span class="up">+15273</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+266689</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">31</td><td>SmallDino</td><td class="num div-col">2,200</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">461,976</td><td class="num ph1-diff"><span class="up">+2140</span></td><td class="num ph1-diff"><span class="up">+4239</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+147752</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">32</td><td>Breaker LITE</td><td class="num div-col">1,726</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">362,181</td><td class="num ph1-diff"><span class="up">+2090</span></td><td class="num ph1-diff"><span class="up">+4202</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+100768</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">33</td><td>Snoopy | Kokyotosu</td><td class="num div-col">2,596</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+19</span></td><td class="num">546,302</td><td class="num ph1-diff"><span class="up">+2125</span></td><td class="num ph1-diff"><span class="up">+3998</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+134396</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">34</td><td>Arya</td><td class="num div-col">1,923</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">403,896</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+81739</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">35</td><td>Morrissey</td><td class="num div-col">3,421</td><td class="num ph1-diff"><span class="up">+48</span></td><td class="num ph1-diff"><span class="up">+97</span></td><td class="num">720,770</td><td class="num ph1-diff"><span class="up">+10144</span></td><td class="num ph1-diff"><span class="up">+20510</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+330923</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">36</td><td>Jonny Brown</td><td class="num div-col">3,162</td><td class="num ph1-diff"><span class="up">+24</span></td><td class="num ph1-diff"><span class="up">+59</span></td><td class="num">664,066</td><td class="num ph1-diff"><span class="up">+5042</span></td><td class="num ph1-diff"><span class="up">+12418</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+242164</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">37</td><td>Knightwalker</td><td class="num div-col">2,026</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">425,446</td><td class="num ph1-diff"><span class="up">+2111</span></td><td class="num ph1-diff"><span class="up">+4210</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+147402</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">38</td><td>a fucking ninja </td><td class="num div-col">1,873</td><td class="num ph1-diff"><span class="up">+11</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">393,229</td><td class="num ph1-diff"><span class="up">+2297</span></td><td class="num ph1-diff"><span class="up">+4193</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+76516</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">39</td><td>Izx Infernity </td><td class="num div-col">1,455</td><td class="num ph1-diff"><span class="up">+10</span></td><td class="num ph1-diff"><span class="up">+20</span></td><td class="num">320,768</td><td class="num ph1-diff"><span class="up">+2094</span></td><td class="num ph1-diff"><span class="up">+4214</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="up">+87596</span></td><td class="num"><span class="na">N/A</span></td></tr><tr><td class="num">40</td><td>Erza Scarlet</td><td class="num div-col">2,255</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num">474,739</td><td class="num ph1-diff"><span class="down">0</span></td><td class="num ph1-diff"><span class="down">0</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="down">0</span></td><td class="num"><span class="na">N/A</span></td></tr></tbody>
+  </table>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-updated" id="updated-ago"></div>
+    Snapshot: <span id="snapshot-ts">2026-07-16 13:31:00</span>
+    <div class="ref">Ref (30m): 2026-07-16 13:01:00 &middot; Ref (hourly): 2026-07-16 12:31:01 &middot; Ref (daily): 2026-07-15 13:31:00</div>
+    <div class="footer-csv"><a id="csv-link">Download CSV</a></div>
+  </div>
+</div>
+<script>
+(function() {
+  var end = new Date("2026-07-19T05:00:00Z").getTime();
+  function tick() {
+    var diff = end - new Date().getTime();
+    if (diff <= 0) { document.getElementById("timer-d").textContent = "0"; document.getElementById("timer-h").textContent = "00"; document.getElementById("timer-m").textContent = "00"; document.getElementById("timer-s").textContent = "00"; return; }
+    document.getElementById("timer-d").textContent = Math.floor(diff / 86400000);
+    document.getElementById("timer-h").textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2,"0");
+    document.getElementById("timer-m").textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2,"0");
+    document.getElementById("timer-s").textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2,"0");
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+window.__crewId = 101;
+window.__phase = 1;
+window.__hourlyCache = {"dogan": 446816, "I Am Dead  @_@": 353927, "Yata": 328419, "AangEX": 514273, "Feirisu": 435710, "[R23] Wolf \u2020": 422365, "MATHEMATRICK": 228266, "BlacKAkiresu O": 362807, "Tuyu|Fortuners": 374981, "Khakashi Hatake": 338522, "Ikhram ": 565715, "Prince G\u2122": 386922, "Yhwach Genryusai": 347861, "NicolasRicko": 483256, "Izx Hatake Jr": 338656, "ASHBORN\u2122": 272747, "Heisenberg ": 319360, "Tobirama Senju\u2122": 648702, "ZenithEX": 628522, "\u00a7\u00e5\u00f1\u00d0\u00e5\u00efm\u00e5r\u00b5 | Frtners": 335457, "Meru\u2122": 601303, "SNC | Vnzla Anbu |SN": 371133, "SNC | Signature": 236736, "Fusion": 414036, "Sesshomaru": 581771, "KYO": 295865, "SL41F3RT": 406400, "Lovebird | Gorelax": 327549, "ShadowRavenX": 538117, "SNC | TemperiTa": 562377, "SmallDino": 457737, "Breaker LITE": 357979, "Snoopy | Kokyotosu": 542304, "Arya": 403896, "Morrissey": 700260, "Jonny Brown": 651648, "Knightwalker": 421236, "a fucking ninja ": 389036, "Izx Infernity ": 316554, "Erza Scarlet": 474739};
+window.__30mCache = {"dogan": 448708, "I Am Dead  @_@": 356048, "Yata": 331994, "AangEX": 516348, "Feirisu": 437820, "[R23] Wolf \u2020": 424481, "MATHEMATRICK": 228266, "BlacKAkiresu O": 367206, "Tuyu|Fortuners": 375185, "Khakashi Hatake": 340858, "Ikhram ": 567835, "Prince G\u2122": 389013, "Yhwach Genryusai": 349977, "NicolasRicko": 485363, "Izx Hatake Jr": 340778, "ASHBORN\u2122": 272747, "Heisenberg ": 321443, "Tobirama Senju\u2122": 657944, "ZenithEX": 630629, "\u00a7\u00e5\u00f1\u00d0\u00e5\u00efm\u00e5r\u00b5 | Frtners": 337564, "Meru\u2122": 612668, "SNC | Vnzla Anbu |SN": 373245, "SNC | Signature": 236736, "Fusion": 416120, "Sesshomaru": 590191, "KYO": 297978, "SL41F3RT": 408518, "Lovebird | Gorelax": 329669, "ShadowRavenX": 547330, "SNC | TemperiTa": 569916, "SmallDino": 459836, "Breaker LITE": 360091, "Snoopy | Kokyotosu": 544177, "Arya": 403896, "Morrissey": 710626, "Jonny Brown": 659024, "Knightwalker": 423335, "a fucking ninja ": 390932, "Izx Infernity ": 318674, "Erza Scarlet": 474739};
+(function() {
+  var tbody = document.querySelector("tbody");
+  window.__originalRows = tbody.innerHTML;
+  window.__defaultRows = tbody.innerHTML;
+  var sortCol = -1, sortDir = 0;
+  var ths = document.querySelectorAll("th");
+  function applySort() {
+    if (sortDir === 0) { tbody.innerHTML = window.__originalRows; for (var a = 0; a < ths.length; a++) { var ar = ths[a].querySelector(".sort-arrow"); if (ar) ar.textContent = ""; } if (window.__refreshData) window.__refreshData(); var se = document.getElementById("search-input"); if(se&&se.value){var q=se.value.toLowerCase(),rr=tbody.querySelectorAll("tr");for(var ri=0;ri<rr.length;ri++)rr[ri].style.display=rr[ri].cells[1].textContent.trim().toLowerCase().indexOf(q)>=0?"":"none";} return; }
+    for (var a = 0; a < ths.length; a++) { var ar = ths[a].querySelector(".sort-arrow"); if (ar) ar.textContent = ""; }
+    for (var a = 0; a < ths.length; a++) {
+      if (parseInt(ths[a].getAttribute("data-col")) === sortCol) {
+        ths[a].querySelector(".sort-arrow").textContent = sortDir === 1 ? "\u25B2" : "\u25BC";
+        break;
+      }
+    }
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll("tr"));
+    rows.sort(function(a, b) {
+      var va = a.cells[sortCol].textContent.trim(), vb = b.cells[sortCol].textContent.trim();
+      if (sortCol === 1) return sortDir === 1 ? va.localeCompare(vb) : vb.localeCompare(va);
+      var na = parseFloat(va) || -1/0, nb = parseFloat(vb) || -1/0;
+      return sortDir === 1 ? na - nb : nb - na;
+    });
+    for (var r = 0; r < rows.length; r++) tbody.appendChild(rows[r]);
+    var sr = tbody.querySelectorAll("tr");
+    for (var ri = 0; ri < sr.length; ri++) sr[ri].cells[0].textContent = ri + 1;
+  }
+  window.__resetSort = function() { sortCol = -1; sortDir = 0; applySort(); };
+  for (var i = 0; i < ths.length; i++) (function(col) {
+    if (ths[col].hasAttribute("colspan")) return;
+    var dcol = parseInt(ths[col].getAttribute("data-col"));
+    if (dcol === undefined || isNaN(dcol)) return;
+    ths[col].addEventListener("click", function() {
+      if (sortCol !== dcol) { sortCol = dcol; sortDir = 1; }
+      else { sortDir = (sortDir + 1) % 3; }
+      applySort();
+      localStorage.setItem("nr_sort", JSON.stringify({col: sortCol, dir: sortDir}));
+    });
+  })(i);
+  try { var _s = JSON.parse(localStorage.getItem("nr_sort")); if (_s && _s.dir > 0) { sortCol = _s.col; sortDir = _s.dir; applySort(); } } catch(e) {}
+})();
+(function() {
+  var API = "https://playninjarift.com/api/detail_crew_website.php?crew_id=" + window.__crewId, RK = "https://playninjarift.com/api/crew_ranking_website.php", CA = "https://playninjarift.com/api/crew_ranking_castles_website.php";
+  var tb = document.querySelector("tbody"), names = [], rws = tb.querySelectorAll("tr");
+  for (var i = 0; i < rws.length; i++) names.push(rws[i].cells[1].textContent.trim());
+  var autoSeconds = 30, autoEl = document.getElementById("auto-seconds"), searchEl = document.getElementById("search-input"), dotEl = document.getElementById("status-dot"), statusEl = document.getElementById("status-text");
+  if (window.__hourlyCache && Object.keys(window.__hourlyCache).length > 0) { var _ts = ts(), _m = String(new Date().getMinutes()), _b = _m <= "1" ? "01" : (_m >= "31" && _m <= "32" ? "31" : _m); localStorage.setItem("nr_1h", JSON.stringify({b: _b, ts: _ts, rs: window.__hourlyCache})); }
+  if (window.__30mCache && Object.keys(window.__30mCache).length > 0) { var _b30 = (new Date().getMinutes() <= 1 ? "01" : "31"); localStorage.setItem("nr_30m", JSON.stringify({b: _b30, ts: _ts, rs: window.__30mCache})); }
+  function pad(n) { return n < 10 ? "0"+n : ""+n; }
+  function ts() { var d = new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "+pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds()); }
+  function fj(u) { return fetch(u,{headers:{"Accept":"application/json"}}).then(function(r){return r.json();}).catch(function(){return null;}); }
+  function dh(v) { return v > 0 ? '<span class="up">+'+v+"</span>" : v <= 0 ? '<span class="down">'+v+"</span>" : '<span class="na">N/A</span>'; }
+  function blk30(m) { return m <= 1 ? "01" : (m >= 31 && m <= 32 ? "31" : null); }
+  function blk1h(m) { return m <= 1 ? "01" : null; }
+  function upd(d, rk) {
+    autoSeconds = 30;
+    var clan = null;
+    if (rk) {
+      if (Array.isArray(rk)) {
+        for (var ci = 0; ci < rk.length; ci++) {
+          if (rk[ci].crew_id === window.__crewId) { clan = rk[ci]; break; }
+        }
+      } else { clan = rk; }
+    }
+    var n = new Date(), nm = n.getMinutes(), ns = ts();
+    var lm = {}; for (var i = 0; i < d.length; i++) { var _k = i < names.length ? names[i] : d[i].character_name; lm[_k] = {damage: d[i].member_damage, kills: d[i].boss_kills || 0}; }
+    var n2r = {}, a = tb.querySelectorAll("tr"); for (var i = 0; i < a.length; i++) n2r[a[i].cells[1].textContent.trim()] = a[i];
+    var c30 = null, c1h = null; try { c30 = JSON.parse(localStorage.getItem("nr_30m")); c1h = JSON.parse(localStorage.getItem("nr_1h")); } catch(e) {}
+    if (!c1h && window.__hourlyCache) c1h = {rs: window.__hourlyCache, ts: ""};
+    for (var i = 0; i < names.length; i++) {
+      var name = names[i], md = lm[name]; if (!md) continue;
+      var row = n2r[name]; if (!row) continue;
+      var cel = row.cells;
+      if (window.__phase === 1) {
+        cel[2].textContent = md.kills;
+        cel[5].textContent = md.damage;
+      }
+      if (window.__phase !== 1) { cel[8].textContent = md.damage; }
+      if (c30 && c30.ks && c30.ks[name] !== undefined) cel[3].innerHTML = dh(md.kills - c30.ks[name]);
+      if (c1h && c1h.ks && c1h.ks[name] !== undefined) cel[4].innerHTML = dh(md.kills - c1h.ks[name]);
+      if (c30 && c30.rs && c30.rs[name] !== undefined) cel[6].innerHTML = dh(md.damage - c30.rs[name]);
+      if (c1h && c1h.rs && c1h.rs[name] !== undefined) cel[7].innerHTML = dh(md.damage - c1h.rs[name]);
+      if (c30 && c30.rs && c30.rs[name] !== undefined) cel[9].innerHTML = dh(md.damage - c30.rs[name]);
+      if (c1h && c1h.rs && c1h.rs[name] !== undefined) cel[10].innerHTML = dh(md.damage - c1h.rs[name]);
+    }
+    for (var _n in lm) {
+      if (names.indexOf(_n) === -1) {
+        names.push(_n);
+        var tr = document.createElement("tr");
+        tr.className = "new-row";
+        tr.innerHTML = '<td class="num"></td><td>' + _n + '</td><td class="num div-col">' + (window.__phase === 1 ? (lm[_n].kills||0) : 0) + '</td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num">' + (window.__phase === 1 ? lm[_n].damage : 0) + '</td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num ph1-diff"><span class="na">N/A</span></td><td class="num div-col">' + (window.__phase !== 1 ? lm[_n].damage : '<span class="na">N/A</span>') + '</td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num ph2-diff"><span class="na">N/A</span></td><td class="num div-col"><span class="na">N/A</span></td><td class="num"><span class="na">N/A</span></td>';
+        tb.appendChild(tr);
+        if (searchEl && searchEl.value && _n.toLowerCase().indexOf(searchEl.value.toLowerCase()) === -1) tr.style.display = "none";
+      }
+    }
+    a = tb.querySelectorAll("tr"); n2r = {};
+    for (var i = 0; i < a.length; i++) n2r[a[i].cells[1].textContent.trim()] = a[i];
+    for (var i = 0; i < names.length; i++) {
+      var row = n2r[names[i]];
+      if (row && !lm[names[i]]) row.className = "left-row";
+    }
+    if (clan) {
+      var sv = document.querySelectorAll(".stats-col .stat-val");
+      if (sv.length >= 3 && clan.crew_damage !== undefined) {
+        var gainEl = sv[0], killEl = sv[1], totalEl = sv[2];
+        var liveKills = 0;
+        for (var ki = 0; ki < d.length; ki++) liveKills += (d[ki].boss_kills || 0);
+        if (window.__initDmg === undefined) {
+          var startGain = parseInt(gainEl.textContent.replace(/[^0-9-]/g, "")) || 0;
+          var startKills = parseInt(killEl.textContent.replace(/[^0-9-]/g, "")) || 0;
+          window.__initDmg = clan.crew_damage - startGain;
+          window.__initKills = liveKills - startKills;
+        }
+        var tg = clan.crew_damage - window.__initDmg;
+        var tk = liveKills - window.__initKills;
+        gainEl.textContent = (tg >= 0 ? "+" : "") + tg.toLocaleString();
+        killEl.textContent = (tk >= 0 ? "+" : "") + tk.toLocaleString();
+        totalEl.textContent = Number(clan.crew_damage).toLocaleString();
+      }
+    }
+    var ft = document.querySelector(".footer");
+    var st = document.getElementById("snapshot-ts"); if (st) st.textContent = ns;
+    var rs = {}; for (var i = 0; i < d.length; i++) rs[d[i].character_name] = d[i].member_damage;
+    var ks = {}; for (var i = 0; i < d.length; i++) ks[d[i].character_name] = d[i].boss_kills || 0;
+    var b30 = blk30(nm), b1h = blk1h(nm);
+    if (b30 && (!c30 || c30.b !== b30)) localStorage.setItem("nr_30m", JSON.stringify({b: b30, ts: ns, rs: rs, ks: ks}));
+    if (b1h && (!c1h || c1h.b !== b1h)) localStorage.setItem("nr_1h", JSON.stringify({b: b1h, ts: ns, rs: rs, ks: ks}));
+    window.__defaultRows = tb.innerHTML;
+    var sr = tb.querySelectorAll("tr");
+    for (var ri = 0; ri < sr.length; ri++) sr[ri].cells[0].textContent = ri + 1;
+  }
+  function castleUpd(cdata) {
+    var cb = document.getElementById("castle-bar");
+    if (!cb || window.__phase !== 1) return;
+    var cards = cb.querySelectorAll(".castle-card");
+    var cache = null, bCache = null, tCache = null, sCache = null, pCache = null;
+    try { cache = JSON.parse(localStorage.getItem("nr_castle_30m")); bCache = JSON.parse(localStorage.getItem("nr_castle_baseline")); tCache = JSON.parse(localStorage.getItem("nr_castle_trigger")); sCache = JSON.parse(localStorage.getItem("nr_castle_snapshot")); pCache = JSON.parse(localStorage.getItem("nr_castle_prev_rank")); } catch(e) {}
+    tCache = tCache || {};
+    sCache = sCache || {};
+    pCache = pCache || {};
+    var newCache = {}, newBCache = {}, newTCache = {}, newSCache = {}, newPCache = {};
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
+      var csm = card.getAttribute("data-castle");
+      if (!csm) { var cn = card.querySelector(".castle-name"); if (cn) csm = cn.textContent.trim(); else continue; }
+      var entries = cdata[csm];
+      if (!entries) continue;
+      var our = null, rival = null;
+      for (var ei = 0; ei < entries.length; ei++) {
+        if (entries[ei].crew_id === window.__crewId) our = {rank: ei + 1, kills: entries[ei].boss_kills};
+      }
+      if (!our) continue;
+      if (our.rank === 1) {
+        if (entries.length < 2) continue;
+        rival = {rank: 2, kills: entries[1].boss_kills, name: entries[1].crew_name};
+      } else {
+        var ri = our.rank - 2;
+        if (ri >= 0 && ri < entries.length) rival = {rank: ri + 1, kills: entries[ri].boss_kills, name: entries[ri].crew_name};
+      }
+      if (!our || !rival) continue;
+      var prevRank = pCache[csm];
+      var wasLead = prevRank ? (prevRank === 1) : (our.rank === 1);
+      var isLead = (our.rank === 1);
+      if (prevRank !== undefined && wasLead !== isLead) {
+        var emoji = card.querySelector(".castle-emoji");
+        var cname = card.querySelector(".castle-name");
+        var eStr = emoji ? emoji.textContent : "&#127983;";
+        var nStr = cname ? cname.textContent : csm;
+        if (isLead) {
+          card.innerHTML = '<div class="castle-emoji">' + eStr + '</div><div class="castle-name">' + nStr + '</div><div class="castle-rank-pill">[#1]</div><div class="castle-kills ours">0</div><div class="castle-gain ours">(0/½h)</div><div class="castle-div"></div><div class="castle-rival-rank">#2</div><div class="castle-rival-name"></div><div class="castle-kills rival">0</div><div class="castle-gain rival">(0/½h)</div><div class="castle-tag"></div>';
+        } else {
+          card.innerHTML = '<div class="castle-emoji">' + eStr + '</div><div class="castle-name">' + nStr + '</div><div class="castle-rival-rank">#N</div><div class="castle-rival-name"></div><div class="castle-kills rival">0</div><div class="castle-gain rival">(0/½h)</div><div class="castle-div"></div><div class="castle-rank-pill">[#N]</div><div class="castle-kills ours">0</div><div class="castle-gain ours">(0/½h)</div><div class="castle-tag"></div>';
+        }
+        ourKEl = card.querySelector(".castle-kills.ours");
+        ourGEl = card.querySelector(".castle-gain.ours");
+        rivalKEl = card.querySelector(".castle-kills.rival");
+        rivalGEl = card.querySelector(".castle-gain.rival");
+        tagEl = card.querySelector(".castle-tag");
+        pillEl = card.querySelector(".castle-rank-pill");
+        rivalRankEl = card.querySelector(".castle-rival-rank");
+        rivalNameEl = card.querySelector(".castle-rival-name");
+      }
+      var ourK = our.kills, rivalK = rival.kills;
+      var pc = cache ? cache[csm] : null;
+      var ourG = pc ? ourK - pc.our_kills : 0, rivalG = pc ? rivalK - pc.rival_kills : 0;
+      newCache[csm] = {our_kills: ourK, rival_kills: rivalK, rival_name: rival.name, our_rank: our.rank};
+      var bp = bCache ? bCache[csm] : null;
+      newBCache[csm] = {our_kills: ourK, rival_kills: rivalK};
+      var gStr = ourG > 0 ? "+" + ourG : "" + ourG;
+      var rgStr = rivalG > 0 ? "+" + rivalG : "" + rivalG;
+      var ourKEl = card.querySelector(".castle-kills.ours");
+      var ourGEl = card.querySelector(".castle-gain.ours");
+      var rivalKEl = card.querySelector(".castle-kills.rival");
+      var rivalGEl = card.querySelector(".castle-gain.rival");
+      var tagEl = card.querySelector(".castle-tag");
+      var pillEl = card.querySelector(".castle-rank-pill");
+      var rivalRankEl = card.querySelector(".castle-rival-rank");
+      var rivalNameEl = card.querySelector(".castle-rival-name");
+      if (ourKEl) ourKEl.textContent = ourK.toLocaleString();
+      if (ourGEl) ourGEl.textContent = "(" + gStr + "/½h)";
+      if (rivalKEl) rivalKEl.textContent = rivalK.toLocaleString();
+      if (rivalGEl) rivalGEl.textContent = "(" + rgStr + "/½h)";
+      if (pillEl) pillEl.textContent = "[#" + our.rank + "]";
+      if (rivalRankEl) rivalRankEl.textContent = "#" + rival.rank;
+      if (rivalNameEl) rivalNameEl.textContent = rival.name;
+      var isLead = (our.rank === 1);
+      var gapVal = isLead ? (ourK - rivalK) : (rivalK - ourK);
+      var label = isLead ? "Lead " : "Need ";
+      if (tagEl) tagEl.textContent = label + gapVal.toLocaleString();
+      card.classList.remove("dangerous", "catching");
+      tagEl.classList.remove("castle-tag-danger", "castle-tag-catch");
+      var curGap = isLead ? (ourK - rivalK) : (rivalK - ourK);
+      var trig = tCache[csm];
+      var active = false;
+      if (trig) {
+        var ref = trig.ref_gap;
+        var changePct = ref > 0 ? Math.round((curGap - ref) / ref * 100) : 0;
+        if (trig.state === "dangerous" && changePct >= 15) {
+          trig = null;
+        } else if (trig.state === "catching" && changePct >= 15) {
+          trig = null;
+        } else {
+          active = true;
+          if (trig.state === "dangerous") { card.classList.add("dangerous"); tagEl.classList.add("castle-tag-danger"); }
+          else { card.classList.add("catching"); tagEl.classList.add("castle-tag-catch"); }
+        }
+      }
+      if (!trig) {
+        var snap = sCache[csm];
+        if (!snap) {
+          snap = {our_kills: ourK, rival_kills: rivalK};
+        }
+        var snapGap = isLead ? (snap.our_kills - snap.rival_kills) : (snap.rival_kills - snap.our_kills);
+        var pct = snapGap > 0 ? Math.round((snapGap - curGap) / snapGap * 100) : 0;
+        if (isLead && pct >= 30) { trig = {state: "dangerous", ref_gap: curGap}; card.classList.add("dangerous"); tagEl.classList.add("castle-tag-danger"); }
+        else if (!isLead && pct >= 30) { trig = {state: "catching", ref_gap: curGap}; card.classList.add("catching"); tagEl.classList.add("castle-tag-catch"); }
+        newSCache[csm] = snap;
+      } else {
+        newSCache[csm] = null;
+      }
+      newTCache[csm] = trig || null;
+      newPCache[csm] = our.rank;
+    }
+    var nm = new Date().getMinutes(), blk = nm <= 1 ? "01" : (nm >= 31 && nm <= 32 ? "31" : null);
+    if (blk) localStorage.setItem("nr_castle_30m", JSON.stringify(newCache));
+    localStorage.setItem("nr_castle_baseline", JSON.stringify(newBCache));
+    localStorage.setItem("nr_castle_trigger", JSON.stringify(newTCache));
+    localStorage.setItem("nr_castle_snapshot", JSON.stringify(newSCache));
+    localStorage.setItem("nr_castle_prev_rank", JSON.stringify(newPCache));
+  }
+  function refreshData() {
+    if (dotEl) dotEl.className = "status-dot wait";
+    if (statusEl) statusEl.textContent = "Loading...";
+    Promise.all([fj(API), fj(RK), fj(CA).then(function(cdata) { if (cdata && window.__phase === 1) castleUpd(cdata); return cdata; }).catch(function() { return null; })]).then(function(r) {
+      if (r[0] && r[0].members) {
+        upd(r[0].members, r[1]);
+        if (dotEl) dotEl.className = "status-dot ok";
+        if (statusEl) statusEl.textContent = "Live";
+      } else {
+        if (dotEl) dotEl.className = "status-dot err";
+        if (statusEl) statusEl.textContent = "Offline";
+      }
+    });
+  }
+  window.__refreshData = refreshData;
+  refreshData();
+  setInterval(refreshData, 30000);
+  setInterval(function(){if(autoSeconds>0)autoSeconds--;if(autoEl)autoEl.textContent=autoSeconds;},1000);
+  if(autoEl)autoEl.parentElement.addEventListener("click",function(){autoSeconds=30;refreshData();});
+  if(searchEl)searchEl.addEventListener("input",function(){
+    var q = this.value.toLowerCase(), r = tb.querySelectorAll("tr");
+    for(var i=0;i<r.length;i++)r[i].style.display=r[i].cells[1].textContent.trim().toLowerCase().indexOf(q)>=0?"":"none";
+  });
+  // Click-to-copy (event delegation on tbody)
+  tb.addEventListener("click", function(e) {
+    var cell = e.target;
+    while (cell && cell.tagName !== "TD") cell = cell.parentNode;
+    if (!cell || cell.cellIndex !== 1) return;
+    var name = cell.textContent.trim();
+    navigator.clipboard.writeText(name).then(function() {
+      var toast = document.createElement("span");
+      toast.className = "copied-toast";
+      toast.textContent = "Copied!";
+      toast.style.opacity = "1";
+      cell.style.position = "relative";
+      cell.appendChild(toast);
+      setTimeout(function() { toast.style.opacity = "0"; setTimeout(function() { toast.remove(); }, 300); }, 1500);
+    }).catch(function() {});
+  });
+  // Reset sort
+  var resetBtn = document.getElementById("reset-btn");
+  if (resetBtn) resetBtn.addEventListener("click", function() {
+    localStorage.removeItem("nr_sort");
+    if (window.__resetSort) window.__resetSort();
+  });
+  // CSV export
+  function csvDownload() {
+    var rows = tb.querySelectorAll("tr"), csv = "Rank,Name,B.Kills,1/2H[K],Dmg,1/2H[D],Dmg(P2),1/2H[D](P2),Dmg,Kills\n";
+    for (var i = 0; i < rows.length; i++) {
+      var cells = rows[i].cells, vals = [];
+      for (var j = 0; j < cells.length; j++) {
+        var v = cells[j].textContent.trim().replace(/"/g, '""');
+        vals.push('"' + v + '"');
+      }
+      csv += vals.join(",") + "\n";
+    }
+    var blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = "SHAD0W NINJAS_reps.csv"; a.click();
+    URL.revokeObjectURL(url);
+  }
+  var csvLink = document.getElementById("csv-link");
+  if (csvLink) csvLink.addEventListener("click", csvDownload);
+  // Updated ago
+  function updateAgo() {
+    var st = document.getElementById("snapshot-ts");
+    var ua = document.getElementById("updated-ago");
+    if (!st || !ua) return;
+    var txt = st.textContent;
+    var m = txt.match(/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/);
+    if (!m) return;
+    var snap = new Date(m[1].replace(" ", "T") + "+08:00").getTime();
+    var now = new Date().getTime();
+    var diff = Math.floor((now - snap) / 60000);
+    ua.textContent = "Updated " + (diff < 1 ? "just now" : diff + "m ago");
+  }
+  updateAgo();
+  setInterval(updateAgo, 30000);
+})();
+</script>
+</body>
+</html>
