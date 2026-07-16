@@ -802,10 +802,10 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       var elapsed = cts ? (nowMs - cts) / 60000 : 0;
       var ourG = 0, rivalG = 0;
       if (pc && pc.our_kills > 0 && pc.our_kills < ourK && elapsed > 0 && elapsed < 90) {
-        ourG = Math.round((ourK - pc.our_kills) * 30 / elapsed);
+        ourG = ourK - pc.our_kills;
       }
       if (pc && pc.rival_kills > 0 && pc.rival_kills < rivalK && elapsed > 0 && elapsed < 90) {
-        rivalG = Math.round((rivalK - pc.rival_kills) * 30 / elapsed);
+        rivalG = rivalK - pc.rival_kills;
       }
       newCache[csm] = {our_kills: ourK, rival_kills: rivalK, rival_name: rival.name, our_rank: our.rank};
       var gStr = ourG > 0 ? "+" + ourG : "" + ourG;
@@ -1572,11 +1572,9 @@ def save_snapshot(data):
                         except:
                             elapsed = 30
                     if pc_our > 0 and pc_our < our_kills and elapsed < 90:
-                        raw_our = our_kills - pc_our
-                        our_gain = int(round(raw_our * 30 / elapsed))
+                        our_gain = our_kills - pc_our
                     if pc_rival > 0 and pc_rival < rival_kills and elapsed < 90:
-                        raw_rival = rival_kills - pc_rival
-                        rival_gain = int(round(raw_rival * 30 / elapsed))
+                        rival_gain = rival_kills - pc_rival
                 new_castle_cache[castle_name] = {"our_kills": our_kills, "rival_kills": rival_kills, "rival_name": rival["crew_name"], "our_rank": our_rank}
                 castle_stats.append({
                     "name": castle_name, "rank": our_rank, "our_kills": our_kills,
