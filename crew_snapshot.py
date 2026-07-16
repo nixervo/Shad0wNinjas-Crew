@@ -624,7 +624,10 @@ window.__crewId = """ + str(CREW_ID) + """;
 window.__phase = """ + str(phase_num) + """;
 window.__hourlyCache = """ + json.dumps(hourly_cache if hourly_cache else {}) + """;
 window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "members" in cache_30m else {}) + """;
-(function() {
+""" + ("""
+window.__pageTs = """ + str(int(now.timestamp() * 1000)) + """;
+window.__castleCache = """ + (json.dumps(load_30m_castle_cache().get("castles", {})) if load_30m_castle_cache() and "castles" in load_30m_castle_cache() else "{}") + """;
+""" if castle_stats else "") + """(function() {
   var tbody = document.querySelector("tbody");
   window.__originalRows = tbody.innerHTML;
   window.__defaultRows = tbody.innerHTML;
@@ -759,9 +762,14 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     var cb = document.getElementById("castle-bar");
     if (!cb || window.__phase !== 1) return;
     var cards = cb.querySelectorAll(".castle-card");
-    var cache = null, cts = null;
-    try { var _r = JSON.parse(localStorage.getItem("nr_castle_30m")); if (_r && _r.ts) { cts = _r.ts; cache = _r.data; } else { cache = _r; } } catch(e) {}
-    var newCache = {}, nowMs = Date.now();
+    var cache = null, cts = null, nowMs = Date.now();
+    if (window.__castleCache) {
+      try { var _r = JSON.parse(localStorage.getItem("nr_castle_30m")); if (_r && _r.ts && _r.ts >= window.__pageTs) { cts = _r.ts; cache = _r.data; } } catch(e) {}
+      if (!cache) { cts = window.__pageTs || nowMs; cache = window.__castleCache; localStorage.setItem("nr_castle_30m", JSON.stringify({ts: cts, data: cache})); }
+    } else {
+      try { var _r = JSON.parse(localStorage.getItem("nr_castle_30m")); if (_r && _r.ts) { cts = _r.ts; cache = _r.data; } else { cache = _r; } } catch(e) {}
+    }
+    var newCache = {};
     for (var i = 0; i < cards.length; i++) {
       var card = cards[i];
       var csm = card.getAttribute("data-castle");
