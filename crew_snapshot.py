@@ -540,6 +540,17 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
             is_lead = (cs["rank"] == 1)
             gap_label = "Lead" if is_lead else "Need"
             gap_disp = cs["gap"] if is_lead else cs["rival_kills"] - cs["our_kills"]
+            gap_pct = cs["total_kills"] > 0 and (gap_disp / cs["total_kills"] * 100) or 0
+            if is_lead:
+                if gap_pct <= 10: card_cls = "dangerous"; tag_cls = "castle-tag-danger"
+                elif gap_pct >= 25.1: card_cls = "safe"; tag_cls = "castle-tag-safe"
+                else: card_cls = ""; tag_cls = ""
+            else:
+                if gap_pct <= 10: card_cls = "catching"; tag_cls = "castle-tag-catch"
+                elif gap_pct >= 25.1: card_cls = "dangerous"; tag_cls = "castle-tag-danger"
+                else: card_cls = ""; tag_cls = ""
+            card_cls_attr = f' {card_cls}' if card_cls else ''
+            tag_cls_attr = f' {tag_cls}' if tag_cls else ''
             if is_lead:
                 top_html = f"""          <div class="castle-emoji">&#127983;</div>
           <div class="castle-name">{cs['name']}</div>
@@ -562,9 +573,9 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
           <div class="castle-rank-pill">[#{cs['rank']}]</div>
           <div class="castle-kills ours">{cs['our_kills']:,}</div>
           <div class="castle-gain ours">({our_g_str}/½h)</div>"""
-            castle_cards += f"""        <div class="castle-card" data-castle="{cs['name']}">
+            castle_cards += f"""        <div class="castle-card{card_cls_attr}" data-castle="{cs['name']}">
 {top_html}
-          <div class="castle-tag">{gap_label} {gap_disp:,}</div>
+          <div class="castle-tag{tag_cls_attr}">{gap_label} {gap_disp:,}</div>
         </div>
 """
         castle_html = f"""
@@ -641,6 +652,7 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
   var autoSeconds = 30, autoEl = document.getElementById("auto-seconds"), searchEl = document.getElementById("search-input"), dotEl = document.getElementById("status-dot"), statusEl = document.getElementById("status-text");
   if (window.__hourlyCache && Object.keys(window.__hourlyCache).length > 0) { var _ts = ts(), _m = String(new Date().getMinutes()), _b = _m <= "1" ? "01" : (_m >= "31" && _m <= "32" ? "31" : _m); localStorage.setItem("nr_1h", JSON.stringify({b: _b, ts: _ts, rs: window.__hourlyCache})); }
   if (window.__30mCache && Object.keys(window.__30mCache).length > 0) { var _b30 = (new Date().getMinutes() <= 1 ? "01" : "31"); localStorage.setItem("nr_30m", JSON.stringify({b: _b30, ts: _ts, rs: window.__30mCache})); }
+  try { localStorage.removeItem("nr_castle_baseline"); localStorage.removeItem("nr_castle_trigger"); localStorage.removeItem("nr_castle_snapshot"); localStorage.removeItem("nr_castle_prev_rank"); } catch(e) {}
   function pad(n) { return n < 10 ? "0"+n : ""+n; }
   function ts() { var d = new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "+pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds()); }
   function fj(u) { return fetch(u,{headers:{"Accept":"application/json"}}).then(function(r){return r.json();}).catch(function(){return null;}); }
@@ -728,18 +740,17 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     var cb = document.getElementById("castle-bar");
     if (!cb || window.__phase !== 1) return;
     var cards = cb.querySelectorAll(".castle-card");
-    var cache = null, bCache = null, tCache = null, sCache = null, pCache = null;
-    try { cache = JSON.parse(localStorage.getItem("nr_castle_30m")); bCache = JSON.parse(localStorage.getItem("nr_castle_baseline")); tCache = JSON.parse(localStorage.getItem("nr_castle_trigger")); sCache = JSON.parse(localStorage.getItem("nr_castle_snapshot")); pCache = JSON.parse(localStorage.getItem("nr_castle_prev_rank")); } catch(e) {}
-    tCache = tCache || {};
-    sCache = sCache || {};
-    pCache = pCache || {};
-    var newCache = {}, newBCache = {}, newTCache = {}, newSCache = {}, newPCache = {};
+    var cache = null;
+    try { cache = JSON.parse(localStorage.getItem("nr_castle_30m")); } catch(e) {}
+    var newCache = {};
     for (var i = 0; i < cards.length; i++) {
       var card = cards[i];
       var csm = card.getAttribute("data-castle");
       if (!csm) { var cn = card.querySelector(".castle-name"); if (cn) csm = cn.textContent.trim(); else continue; }
       var entries = cdata[csm];
       if (!entries) continue;
+      var totalKills = 0;
+      for (var ei = 0; ei < entries.length; ei++) totalKills += entries[ei].boss_kills;
       var our = null, rival = null;
       for (var ei = 0; ei < entries.length; ei++) {
         if (entries[ei].crew_id === window.__crewId) our = {rank: ei + 1, kills: entries[ei].boss_kills};
@@ -753,34 +764,23 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
         if (ri >= 0 && ri < entries.length) rival = {rank: ri + 1, kills: entries[ri].boss_kills, name: entries[ri].crew_name};
       }
       if (!our || !rival) continue;
-      var prevRank = pCache[csm];
-      var wasLead = prevRank ? (prevRank === 1) : (our.rank === 1);
-      var isLead = (our.rank === 1);
-      if (prevRank !== undefined && wasLead !== isLead) {
+      var wasLead = (our.rank === 1);
+      if (card.__prevRank !== undefined && (card.__prevRank === 1) !== wasLead) {
         var emoji = card.querySelector(".castle-emoji");
         var cname = card.querySelector(".castle-name");
-        var eStr = emoji ? emoji.textContent : "&#127983;";
+        var eStr = emoji ? emoji.textContent : "\\u{1F3EA}";
         var nStr = cname ? cname.textContent : csm;
-        if (isLead) {
-          card.innerHTML = '<div class="castle-emoji">' + eStr + '</div><div class="castle-name">' + nStr + '</div><div class="castle-rank-pill">[#1]</div><div class="castle-kills ours">0</div><div class="castle-gain ours">(0/½h)</div><div class="castle-div"></div><div class="castle-rival-rank">#2</div><div class="castle-rival-name"></div><div class="castle-kills rival">0</div><div class="castle-gain rival">(0/½h)</div><div class="castle-tag"></div>';
+        if (wasLead) {
+          card.innerHTML = '<div class="castle-emoji">' + eStr + '</div><div class="castle-name">' + nStr + '</div><div class="castle-rank-pill">[#1]</div><div class="castle-kills ours">0</div><div class="castle-gain ours">(0/\u00BDh)</div><div class="castle-div"></div><div class="castle-rival-rank">#2</div><div class="castle-rival-name"></div><div class="castle-kills rival">0</div><div class="castle-gain rival">(0/\u00BDh)</div><div class="castle-tag"></div>';
         } else {
-          card.innerHTML = '<div class="castle-emoji">' + eStr + '</div><div class="castle-name">' + nStr + '</div><div class="castle-rival-rank">#N</div><div class="castle-rival-name"></div><div class="castle-kills rival">0</div><div class="castle-gain rival">(0/½h)</div><div class="castle-div"></div><div class="castle-rank-pill">[#N]</div><div class="castle-kills ours">0</div><div class="castle-gain ours">(0/½h)</div><div class="castle-tag"></div>';
+          card.innerHTML = '<div class="castle-emoji">' + eStr + '</div><div class="castle-name">' + nStr + '</div><div class="castle-rival-rank">#N</div><div class="castle-rival-name"></div><div class="castle-kills rival">0</div><div class="castle-gain rival">(0/\u00BDh)</div><div class="castle-div"></div><div class="castle-rank-pill">[#N]</div><div class="castle-kills ours">0</div><div class="castle-gain ours">(0/\u00BDh)</div><div class="castle-tag"></div>';
         }
-        ourKEl = card.querySelector(".castle-kills.ours");
-        ourGEl = card.querySelector(".castle-gain.ours");
-        rivalKEl = card.querySelector(".castle-kills.rival");
-        rivalGEl = card.querySelector(".castle-gain.rival");
-        tagEl = card.querySelector(".castle-tag");
-        pillEl = card.querySelector(".castle-rank-pill");
-        rivalRankEl = card.querySelector(".castle-rival-rank");
-        rivalNameEl = card.querySelector(".castle-rival-name");
       }
+      card.__prevRank = our.rank;
       var ourK = our.kills, rivalK = rival.kills;
       var pc = cache ? cache[csm] : null;
       var ourG = pc ? ourK - pc.our_kills : 0, rivalG = pc ? rivalK - pc.rival_kills : 0;
       newCache[csm] = {our_kills: ourK, rival_kills: rivalK, rival_name: rival.name, our_rank: our.rank};
-      var bp = bCache ? bCache[csm] : null;
-      newBCache[csm] = {our_kills: ourK, rival_kills: rivalK};
       var gStr = ourG > 0 ? "+" + ourG : "" + ourG;
       var rgStr = rivalG > 0 ? "+" + rivalG : "" + rivalG;
       var ourKEl = card.querySelector(".castle-kills.ours");
@@ -792,56 +792,38 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
       var rivalRankEl = card.querySelector(".castle-rival-rank");
       var rivalNameEl = card.querySelector(".castle-rival-name");
       if (ourKEl) ourKEl.textContent = ourK.toLocaleString();
-      if (ourGEl) ourGEl.textContent = "(" + gStr + "/½h)";
+      if (ourGEl) ourGEl.textContent = "(" + gStr + "/\u00BDh)";
       if (rivalKEl) rivalKEl.textContent = rivalK.toLocaleString();
-      if (rivalGEl) rivalGEl.textContent = "(" + rgStr + "/½h)";
+      if (rivalGEl) rivalGEl.textContent = "(" + rgStr + "/\u00BDh)";
       if (pillEl) pillEl.textContent = "[#" + our.rank + "]";
       if (rivalRankEl) rivalRankEl.textContent = "#" + rival.rank;
       if (rivalNameEl) rivalNameEl.textContent = rival.name;
-      var isLead = (our.rank === 1);
-      var gapVal = isLead ? (ourK - rivalK) : (rivalK - ourK);
-      var label = isLead ? "Lead " : "Need ";
+      var gapVal = wasLead ? (ourK - rivalK) : (rivalK - ourK);
+      var label = wasLead ? "Lead " : "Need ";
       if (tagEl) tagEl.textContent = label + gapVal.toLocaleString();
-      card.classList.remove("dangerous", "catching");
-      tagEl.classList.remove("castle-tag-danger", "castle-tag-catch");
-      var curGap = isLead ? (ourK - rivalK) : (rivalK - ourK);
-      var trig = tCache[csm];
-      var active = false;
-      if (trig) {
-        var ref = trig.ref_gap;
-        var changePct = ref > 0 ? Math.round((curGap - ref) / ref * 100) : 0;
-        if (trig.state === "dangerous" && changePct >= 15) {
-          trig = null;
-        } else if (trig.state === "catching" && changePct >= 15) {
-          trig = null;
-        } else {
-          active = true;
-          if (trig.state === "dangerous") { card.classList.add("dangerous"); tagEl.classList.add("castle-tag-danger"); }
-          else { card.classList.add("catching"); tagEl.classList.add("castle-tag-catch"); }
-        }
-      }
-      if (!trig) {
-        var snap = sCache[csm];
-        if (!snap) {
-          snap = {our_kills: ourK, rival_kills: rivalK};
-        }
-        var snapGap = isLead ? (snap.our_kills - snap.rival_kills) : (snap.rival_kills - snap.our_kills);
-        var pct = snapGap > 0 ? Math.round((snapGap - curGap) / snapGap * 100) : 0;
-        if (isLead && pct >= 30) { trig = {state: "dangerous", ref_gap: curGap}; card.classList.add("dangerous"); tagEl.classList.add("castle-tag-danger"); }
-        else if (!isLead && pct >= 30) { trig = {state: "catching", ref_gap: curGap}; card.classList.add("catching"); tagEl.classList.add("castle-tag-catch"); }
-        newSCache[csm] = snap;
+      card.classList.remove("dangerous", "safe", "catching");
+      if (tagEl) tagEl.classList.remove("castle-tag-danger", "castle-tag-safe", "castle-tag-catch");
+      var pct = totalKills > 0 ? (gapVal / totalKills) * 100 : 0;
+      if (wasLead) {
+        if (pct <= 10) { card.classList.add("dangerous"); if (tagEl) tagEl.classList.add("castle-tag-danger"); }
+        else if (pct >= 25.1) { card.classList.add("safe"); if (tagEl) tagEl.classList.add("castle-tag-safe"); }
       } else {
-        newSCache[csm] = null;
+        if (pct <= 10) { card.classList.add("catching"); if (tagEl) tagEl.classList.add("castle-tag-catch"); }
+        else if (pct >= 25.1) { card.classList.add("dangerous"); if (tagEl) tagEl.classList.add("castle-tag-danger"); }
       }
-      newTCache[csm] = trig || null;
-      newPCache[csm] = our.rank;
     }
     var nm = new Date().getMinutes(), blk = nm <= 1 ? "01" : (nm >= 31 && nm <= 32 ? "31" : null);
     if (blk) localStorage.setItem("nr_castle_30m", JSON.stringify(newCache));
-    localStorage.setItem("nr_castle_baseline", JSON.stringify(newBCache));
-    localStorage.setItem("nr_castle_trigger", JSON.stringify(newTCache));
-    localStorage.setItem("nr_castle_snapshot", JSON.stringify(newSCache));
-    localStorage.setItem("nr_castle_prev_rank", JSON.stringify(newPCache));
+    var grid = cb.querySelector(".castle-grid");
+    var cardsArr = Array.prototype.slice.call(grid.querySelectorAll(".castle-card"));
+    cardsArr.sort(function(a, b) {
+      var pa = a.querySelector(".castle-rank-pill");
+      var pb = b.querySelector(".castle-rank-pill");
+      var ra = pa ? parseInt(pa.textContent.replace(/[^0-9]/g, "")) || 99 : 99;
+      var rb = pb ? parseInt(pb.textContent.replace(/[^0-9]/g, "")) || 99 : 99;
+      return ra - rb;
+    });
+    for (var ci = 0; ci < cardsArr.length; ci++) grid.appendChild(cardsArr[ci]);
   }
   function refreshData() {
     if (dotEl) dotEl.className = "status-dot wait";
@@ -1192,7 +1174,8 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     box-sizing: border-box;
   }}
   .castle-card.dangerous {{ border-color: #f4433666; }}
-  .castle-card.catching {{ border-color: #4caf5066; }}
+  .castle-card.safe {{ border-color: #4caf5066; }}
+  .castle-card.catching {{ border-color: #ffc10766; }}
   .castle-emoji {{ font-size: 20px; line-height: 1; }}
   .castle-name {{ color: #ddd; font-size: 10px; font-weight: 600; }}
   .castle-rank-pill {{
@@ -1229,7 +1212,8 @@ window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "memb
     background: #4a6ad818;
   }}
   .castle-tag-danger {{ color: #f44336; background: #f4433618; }}
-  .castle-tag-catch {{ color: #4caf50; background: #4caf5018; }}
+  .castle-tag-safe {{ color: #4caf50; background: #4caf5018; }}
+  .castle-tag-catch {{ color: #ffc107; background: #ffc10718; }}
   @media (max-width: 600px) {{
     .castle-grid {{ padding: 6px; gap: 6px; }}
     .castle-card {{ flex: 0 0 100%; padding: 10px 8px 8px; gap: 3px; }}
@@ -1540,6 +1524,7 @@ def save_snapshot(data):
                     rival_idx = our_idx - 1
                 rival = entries[rival_idx]
                 rival_kills = rival["boss_kills"]
+                total_kills = sum(e["boss_kills"] for e in entries)
                 gap = our_kills - rival_kills
                 our_gain = 0
                 rival_gain = 0
@@ -1552,8 +1537,9 @@ def save_snapshot(data):
                     "name": castle_name, "rank": our_rank, "our_kills": our_kills,
                     "our_gain": our_gain, "rival_name": rival["crew_name"],
                     "rival_rank": rival_idx + 1, "rival_kills": rival_kills,
-                    "rival_gain": rival_gain, "gap": gap
+                    "rival_gain": rival_gain, "gap": gap, "total_kills": total_kills
                 })
+            castle_stats.sort(key=lambda c: c["rank"])
             if is_30m_mark:
                 save_30m_castle_cache(new_castle_cache, now.strftime("%Y-%m-%d %H:%M:%S"))
         except Exception as e:
