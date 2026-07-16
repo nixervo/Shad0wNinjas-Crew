@@ -423,7 +423,7 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     member_count = len(data["members"])
 
     logo_b64 = ""
-    logo_path = "Crew_logo.png"
+    logo_path = "crew_logo.png"
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
             logo_b64 = base64.b64encode(f.read()).decode()
