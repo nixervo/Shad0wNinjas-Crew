@@ -462,6 +462,23 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     kills_30m_map = diffs_30m_kills if diffs_30m_kills else {}
     kills_1h_map = diffs_1h_kills if diffs_1h_kills else {}
     dmg_1h_map = hourly_diffs if hourly_diffs else {}
+    daily_kills_lookup = {}
+    if os.path.exists(DAILY_KILLS_BASELINE):
+        try:
+            with open(DAILY_KILLS_BASELINE) as f:
+                _dkb = json.load(f)
+            _dk_members = _dkb.get("members", {})
+            for _m in data["members"]:
+                _n = _m["character_name"]
+                _ck = _m.get("boss_kills", 0) or 0
+                _bk = _dk_members.get(_n, 0) or 0
+                if _bk > 0 and _ck > 0:
+                    _d = _ck - _bk
+                    daily_kills_lookup[_n] = f"+{_d}" if _d > 0 else str(_d)
+                else:
+                    daily_kills_lookup[_n] = "N/A"
+        except:
+            pass
     uniq_names = get_unique_names(data["members"])
     phase_num = season_info.get("phase", 1) if season_info else 1
     in_p1 = (phase_num == 1)
@@ -474,7 +491,7 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
         with open(PHASE1_CACHE, encoding="utf-8") as f:
             p1_frozen = json.load(f)
     table_rows = "".join(
-        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num div-col\">" + (f"{m.get('boss_kills', 0) or 0:,}" if in_p1 else f"{p1_frozen.get(m['character_name'], {}).get('kills', 0):,}") + f"</td><td class=\"num ph1-diff\">{diff_html(kills_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(kills_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">" + (f"{m['member_damage']:,}" if in_p1 else f"{p1_frozen.get(m['character_name'], {}).get('damage', 0):,}") + f"</td><td class=\"num ph1-diff\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num div-col\">" + (na if in_p1 else f'{m["member_damage"]:,}') + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))) + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))) + f"</td><td class=\"num div-col\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td><td class=\"num\">{na}</td></tr>"
+        f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num div-col\">" + (f"{m.get('boss_kills', 0) or 0:,}" if in_p1 else f"{p1_frozen.get(m['character_name'], {}).get('kills', 0):,}") + f"</td><td class=\"num ph1-diff\">{diff_html(kills_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(kills_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">" + (f"{m['member_damage']:,}" if in_p1 else f"{p1_frozen.get(m['character_name'], {}).get('damage', 0):,}") + f"</td><td class=\"num ph1-diff\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num div-col\">" + (na if in_p1 else f'{m["member_damage"]:,}') + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))) + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))) + f"</td><td class=\"num div-col\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td><td class=\"num\">{diff_html(daily_kills_lookup.get(m['character_name'], 'N/A'))}</td></tr>"
         for i, m in enumerate(data["members"])
     )
 
@@ -500,7 +517,7 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     </div>
   </div>"""
 
-    logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="logo" alt="SHAD0W NINJAS">' if logo_b64 else ""
+    logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="logo" alt="{crew_name}">' if logo_b64 else ""
     favicon_html = f'<link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,{favicon_b64}">' if favicon_b64 else ""
 
     hourly_ref = f"Ref (hourly): {hourly_ts}" if hourly_ts else ""
@@ -937,7 +954,7 @@ window.__castleBaselineTs = """ + (json.dumps(castle_baseline_ts) if castle_base
     var blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
-    a.href = url; a.download = "SHAD0W NINJAS_reps.csv"; a.click();
+    a.href = url; a.download = "REPS_reps.csv"; a.click();
     URL.revokeObjectURL(url);
   }
   var csvLink = document.getElementById("csv-link");
@@ -1450,6 +1467,7 @@ def save_snapshot(data):
     now = datetime.now(TARGET_TZ)
     is_daily = (now.hour == 13)
     sheet_name = now.strftime("%Y-%m-%d")
+    crew_name = data.get("crew_name", "Unknown")
 
     prev_data, prev_timestamp = load_prev_from_xlsx(EXCEL_FILE, sheet_name)
 
@@ -1631,7 +1649,7 @@ def save_snapshot(data):
             json.dump({"crew_damage": crew_damage, "date": sheet_name}, f)
         tot_kills = sum((m.get("boss_kills", 0) or 0) for m in data["members"])
         with open(DAILY_KILLS_BASELINE, "w", encoding="utf-8") as f:
-            json.dump({"crew_kills": tot_kills, "date": sheet_name}, f)
+            json.dump({"crew_kills": tot_kills, "members": {uniq[i][1]: m.get("boss_kills", 0) or 0 for i, m in enumerate(data["members"])}, "date": sheet_name}, f)
         existing_html = [f.replace(".html", "") for f in os.listdir(".") if f.endswith(".html") and f[:4].isdigit() and f != "index.html"]
         all_dates = set(existing_html)
         all_dates.add(sheet_name)
@@ -1654,11 +1672,11 @@ def save_snapshot(data):
             save_seasonal_xlsx(data["members"], season_info["season"], 2)
 
     try:
-        save_daily_history()
+        save_daily_history(crew_name)
     except Exception as e:
         print(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] History error: {e}")
 
-def save_daily_history():
+def save_daily_history(crew_name):
     if not os.path.exists(EXCEL_FILE):
         return
     wb = load_workbook(EXCEL_FILE)
@@ -1745,7 +1763,7 @@ def save_daily_history():
 </head>
 <body>
 <div class="container">
-  <div class="header"><h1>SHAD0W NINJAS</h1><div class="sub">Daily Reps · {date} ({day_name})</div></div>
+  <div class="header"><h1>{crew_name}</h1><div class="sub">Daily Reps · {date} ({day_name})</div></div>
   <div class="nav">{prev_link}<a href="history.html">Index</a>{next_link}</div>
   <div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Gain</th></tr></thead><tbody>{rows_html}</tbody></table></div>
   <div class="footer"><a href="index.html">&larr; Back to main page</a></div>
@@ -1781,7 +1799,7 @@ def save_daily_history():
 </head>
 <body>
 <div class="container">
-  <div class="header"><h1>SHAD0W NINJAS</h1><div class="sub">Daily Rep History (Season 61)</div></div>
+  <div class="header"><h1>{crew_name}</h1><div class="sub">Daily Rep History (Season 61)</div></div>
   <div class="index-list">{index_rows}</div>
 {xlsx_links}  <div class="footer"><a href="index.html">&larr; Back to main page</a> &middot; <a href="https://github.com/nixervo/Shad0wNinjas-Crew">Source</a></div>
 </div>
