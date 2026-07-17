@@ -550,6 +550,19 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     </div>
   </div>"""
 
+    castle_baseline_data = None
+    castle_baseline_ts = None
+    if castle_stats:
+        try:
+            cc_path = "_30m_castle_cache.json"
+            if os.path.exists(cc_path):
+                with open(cc_path) as f:
+                    _cc = json.load(f)
+                    castle_baseline_data = _cc.get("castles")
+                    castle_baseline_ts = _cc.get("timestamp")
+        except:
+            pass
+
     castle_html = ""
     if castle_stats and phase_num == 1:
         castle_cards = ""
@@ -594,7 +607,7 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
           <div class="castle-gain ours">({our_g_str}/½h)</div>"""
             castle_cards += f"""        <div class="castle-card{card_cls_attr}" data-castle="{cs['name']}">
 {top_html}
-          <div class="castle-tag{tag_cls_attr}">{gap_label} {gap_disp:,} ({gap_pct:.1f}%)</div>
+          <div class="castle-tag{tag_cls_attr}">{gap_label} {gap_disp:,}<br>({gap_pct:.1f}%)</div>
         </div>
 """
         castle_html = f"""
@@ -626,6 +639,8 @@ window.__hourlyCache = """ + json.dumps(hourly_cache if hourly_cache else {}) + 
 window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "members" in cache_30m else {}) + """;
 """ + ("""
 window.__castleCache = """ + json.dumps({cs["name"]: {"our_kills": cs["our_kills"], "rival_kills": cs["rival_kills"], "rival_name": cs["rival_name"], "our_rank": cs["rank"]} for cs in castle_stats}) + """;
+window.__castleBaseline = """ + (json.dumps(castle_baseline_data) if castle_baseline_data else "null") + """;
+window.__castleBaselineTs = """ + (json.dumps(castle_baseline_ts) if castle_baseline_ts else "null") + """;
 """ if castle_stats else "") + """(function() {
   var tbody = document.querySelector("tbody");
   window.__originalRows = tbody.innerHTML;
@@ -673,7 +688,16 @@ window.__castleCache = """ + json.dumps({cs["name"]: {"our_kills": cs["our_kills
   var autoSeconds = 30, autoEl = document.getElementById("auto-seconds"), searchEl = document.getElementById("search-input"), dotEl = document.getElementById("status-dot"), statusEl = document.getElementById("status-text");
   if (window.__hourlyCache && Object.keys(window.__hourlyCache).length > 0) { var _ts = ts(), _m = String(new Date().getMinutes()), _b = _m <= "1" ? "01" : (_m >= "31" && _m <= "32" ? "31" : _m); localStorage.setItem("nr_1h", JSON.stringify({b: _b, ts: _ts, rs: window.__hourlyCache})); }
   if (window.__30mCache && Object.keys(window.__30mCache).length > 0) { var _b30 = (new Date().getMinutes() <= 1 ? "01" : "31"); localStorage.setItem("nr_30m", JSON.stringify({b: _b30, ts: _ts, rs: window.__30mCache})); }
-  if (window.__castleCache) { localStorage.setItem("nr_castle_30m", JSON.stringify({ts: Date.now(), data: window.__castleCache})); }
+  if (window.__castleBaseline && window.__castleBaselineTs !== null) {
+    var bt = new Date(window.__castleBaselineTs.replace(" ", "T") + "+08:00").getTime();
+    if (Date.now() - bt < 35 * 60 * 1000) {
+      localStorage.setItem("nr_castle_30m", JSON.stringify({ts: Date.now(), data: window.__castleBaseline}));
+    } else if (window.__castleCache) {
+      localStorage.setItem("nr_castle_30m", JSON.stringify({ts: Date.now(), data: window.__castleCache}));
+    }
+  } else if (window.__castleCache) {
+    localStorage.setItem("nr_castle_30m", JSON.stringify({ts: Date.now(), data: window.__castleCache}));
+  }
   try { localStorage.removeItem("nr_castle_baseline"); localStorage.removeItem("nr_castle_trigger"); localStorage.removeItem("nr_castle_snapshot"); localStorage.removeItem("nr_castle_prev_rank"); } catch(e) {}
   function pad(n) { return n < 10 ? "0"+n : ""+n; }
   function ts() { var d = new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "+pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds()); }
@@ -829,10 +853,10 @@ window.__castleCache = """ + json.dumps({cs["name"]: {"our_kills": cs["our_kills
       if (rivalNameEl) rivalNameEl.textContent = rival.name;
       var gapVal = wasLead ? (ourK - rivalK) : (rivalK - ourK);
       var label = wasLead ? "Lead " : "Need ";
-      if (tagEl) tagEl.textContent = label + gapVal.toLocaleString() + " (" + pct.toFixed(1) + "%)";
+      var pct = totalKills > 0 ? (gapVal / totalKills) * 100 : 0;
+      if (tagEl) tagEl.innerHTML = label + gapVal.toLocaleString() + "<br>(" + pct.toFixed(1) + "%)";
       card.classList.remove("dangerous", "safe", "catching");
       if (tagEl) tagEl.classList.remove("castle-tag-danger", "castle-tag-safe", "castle-tag-catch");
-      var pct = totalKills > 0 ? (gapVal / totalKills) * 100 : 0;
       if (wasLead) {
         if (pct <= 10) { card.classList.add("dangerous"); if (tagEl) tagEl.classList.add("castle-tag-danger"); }
         else if (pct >= 25.1) { card.classList.add("safe"); if (tagEl) tagEl.classList.add("castle-tag-safe"); }
@@ -1194,7 +1218,7 @@ window.__castleCache = """ + json.dumps({cs["name"]: {"our_kills": cs["our_kills
     background: #101010;
     border: 1px solid #1a1a2e;
     border-radius: 8px;
-    padding: 6px 5px 6px;
+    padding: 6px 5px 10px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -1236,6 +1260,7 @@ window.__castleCache = """ + json.dumps({cs["name"]: {"our_kills": cs["our_kills
     padding: 2px 8px;
     border-radius: 8px;
     font-size: 9px;
+    line-height: 1.45;
     font-weight: 600;
     color: #4a6ad8;
     background: #4a6ad818;
