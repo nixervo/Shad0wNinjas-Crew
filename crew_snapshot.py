@@ -248,25 +248,29 @@ def write_sheet(ws, data, prev_data, now, unique_names, season_num=None, phase_n
     max_reps = max((len(r) for r in reps), default=4)
     max_diff = max((len(d) for d in diffs), default=3)
 
+    is_p1 = (phase_num is None or phase_num == 1)
+    max_col = "E" if is_p1 else "C"
+
     ws.column_dimensions["A"].width = max(max_name + 5, 10)
     ws.column_dimensions["B"].width = max(max_reps + 3, 8)
     ws.column_dimensions["C"].width = max(max_diff + 3, 14)
-    ws.column_dimensions["D"].width = max(max_reps + 3, 8)
-    ws.column_dimensions["E"].width = max(max_diff + 3, 14)
+    if is_p1:
+        ws.column_dimensions["D"].width = max(max_reps + 3, 8)
+        ws.column_dimensions["E"].width = max(max_diff + 3, 14)
 
     crew_name = data.get("crew_name", "Unknown")
-    ws.merge_cells("A1:E1")
+    ws.merge_cells(f"A1:{max_col}1")
     meta = f" | S{season_num} P{phase_num}" if season_num else ""
     ws["A1"] = f"Crew: {crew_name} ({CREW_ID}){meta}"
     ws["A1"].font = Font(bold=True, size=13)
     ws["A1"].alignment = Alignment(horizontal="center", vertical="center")
 
-    ws.merge_cells("A2:E2")
+    ws.merge_cells(f"A2:{max_col}2")
     ws["A2"] = f"Timestamp: {now.strftime('%Y-%m-%d %H:%M:%S')}"
     ws["A2"].font = Font(bold=True, size=11)
     ws["A2"].alignment = Alignment(horizontal="center", vertical="center")
 
-    headers = ["Name", "Dmg", "Daily Dmg", "Boss Kills", "Daily Kills"]
+    headers = ["Name", "Dmg", "Daily Dmg", "Boss Kills", "Daily Kills"] if is_p1 else ["Name", "Dmg", "Daily Dmg"]
     for col_idx, h in enumerate(headers, 1):
         cell = ws.cell(row=3, column=col_idx, value=h)
         cell.font = Font(bold=True)
@@ -274,7 +278,7 @@ def write_sheet(ws, data, prev_data, now, unique_names, season_num=None, phase_n
 
     kills_map = {m["character_name"]: (m.get("boss_kills", 0) or 0) for m in data["members"]}
     prev_kills_map = {}
-    if os.path.exists(EXCEL_FILE):
+    if is_p1 and os.path.exists(EXCEL_FILE):
         pw = load_workbook(EXCEL_FILE)
         pn = sorted([s.title for s in pw.worksheets if s.title != "Sheet1"])
         if len(pn) >= 2:
@@ -286,12 +290,13 @@ def write_sheet(ws, data, prev_data, now, unique_names, season_num=None, phase_n
         ws.cell(row=row_idx, column=1, value=name).alignment = Alignment(vertical="center")
         ws.cell(row=row_idx, column=2, value=reps_val).alignment = Alignment(horizontal="center", vertical="center")
         ws.cell(row=row_idx, column=3, value=diff_val).alignment = Alignment(horizontal="center", vertical="center")
-        raw_name = uniq[row_idx - 4][0] if uniq else name.split(" (#")[0]
-        cur_kills = kills_map.get(raw_name, 0)
-        prev_k = prev_kills_map.get(raw_name, cur_kills) if prev_kills_map else cur_kills
-        dk = cur_kills - prev_k
-        ws.cell(row=row_idx, column=4, value=cur_kills).alignment = Alignment(horizontal="center", vertical="center")
-        ws.cell(row=row_idx, column=5, value=f"+{dk}" if dk > 0 else str(dk) if prev_kills_map else "N/A").alignment = Alignment(horizontal="center", vertical="center")
+        if is_p1:
+            raw_name = uniq[row_idx - 4][0] if uniq else name.split(" (#")[0]
+            cur_kills = kills_map.get(raw_name, 0)
+            prev_k = prev_kills_map.get(raw_name, cur_kills) if prev_kills_map else cur_kills
+            dk = cur_kills - prev_k
+            ws.cell(row=row_idx, column=4, value=cur_kills).alignment = Alignment(horizontal="center", vertical="center")
+            ws.cell(row=row_idx, column=5, value=f"+{dk}" if dk > 0 else str(dk) if prev_kills_map else "N/A").alignment = Alignment(horizontal="center", vertical="center")
 
 def save_xlsx(data, prev_data, now, uniq, season_info=None):
     sheet_name = now.strftime("%Y-%m-%d")
