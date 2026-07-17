@@ -625,7 +625,7 @@ window.__phase = """ + str(phase_num) + """;
 window.__hourlyCache = """ + json.dumps(hourly_cache if hourly_cache else {}) + """;
 window.__30mCache = """ + json.dumps(cache_30m["members"] if cache_30m and "members" in cache_30m else {}) + """;
 """ + ("""
-window.__castleCache = """ + (json.dumps(load_30m_castle_cache().get("castles", {})) if load_30m_castle_cache() and "castles" in load_30m_castle_cache() else "{}") + """;
+window.__castleCache = """ + json.dumps({cs["name"]: {"our_kills": cs["our_kills"], "rival_kills": cs["rival_kills"], "rival_name": cs["rival_name"], "our_rank": cs["rank"]} for cs in castle_stats}) + """;
 """ if castle_stats else "") + """(function() {
   var tbody = document.querySelector("tbody");
   window.__originalRows = tbody.innerHTML;
