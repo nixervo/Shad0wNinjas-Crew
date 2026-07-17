@@ -235,7 +235,7 @@ def compute_diff(members, prev_data):
         result.append((name, reps, diff_str))
     return result
 
-def write_sheet(ws, data, prev_data, now, unique_names):
+def write_sheet(ws, data, prev_data, now, unique_names, season_num=None, phase_num=None):
     uniq = unique_names if unique_names else get_unique_names(data["members"])
     rows = compute_diff(data["members"], prev_data)
     daily_lookup = {name: diff for name, _, diff in rows}
@@ -256,7 +256,8 @@ def write_sheet(ws, data, prev_data, now, unique_names):
 
     crew_name = data.get("crew_name", "Unknown")
     ws.merge_cells("A1:E1")
-    ws["A1"] = f"Crew: {crew_name} ({CREW_ID})"
+    meta = f" | S{season_num} P{phase_num}" if season_num else ""
+    ws["A1"] = f"Crew: {crew_name} ({CREW_ID}){meta}"
     ws["A1"].font = Font(bold=True, size=13)
     ws["A1"].alignment = Alignment(horizontal="center", vertical="center")
 
@@ -292,7 +293,7 @@ def write_sheet(ws, data, prev_data, now, unique_names):
         ws.cell(row=row_idx, column=4, value=cur_kills).alignment = Alignment(horizontal="center", vertical="center")
         ws.cell(row=row_idx, column=5, value=f"+{dk}" if dk > 0 else str(dk) if prev_kills_map else "N/A").alignment = Alignment(horizontal="center", vertical="center")
 
-def save_xlsx(data, prev_data, now, uniq):
+def save_xlsx(data, prev_data, now, uniq, season_info=None):
     sheet_name = now.strftime("%Y-%m-%d")
 
     if os.path.exists(EXCEL_FILE):
@@ -304,7 +305,9 @@ def save_xlsx(data, prev_data, now, uniq):
         del wb[sheet_name]
 
     ws = wb.create_sheet(title=sheet_name)
-    write_sheet(ws, data, prev_data, now, uniq)
+    season_num = season_info.get("season") if season_info else None
+    phase_num = season_info.get("phase") if season_info else None
+    write_sheet(ws, data, prev_data, now, uniq, season_num, phase_num)
 
     if "Sheet" in wb.sheetnames and len(wb.sheetnames) > 1:
         del wb["Sheet"]
@@ -1644,7 +1647,7 @@ def save_snapshot(data):
         print(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Phase 1 snapshot saved")
 
     if is_daily:
-        save_xlsx(data, prev_data, now, uniq)
+        save_xlsx(data, prev_data, now, uniq, season_info)
         with open(DAILY_BASELINE, "w", encoding="utf-8") as f:
             json.dump({"crew_damage": crew_damage, "date": sheet_name}, f)
         tot_kills = sum((m.get("boss_kills", 0) or 0) for m in data["members"])
@@ -1672,13 +1675,15 @@ def save_snapshot(data):
             save_seasonal_xlsx(data["members"], season_info["season"], 2)
 
     try:
-        save_daily_history(crew_name)
+        save_daily_history(crew_name, season_info)
     except Exception as e:
         print(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] History error: {e}")
 
-def save_daily_history(crew_name):
+def save_daily_history(crew_name, season_info=None):
     if not os.path.exists(EXCEL_FILE):
         return
+    current_season = season_info.get("season") if season_info else None
+    current_phase = season_info.get("phase") if season_info else None
     wb = load_workbook(EXCEL_FILE)
     names = sorted([s.title for s in wb.worksheets if s.title != "Sheet1"])
     if len(names) < 2:
@@ -1692,7 +1697,19 @@ def save_daily_history(crew_name):
             if name and row[1] is not None:
                 kills = int(row[3]) if len(row) >= 4 and row[3] is not None else 0
                 members.append((name, int(row[1]), kills))
-        sheets_data.append({"date": s, "members": members})
+        season_num = current_season
+        phase_num = current_phase
+        try:
+            a1 = ws["A1"].value or ""
+            if "|" in a1:
+                meta = a1.rsplit("|", 1)[1].strip()
+                if meta.startswith("S") and " P" in meta:
+                    parts = meta.split(" P")
+                    season_num = int(parts[0][1:])
+                    phase_num = int(parts[1])
+        except:
+            pass
+        sheets_data.append({"date": s, "members": members, "season": season_num, "phase": phase_num})
     css = """<style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0a0a0a; color: #e0e0e0; min-height: 100vh; display: flex; justify-content: center; padding: 32px 16px; }
@@ -1719,6 +1736,22 @@ def save_daily_history(crew_name):
   .section-header { padding: 10px 20px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #4a6ad8; font-weight: 600; background: #0f0f0f; border-top: 1px solid #1a1a2e; }
   .star-joined { color: #42a5f5; }
   .star-left { color: #f44336; }
+  details.season-wrap { margin: 0; }
+  details.season-wrap > summary { cursor: pointer; padding: 10px 14px; font-size: 15px; font-weight: 700; color: #4a6ad8; background: #0f0f0f; border-bottom: 1px solid #14141f; user-select: none; list-style: none; display: flex; align-items: center; gap: 6px; }
+  details.season-wrap > summary::-webkit-details-marker { display: none; }
+  details.season-wrap > summary:hover { background: rgba(74,106,216,0.05); }
+  details.season-wrap > summary .arrow { font-size: 12px; color: #888; transition: transform .15s; }
+  details.season-wrap[open] > summary .arrow { transform: rotate(90deg); }
+  .current-badge { font-size: 11px; font-weight: 400; color: #666; background: #222; padding: 1px 8px; border-radius: 8px; }
+  details.phase-wrap { margin: 0; }
+  details.phase-wrap > summary { cursor: pointer; padding: 8px 14px 8px 28px; font-size: 13px; font-weight: 600; color: #888; background: #0d0d0d; border-bottom: 1px solid #14141f; user-select: none; list-style: none; display: flex; align-items: center; gap: 6px; }
+  details.phase-wrap > summary::-webkit-details-marker { display: none; }
+  details.phase-wrap > summary .arrow { font-size: 11px; color: #555; transition: transform .15s; }
+  details.phase-wrap[open] > summary .arrow { transform: rotate(90deg); }
+  details.phase-wrap > summary:hover { background: rgba(74,106,216,0.03); }
+  details.phase-wrap a { display: block; padding: 8px 14px 8px 42px; color: #ccc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #14141f; }
+  details.phase-wrap a:hover { background: rgba(74,106,216,0.04); color: #fff; }
+  details.phase-wrap a:last-child { border-bottom: none; }
 </style>"""
     daily_pages = []
     for i in range(1, len(sheets_data)):
@@ -1741,7 +1774,7 @@ def save_daily_history(crew_name):
                 pname, prep, pk = prev_list[j]
                 gains.append({"name": pname, "dmg_gain": None, "kill_gain": None, "joined": False, "left": True})
         gains.sort(key=lambda x: (x["dmg_gain"] is None, -(x["dmg_gain"] or 0)))
-        daily_pages.append({"date": date, "day_name": day_name})
+        daily_pages.append({"date": date, "day_name": day_name, "season": curr["season"], "phase": curr["phase"]})
         rows_html = ""
         for idx, g in enumerate(gains, 1):
             star = ""
@@ -1765,7 +1798,7 @@ def save_daily_history(crew_name):
 </head>
 <body>
 <div class="container">
-  <div class="header"><h1>{crew_name}</h1><div class="sub">Daily Reps · {date} ({day_name})</div></div>
+  <div class="header"><h1>{crew_name}</h1><div class="sub">Daily Reps · {date} ({day_name})</div><div class="sub" style="margin-top:2px;font-size:12px;color:#666;">Season {curr["season"]} · Phase {curr["phase"]}</div></div>
   <div class="nav">{prev_link}<a href="history.html">Index</a>{next_link}</div>
   <div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Dmg</th><th>Kills</th></tr></thead><tbody>{rows_html}</tbody></table></div>
   <div class="footer"><a href="index.html">&larr; Back to main page</a></div>
@@ -1775,9 +1808,30 @@ def save_daily_history(crew_name):
         with open(f"history_{date}.html", "w", encoding="utf-8") as f:
             f.write(page_html)
         print(f"[{datetime.now(TARGET_TZ).strftime('%Y-%m-%d %H:%M:%S')}] Saved history_{date}.html")
-    index_rows = ""
+    from collections import OrderedDict
+    season_groups = OrderedDict()
     for dp in daily_pages:
-        index_rows += f'<a href="history_{dp["date"]}.html">{dp["date"]} ({dp["day_name"]}) &rarr;</a>\n'
+        s = dp["season"]
+        p = dp["phase"]
+        if s not in season_groups:
+            season_groups[s] = OrderedDict()
+        if p not in season_groups[s]:
+            season_groups[s][p] = []
+        season_groups[s][p].append(dp)
+    index_rows = ""
+    for s_num, phases in season_groups.items():
+        is_current = (s_num == current_season)
+        current_badge = f' <span class="current-badge">[CURRENT]</span>' if is_current else ""
+        arrow = '<span class="arrow">&#9654;</span>'
+        index_rows += f'<details class="season-wrap"{" open" if is_current else ""}><summary>{arrow} SEASON {s_num}{current_badge}</summary>\n'
+        for p_num, p_sheets in phases.items():
+            is_active = (is_current and p_num == current_phase)
+            parrow = '<span class="arrow">&#9654;</span>'
+            index_rows += f'<details class="phase-wrap"{" open" if is_active else ""}><summary>{parrow} PHASE {p_num}</summary>\n'
+            for dp in p_sheets:
+                index_rows += f'<a href="history_{dp["date"]}.html">{dp["date"]} ({dp["day_name"]}) &rarr;</a>\n'
+            index_rows += '</details>\n'
+        index_rows += '</details>\n'
     xlsx_links = ""
     pattern = f"S*_P*_ID{CREW_ID}.xlsx"
     xlsx_files = sorted(glob.glob(pattern))
@@ -1788,6 +1842,7 @@ def save_daily_history(crew_name):
             xlsx_items += f'<a href="{f}">&#xF4FF; {label} Summary</a>\n'
         xlsx_links = f"""  <div class="section-header">Season Archives</div>
   <div class="index-list">{xlsx_items}</div>\n"""
+    season_label = f"Season {current_season}" if current_season else "History"
     index_html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1796,12 +1851,12 @@ def save_daily_history(crew_name):
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Rep History · Season 61</title>
+<title>Daily Rep History · {season_label}</title>
 {css}
 </head>
 <body>
 <div class="container">
-  <div class="header"><h1>{crew_name}</h1><div class="sub">Daily Rep History (Season 61)</div></div>
+  <div class="header"><h1>{crew_name}</h1><div class="sub">Daily Rep History ({season_label})</div></div>
   <div class="index-list">{index_rows}</div>
 {xlsx_links}  <div class="footer"><a href="index.html">&larr; Back to main page</a> &middot; <a href="https://github.com/nixervo/Shad0wNinjas-Crew">Source</a></div>
 </div>

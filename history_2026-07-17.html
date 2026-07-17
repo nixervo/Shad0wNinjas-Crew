@@ -33,11 +33,27 @@
   .section-header { padding: 10px 20px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #4a6ad8; font-weight: 600; background: #0f0f0f; border-top: 1px solid #1a1a2e; }
   .star-joined { color: #42a5f5; }
   .star-left { color: #f44336; }
+  details.season-wrap { margin: 0; }
+  details.season-wrap > summary { cursor: pointer; padding: 10px 14px; font-size: 15px; font-weight: 700; color: #4a6ad8; background: #0f0f0f; border-bottom: 1px solid #14141f; user-select: none; list-style: none; display: flex; align-items: center; gap: 6px; }
+  details.season-wrap > summary::-webkit-details-marker { display: none; }
+  details.season-wrap > summary:hover { background: rgba(74,106,216,0.05); }
+  details.season-wrap > summary .arrow { font-size: 12px; color: #888; transition: transform .15s; }
+  details.season-wrap[open] > summary .arrow { transform: rotate(90deg); }
+  .current-badge { font-size: 11px; font-weight: 400; color: #666; background: #222; padding: 1px 8px; border-radius: 8px; }
+  details.phase-wrap { margin: 0; }
+  details.phase-wrap > summary { cursor: pointer; padding: 8px 14px 8px 28px; font-size: 13px; font-weight: 600; color: #888; background: #0d0d0d; border-bottom: 1px solid #14141f; user-select: none; list-style: none; display: flex; align-items: center; gap: 6px; }
+  details.phase-wrap > summary::-webkit-details-marker { display: none; }
+  details.phase-wrap > summary .arrow { font-size: 11px; color: #555; transition: transform .15s; }
+  details.phase-wrap[open] > summary .arrow { transform: rotate(90deg); }
+  details.phase-wrap > summary:hover { background: rgba(74,106,216,0.03); }
+  details.phase-wrap a { display: block; padding: 8px 14px 8px 42px; color: #ccc; text-decoration: none; font-size: 14px; border-bottom: 1px solid #14141f; }
+  details.phase-wrap a:hover { background: rgba(74,106,216,0.04); color: #fff; }
+  details.phase-wrap a:last-child { border-bottom: none; }
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="header"><h1>Shad0w Ninjas</h1><div class="sub">Daily Reps · 2026-07-17 (Fri)</div></div>
+  <div class="header"><h1>Shad0w Ninjas</h1><div class="sub">Daily Reps · 2026-07-17 (Fri)</div><div class="sub" style="margin-top:2px;font-size:12px;color:#666;">Season 28 · Phase 1</div></div>
   <div class="nav"><a href="history_2026-07-16.html">&larr; Previous</a><a href="history.html">Index</a><span class="inactive">Next &rarr;</span></div>
   <div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Dmg</th><th>Kills</th></tr></thead><tbody><tr><td>1</td><td>Sesshomaru</td><td>+496,711</td><td>+2,368</td></tr>
 <tr><td>2</td><td>Tobirama Senju™</td><td>+203,045</td><td>+966</td></tr>
