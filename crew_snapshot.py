@@ -1479,7 +1479,7 @@ window.__castleBaselineTs = """ + (json.dumps(castle_baseline_ts) if castle_base
 
 def save_snapshot(data):
     now = datetime.now(TARGET_TZ)
-    is_daily = (now.hour == 13)
+    is_daily = (now.hour == 13 and now.minute < 10)
     sheet_name = now.strftime("%Y-%m-%d")
     crew_name = data.get("crew_name", "Unknown")
 
