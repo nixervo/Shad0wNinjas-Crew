@@ -312,6 +312,12 @@ def save_xlsx(data, prev_data, now, uniq, season_info=None):
     if "Sheet" in wb.sheetnames and len(wb.sheetnames) > 1:
         del wb["Sheet"]
 
+    if season_info:
+        for existing_ws in wb.worksheets:
+            a1 = existing_ws["A1"].value or ""
+            if "|" not in a1:
+                existing_ws["A1"] = f"{a1} | S{season_num} P{phase_num}"
+
     wb.save(EXCEL_FILE)
     print(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Saved sheet '{sheet_name}' to {EXCEL_FILE}")
 
