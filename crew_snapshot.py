@@ -1687,10 +1687,11 @@ def save_daily_history(crew_name):
     for s in names:
         ws = wb[s]
         members = []
-        for row in ws.iter_rows(min_row=4, max_col=2, values_only=True):
+        for row in ws.iter_rows(min_row=4, max_col=4, values_only=True):
             name = str(row[0]).strip() if row[0] else ""
             if name and row[1] is not None:
-                members.append((name, int(row[1])))
+                kills = int(row[3]) if len(row) >= 4 and row[3] is not None else 0
+                members.append((name, int(row[1]), kills))
         sheets_data.append({"date": s, "members": members})
     css = """<style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1730,24 +1731,25 @@ def save_daily_history(crew_name):
         gains = []
         for j in range(max_len):
             if j < len(prev_list) and j < len(curr_list):
-                pname, prep = prev_list[j]
-                cname, crep = curr_list[j]
-                gains.append({"name": cname, "gain": crep - prep, "joined": False, "left": False})
+                pname, prep, pk = prev_list[j]
+                cname, crep, ck = curr_list[j]
+                gains.append({"name": cname, "dmg_gain": crep - prep, "kill_gain": ck - pk, "joined": False, "left": False})
             elif j < len(curr_list):
-                cname, crep = curr_list[j]
-                gains.append({"name": cname, "gain": None, "joined": True, "left": False})
+                cname, crep, ck = curr_list[j]
+                gains.append({"name": cname, "dmg_gain": None, "kill_gain": None, "joined": True, "left": False})
             else:
-                pname, prep = prev_list[j]
-                gains.append({"name": pname, "gain": None, "joined": False, "left": True})
-        gains.sort(key=lambda x: (x["gain"] is None, -(x["gain"] or 0)))
+                pname, prep, pk = prev_list[j]
+                gains.append({"name": pname, "dmg_gain": None, "kill_gain": None, "joined": False, "left": True})
+        gains.sort(key=lambda x: (x["dmg_gain"] is None, -(x["dmg_gain"] or 0)))
         daily_pages.append({"date": date, "day_name": day_name})
         rows_html = ""
         for idx, g in enumerate(gains, 1):
             star = ""
             if g["joined"]: star = '<span class="star-joined">&#9733;</span> '
             elif g["left"]: star = '<span class="star-left">&#9734;</span> '
-            gain_str = f'+{g["gain"]:,}' if g["gain"] is not None else '<span class="star-left">N/A</span>'
-            rows_html += f'<tr><td>{idx}</td><td>{star}{g["name"]}</td><td>{gain_str}</td></tr>\n'
+            dmg_str = f'+{g["dmg_gain"]:,}' if g["dmg_gain"] is not None else '<span class="star-left">N/A</span>'
+            kill_str = f'+{g["kill_gain"]:,}' if g["kill_gain"] is not None else '<span class="star-left">N/A</span>'
+            rows_html += f'<tr><td>{idx}</td><td>{star}{g["name"]}</td><td>{dmg_str}</td><td>{kill_str}</td></tr>\n'
         prev_link = f'<a href="history_{prev["date"]}.html">&larr; Previous</a>' if i > 1 else '<span class="inactive">&larr; Previous</span>'
         next_link = f'<a href="history_{sheets_data[i+1]["date"]}.html">Next &rarr;</a>' if i < len(sheets_data) - 1 else '<span class="inactive">Next &rarr;</span>'
         page_html = f"""<!DOCTYPE html>
@@ -1765,7 +1767,7 @@ def save_daily_history(crew_name):
 <div class="container">
   <div class="header"><h1>{crew_name}</h1><div class="sub">Daily Reps · {date} ({day_name})</div></div>
   <div class="nav">{prev_link}<a href="history.html">Index</a>{next_link}</div>
-  <div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Gain</th></tr></thead><tbody>{rows_html}</tbody></table></div>
+  <div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Dmg</th><th>Kills</th></tr></thead><tbody>{rows_html}</tbody></table></div>
   <div class="footer"><a href="index.html">&larr; Back to main page</a></div>
 </div>
 </body>
