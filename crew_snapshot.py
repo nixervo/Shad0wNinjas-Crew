@@ -594,7 +594,7 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
           <div class="castle-gain ours">({our_g_str}/½h)</div>"""
             castle_cards += f"""        <div class="castle-card{card_cls_attr}" data-castle="{cs['name']}">
 {top_html}
-          <div class="castle-tag{tag_cls_attr}">{gap_label} {gap_disp:,}</div>
+          <div class="castle-tag{tag_cls_attr}">{gap_label} {gap_disp:,} ({gap_pct:.1f}%)</div>
         </div>
 """
         castle_html = f"""
@@ -829,7 +829,7 @@ window.__castleCache = """ + json.dumps({cs["name"]: {"our_kills": cs["our_kills
       if (rivalNameEl) rivalNameEl.textContent = rival.name;
       var gapVal = wasLead ? (ourK - rivalK) : (rivalK - ourK);
       var label = wasLead ? "Lead " : "Need ";
-      if (tagEl) tagEl.textContent = label + gapVal.toLocaleString();
+      if (tagEl) tagEl.textContent = label + gapVal.toLocaleString() + " (" + pct.toFixed(1) + "%)";
       card.classList.remove("dangerous", "safe", "catching");
       if (tagEl) tagEl.classList.remove("castle-tag-danger", "castle-tag-safe", "castle-tag-catch");
       var pct = totalKills > 0 ? (gapVal / totalKills) * 100 : 0;
