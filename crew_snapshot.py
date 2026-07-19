@@ -22,6 +22,13 @@ CACHE_1H = "_1h_cache.json"
 CACHE_1H_KILLS = "_1h_kills_cache.json"
 CHANGES_JSON = "_changes.json"
 PHASE1_CACHE = "_phase1_cache.json"
+
+def get_transition_date():
+    if os.path.exists(PHASE1_CACHE):
+        mtime = datetime.fromtimestamp(os.path.getmtime(PHASE1_CACHE), tz=TARGET_TZ)
+        return mtime.strftime("%Y-%m-%d")
+    return None
+
 DAILY_BASELINE = "_daily_baseline.json"
 DAILY_KILLS_BASELINE = "_daily_kills_baseline.json"
 CASTLE_API = "https://playninjarift.com/api/crew_ranking_castles_website.php"
@@ -312,6 +319,9 @@ def save_xlsx(data, prev_data, now, uniq, season_info=None):
     ws = wb.create_sheet(title=sheet_name)
     season_num = season_info.get("season") if season_info else None
     phase_num = season_info.get("phase") if season_info else None
+    transition_date = get_transition_date()
+    if transition_date == sheet_name:
+        phase_num = 1
     write_sheet(ws, data, prev_data, now, uniq, season_num, phase_num)
 
     if "Sheet" in wb.sheetnames and len(wb.sheetnames) > 1:
@@ -1680,11 +1690,6 @@ def save_snapshot(data):
     if is_hourly_mark:
         save_hourly_cache(data["members"], uniq, now)
 
-    if season_info:
-        end_dt = datetime(2026, 7, 19, 5, 0, 0, tzinfo=timezone.utc)
-        if now >= end_dt:
-            save_seasonal_xlsx(data["members"], season_info["season"], 2)
-
     try:
         save_daily_history(crew_name, season_info)
     except Exception as e:
@@ -1720,6 +1725,9 @@ def save_daily_history(crew_name, season_info=None):
                     phase_num = int(parts[1])
         except:
             pass
+        transition_date = get_transition_date()
+        if transition_date == s and phase_num == 2:
+            phase_num = 1
         sheets_data.append({"date": s, "members": members, "season": season_num, "phase": phase_num})
     css = """<style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
