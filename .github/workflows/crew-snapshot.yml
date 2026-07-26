@@ -1,13 +1,7 @@
 name: Crew Snapshot
 
 on:
-  schedule:
-    - cron: "0 * * * *"
   workflow_dispatch:
-
-concurrency:
-  group: crew-snapshot
-  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -15,11 +9,10 @@ permissions:
 jobs:
   snapshot:
     runs-on: ubuntu-latest
-    timeout-minutes: 4320
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: \${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-python@v5
         with:
@@ -27,4 +20,6 @@ jobs:
 
       - run: pip install openpyxl
 
-      - run: python crew_snapshot.py
+      - run: python crew_snapshot.py --once
+
+      - run: git config user.name "Crew-bot" && git config user.email "bot@crew.local" && git add -A && git commit -m "auto: history regen" --allow-empty && git push
