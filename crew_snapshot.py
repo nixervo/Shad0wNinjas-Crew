@@ -25,8 +25,13 @@ PHASE1_CACHE = "_phase1_cache.json"
 
 def get_transition_date():
     if os.path.exists(PHASE1_CACHE):
-        mtime = datetime.fromtimestamp(os.path.getmtime(PHASE1_CACHE), tz=TARGET_TZ)
-        return mtime.strftime("%Y-%m-%d")
+        try:
+            with open(PHASE1_CACHE, encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, dict) and "transition_date" in data:
+                return data["transition_date"]
+        except:
+            pass
     return None
 
 DAILY_BASELINE = "_daily_baseline.json"
@@ -391,6 +396,8 @@ def save_seasonal_xlsx(members, season_num, phase):
         if os.path.exists(PHASE1_CACHE):
             with open(PHASE1_CACHE, encoding="utf-8") as f:
                 p1_data = json.load(f)
+            if isinstance(p1_data, dict) and "phase1_data" in p1_data:
+                p1_data = p1_data["phase1_data"]
         t_p1_kills = 0
         t_p1_dmg = 0
         t_p2_kills = 0
@@ -514,6 +521,8 @@ def save_html(data, prev_data, prev_timestamp, hourly_diffs, hourly_ts, now, all
     if not in_p1 and os.path.exists(PHASE1_CACHE):
         with open(PHASE1_CACHE, encoding="utf-8") as f:
             p1_frozen = json.load(f)
+        if isinstance(p1_frozen, dict) and "phase1_data" in p1_frozen:
+            p1_frozen = p1_frozen["phase1_data"]
     table_rows = "".join(
         f"<tr><td class=\"num\">{i+1}</td><td>{uniq_names[i][1]}</td><td class=\"num div-col\">" + (f"{m.get('boss_kills', 0) or 0:,}" if in_p1 else f"{p1_frozen.get(m['character_name'], {}).get('kills', 0):,}") + f"</td><td class=\"num ph1-diff\">{diff_html(kills_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(kills_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num\">" + (f"{m['member_damage']:,}" if in_p1 else f"{p1_frozen.get(m['character_name'], {}).get('damage', 0):,}") + f"</td><td class=\"num ph1-diff\">{diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num ph1-diff\">{diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))}</td><td class=\"num div-col\">" + (na if in_p1 else f'{m["member_damage"]:,}') + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(diffs_30m_map.get(uniq_names[i][1], 'N/A'))) + "</td><td class=\"num ph2-diff\">" + (na if in_p1 else diff_html(dmg_1h_map.get(uniq_names[i][1], 'N/A'))) + f"</td><td class=\"num div-col\">{diff_html(daily_lookup.get(m['character_name'], 'N/A'))}</td><td class=\"num\">{diff_html(daily_kills_lookup.get(m['character_name'], 'N/A'))}</td></tr>"
         for i, m in enumerate(data["members"])
@@ -1662,8 +1671,9 @@ def save_snapshot(data):
         phase1_data = {}
         for m in data["members"]:
             phase1_data[m["character_name"]] = {"damage": m["member_damage"], "kills": m.get("boss_kills", 0)}
+        cache_data = {"transition_date": now.strftime("%Y-%m-%d"), "phase1_data": phase1_data}
         with open(PHASE1_CACHE, "w", encoding="utf-8") as f:
-            json.dump(phase1_data, f)
+            json.dump(cache_data, f)
         save_seasonal_xlsx(data["members"], season_info["season"], 1)
         print(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Phase 1 snapshot saved")
 
@@ -1726,8 +1736,8 @@ def save_daily_history(crew_name, season_info=None):
         except:
             pass
         transition_date = get_transition_date()
-        if transition_date == s and phase_num == 2:
-            phase_num = 1
+        if transition_date:
+            phase_num = 2 if s >= transition_date else 1
         sheets_data.append({"date": s, "members": members, "season": season_num, "phase": phase_num})
     css = """<style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
