@@ -27,4 +27,4 @@ jobs:
 
       - run: pip install openpyxl
 
-      - run: python crew_snapshot.py
+      - run: python crew_snapshot.py --once
