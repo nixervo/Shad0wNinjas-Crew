@@ -27,6 +27,4 @@ jobs:
 
       - run: pip install openpyxl
 
-      - run: python crew_snapshot.py --once
-
-      - run: git config user.name 'Crew-snapshot-bot' && git config user.email 'bot@crew-snapshot.local' && git add -A && git diff --cached --quiet || (git commit -m 'auto: history regen' && git push)
+      - run: python crew_snapshot.py
