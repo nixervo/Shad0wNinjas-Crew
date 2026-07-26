@@ -1939,11 +1939,6 @@ def run():
 def fetch_once():
     data = fetch_crew()
     save_snapshot(data)
-    os.system('git config user.name "Crew-bot"')
-    os.system('git config user.email "bot@crew.local"')
-    os.system('git add -A')
-    os.system('git commit -m "auto: history regen" --allow-empty')
-    os.system('git push')
 
 if __name__ == "__main__":
     if "--once" in sys.argv:
