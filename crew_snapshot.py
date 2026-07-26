@@ -34,6 +34,17 @@ def get_transition_date():
             pass
     return None
 
+def get_cached_season():
+    if os.path.exists(PHASE1_CACHE):
+        try:
+            with open(PHASE1_CACHE, encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, dict) and "season" in data:
+                return data["season"]
+        except:
+            pass
+    return None
+
 DAILY_BASELINE = "_daily_baseline.json"
 DAILY_KILLS_BASELINE = "_daily_kills_baseline.json"
 CASTLE_API = "https://playninjarift.com/api/crew_ranking_castles_website.php"
@@ -1667,11 +1678,17 @@ def save_snapshot(data):
             print(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Castle error: {e}")
             pass
 
+    current_cache_season = get_cached_season()
+    if season_info and current_cache_season is not None and season_info.get("season") != current_cache_season:
+        if os.path.exists(PHASE1_CACHE):
+            os.remove(PHASE1_CACHE)
+            print(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Cleared Phase 1 cache for new season {season_info.get('season')}")
+    
     if season_info and season_info.get("phase", 1) == 2 and not os.path.exists(PHASE1_CACHE):
         phase1_data = {}
         for m in data["members"]:
             phase1_data[m["character_name"]] = {"damage": m["member_damage"], "kills": m.get("boss_kills", 0)}
-        cache_data = {"transition_date": now.strftime("%Y-%m-%d"), "phase1_data": phase1_data}
+        cache_data = {"transition_date": now.strftime("%Y-%m-%d"), "phase1_data": phase1_data, "season": season_info["season"]}
         with open(PHASE1_CACHE, "w", encoding="utf-8") as f:
             json.dump(cache_data, f)
         save_seasonal_xlsx(data["members"], season_info["season"], 1)
